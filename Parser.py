@@ -1,5 +1,7 @@
 
 from Token import Token
+from Token import TokenType
+from Token import TokenSymbol
 
 
 class Parser:
@@ -11,53 +13,47 @@ class Parser:
         self.bracket_validator = 0
 
         self.other_symbols_map = {
-            '+': Token.PLUS,
-            '-': Token.MINUS,
-            '*': Token.MULTIPLICATION,
-            '/': Token.DIVIDE,
-            'x': Token.X
+            '+': TokenSymbol.PLUS,
+            '-': TokenSymbol.MINUS,
+            '*': TokenSymbol.MULTIPLICATION,
+            '/': TokenSymbol.DIVIDE,
+            'x': TokenSymbol.X
         }
 
-    def add_digit(self, digit):
-        switcher = {
-            '0': Token.ZERO,
-            '1': Token.ONE,
-            '2': Token.TWO,
-            '3': Token.THREE,
-            '4': Token.FOUR,
-            '5': Token.FIVE,
-            '6': Token.SIX,
-            '7': Token.SEVEN,
-            '8': Token.EIGHT,
-            '9': Token.NINE,
-        }
-        self.tokens.append(switcher.get(digit))
+    def add_number(self, index):
+        number = int(self.expression[index], 16)
+        shift = 1
+        while (index + shift) < len(self.expression) and self.expression[index + shift].isdigit():
+            number = number * 10 + int(self.expression[index + shift])
+            shift += 1
+        self.tokens.append(Token(TokenType.NUMBER, TokenSymbol.NONE, number))
+        return shift
 
     def check_ctg_or_cos(self, index):
         if self.expression[index + 1] is 'o' and self.expression[index + 2] is 's':
-            self.tokens.append(Token.COSINE)
+            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.COSINE, 0))
         elif self.expression[index + 1] is 't' and self.expression[index + 2] is 'g':
-            self.tokens.append(Token.COTANGENT)
+            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.COTANGENT, 0))
         else:
             raise Exception("Parse expression failed: improper symbol at index " + str(index + 1) + " or " +
                             str(index + 2))
 
     def check_sin(self, index):
         if self.expression[index + 1] is 'i' and self.expression[index + 2] is 'n':
-            self.tokens.append(Token.SINE)
+            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.SINE, 0))
         else:
             raise Exception("Parse expression failed: improper symbol at index: " + str(index + 1) + " or " +
                             str(index + 2))
 
     def check_tg(self, index):
         if self.expression[index + 1] is 'g':
-            self.tokens.append(Token.TANGENT)
+            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.TANGENT, 0))
         else:
             raise Exception("Parse expression failed: improper symbol at index " + str(index + 1))
 
     def check_log(self, index):
         if self.expression[index + 1] is 'o' and self.expression[index + 2] is 'g':
-            self.tokens.append(Token.LOG)
+            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.LOG, 0))
         else:
             raise Exception("Parse expression failed: improper symbol at index " + str(index + 1) + " or " +
                             str(index + 2))
@@ -67,22 +63,19 @@ class Parser:
             self.bracket_validator -= 1
             if self.bracket_validator < 0:
                 raise Exception("Parse expression failed: improper bracket at index " + str(index))
-            self.tokens.append(Token.BRACKET_RIGHT)
+            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.BRACKET_RIGHT, 0))
         elif self.expression[index] is '(':
             self.bracket_validator += 1
-            self.tokens.append(Token.BRACKET_LEFT)
+            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.BRACKET_LEFT, 0))
 
     def parse(self):
-
         index = 0
-
         while index < len(self.expression):
             if self.expression[index] is ' ':
                 index += 1
                 continue
             if self.expression[index].isdigit():
-                self.add_digit(self.expression[index])
-                index += 1
+                index += self.add_number(index)
                 continue
             if self.expression[index] is 'c':
                 try:
@@ -113,11 +106,11 @@ class Parser:
                 index += 3
                 continue
             if self.expression[index] is '^':
-                self.tokens.append(Token.POWER)
+                self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.POWER, 0))
                 index += 1
                 continue
             if self.expression[index] is "\u221A":
-                self.tokens.append(Token.ROOT)
+                self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.ROOT, 0))
                 index += 1
                 continue
             if self.expression[index] is '(' or self.expression[index] is ')':
@@ -127,12 +120,12 @@ class Parser:
                     raise exc
                 index += 1
                 continue
-
-            Token.value = self.other_symbols_map.get(self.expression[index])
-            if Token.value is None:
-                raise Exception("Parse expression failed: improper symbol at index " + str(index))
-            self.tokens.append(Token.value)
-            index += 1
+            else:
+                token_symbol = self.other_symbols_map.get(self.expression[index])
+                if token_symbol is None:
+                    raise Exception("Parse expression failed: improper symbol at index " + str(index))
+                self.tokens.append(Token(TokenType.SYMBOL, token_symbol, 0))
+                index += 1
 
         if self.bracket_validator is not 0:
             raise Exception("Parse expression failed: improper brackets")

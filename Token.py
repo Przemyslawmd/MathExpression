@@ -2,31 +2,34 @@
 from enum import Enum
 
 
-class Token(Enum):
-    ZERO = 0
-    ONE = 1
-    TWO = 2
-    THREE = 3
-    FOUR = 4
-    FIVE = 5
-    SIX = 6
-    SEVEN = 7
-    EIGHT = 8
-    NINE = 9
+class TokenSymbol(Enum):
+    NONE = 0
+    PLUS = 1
+    MINUS = 2
+    MULTIPLICATION = 3
+    DIVIDE = 4
+    POWER = 5
+    ROOT = 6
+    LOG = 7
 
-    PLUS = 10
-    MINUS = 11
-    MULTIPLICATION = 12
-    DIVIDE = 13
-    POWER = 14
-    ROOT = 15
-    LOG = 16
+    SINE = 8
+    COSINE = 9
+    TANGENT = 10
+    COTANGENT = 11
 
-    SINE = 17
-    COSINE = 18
-    TANGENT = 19
-    COTANGENT = 20
+    BRACKET_LEFT = 12
+    BRACKET_RIGHT = 13
+    X = 14
 
-    BRACKET_LEFT = 21
-    BRACKET_RIGHT = 22
-    X = 23
+
+class TokenType(Enum):
+    NUMBER = 0
+    SYMBOL = 1
+
+
+class Token:
+    def __init__(self, token_type, token_symbol, token_number):
+        self.token_type = token_type
+        self.token_symbol = token_symbol
+        self.token_number = token_number
+
