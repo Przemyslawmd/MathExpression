@@ -1,8 +1,8 @@
 
 from unittest import TestCase
-from Parser import Parser
-from Token import TokenType
-from Token import TokenValue
+from Tokens.Parser import Parser
+from Tokens.Token import TokenType
+from Tokens.Token import TokenValue
 
 
 class TestParser(TestCase):
@@ -17,7 +17,7 @@ class TestParser(TestCase):
         tokens = Parser("2x + 3").parse()
         assert len(tokens) is 4
         self.check_token(tokens[0], TokenType.NUMBER,    2, TokenValue.NONE)
-        self.check_token(tokens[1], TokenType.OTHER,    0, TokenValue.X)
+        self.check_token(tokens[1], TokenType.OTHER,     0, TokenValue.X)
         self.check_token(tokens[2], TokenType.OPERATION, 0, TokenValue.PLUS)
         self.check_token(tokens[3], TokenType.NUMBER,    3, TokenValue.NONE)
 

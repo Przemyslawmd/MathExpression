@@ -21,7 +21,7 @@ class MathExpression(QWidget):
         return
 
     @Slot()
-    def reverse_polish_notation(self):
+    def reverse_polish__notation(self):
         return
 
     @Slot()

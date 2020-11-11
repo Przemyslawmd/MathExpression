@@ -1,6 +1,6 @@
 
-from Token import Token
-from Token import TokenValue
+from Tokens.Token import Token
+from Tokens.Token import TokenValue
 
 
 class Parser:
