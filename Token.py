@@ -29,7 +29,7 @@ class TokenType(Enum):
     BRACKET = 1
     OPERATION = 2
     TRIGONOMETRY = 3
-    SYMBOL = 4
+    OTHER = 4
 
 
 class Token:
@@ -48,8 +48,10 @@ class Token:
             self.token_type = TokenType.NUMBER
         elif self.token_symbol in (TokenValue.SINE, TokenValue.COSINE, TokenValue.TANGENT, TokenValue.COTANGENT):
             self.token_type = TokenType.TRIGONOMETRY
+        elif self.token_symbol in (TokenValue.PLUS, TokenValue.MINUS, TokenValue.MULTIPLICATION, TokenValue.DIVISION):
+            self.token_type = TokenType.OPERATION
         elif self.token_symbol in (TokenValue.BRACKET_LEFT, TokenValue.BRACKET_RIGHT):
             self.token_type = TokenType.BRACKET
         else:
-            self.token_type = TokenType.SYMBOL
+            self.token_type = TokenType.OTHER
 
