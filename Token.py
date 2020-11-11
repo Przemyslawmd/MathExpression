@@ -2,13 +2,13 @@
 from enum import Enum
 
 
-class TokenSymbol(Enum):
+class TokenValue(Enum):
     NONE = 0
 
     PLUS = 1
     MINUS = 2
     MULTIPLICATION = 3
-    DIVIDE = 4
+    DIVISION = 4
 
     SINE = 5
     COSINE = 6
@@ -33,27 +33,23 @@ class TokenType(Enum):
 
 
 class Token:
-    def __init__(self, token_type, token_symbol, token_number):
-        self.token_type = token_type
-        self.token_symbol = token_symbol
+    def __init__(self, token_value, token_number):
+
+        if token_value != TokenValue.NONE and token_number != 0:
+            raise Exception("For token value other than None token number should be zero")
+
+        self.token_symbol = token_value
         self.token_number = token_number
-        self.validate()
+        self.token_type = None
+        self.set_token_type()
 
-    def validate(self):
-
-        if self.token_type is TokenType.TRIGONOMETRY:
-            if self.token_symbol not in (TokenSymbol.SINE, TokenSymbol.COSINE,
-                                         TokenSymbol.TANGENT, TokenSymbol.COTANGENT):
-                raise Exception("Improper value for trigonometry type")
-            if self.token_number != 0:
-                raise Exception("For trigonometry type token number should be zero")
-
-        elif self.token_type is TokenType.NUMBER and self.token_symbol is not TokenSymbol.NONE:
-            raise Exception("For number type TokenSymbol should be None")
-
-        elif self.token_type is TokenType.BRACKET:
-            if self.token_symbol not in (TokenSymbol.BRACKET_LEFT, TokenSymbol.BRACKET_RIGHT):
-                raise Exception("Improper value for bracket type")
-            if self.token_number != 0:
-                raise Exception("For bracket type token number should be zero")
+    def set_token_type(self):
+        if self.token_symbol is TokenValue.NONE:
+            self.token_type = TokenType.NUMBER
+        elif self.token_symbol in (TokenValue.SINE, TokenValue.COSINE, TokenValue.TANGENT, TokenValue.COTANGENT):
+            self.token_type = TokenType.TRIGONOMETRY
+        elif self.token_symbol in (TokenValue.BRACKET_LEFT, TokenValue.BRACKET_RIGHT):
+            self.token_type = TokenType.BRACKET
+        else:
+            self.token_type = TokenType.SYMBOL
 
