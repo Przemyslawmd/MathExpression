@@ -31,23 +31,23 @@ class Parser:
 
     def check_ctg_or_cos(self, index):
         if self.expression[index + 1] is 'o' and self.expression[index + 2] is 's':
-            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.COSINE, 0))
+            self.tokens.append(Token(TokenType.TRIGONOMETRY, TokenSymbol.COSINE, 0))
         elif self.expression[index + 1] is 't' and self.expression[index + 2] is 'g':
-            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.COTANGENT, 0))
+            self.tokens.append(Token(TokenType.TRIGONOMETRY, TokenSymbol.COTANGENT, 0))
         else:
             raise Exception("Parse expression failed: improper symbol at index " + str(index + 1) + " or " +
                             str(index + 2))
 
     def check_sin(self, index):
         if self.expression[index + 1] is 'i' and self.expression[index + 2] is 'n':
-            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.SINE, 0))
+            self.tokens.append(Token(TokenType.TRIGONOMETRY, TokenSymbol.SINE, 0))
         else:
             raise Exception("Parse expression failed: improper symbol at index: " + str(index + 1) + " or " +
                             str(index + 2))
 
     def check_tg(self, index):
         if self.expression[index + 1] is 'g':
-            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.TANGENT, 0))
+            self.tokens.append(Token(TokenType.TRIGONOMETRY, TokenSymbol.TANGENT, 0))
         else:
             raise Exception("Parse expression failed: improper symbol at index " + str(index + 1))
 
@@ -63,10 +63,10 @@ class Parser:
             self.bracket_validator -= 1
             if self.bracket_validator < 0:
                 raise Exception("Parse expression failed: improper bracket at index " + str(index))
-            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.BRACKET_RIGHT, 0))
+            self.tokens.append(Token(TokenType.BRACKET, TokenSymbol.BRACKET_RIGHT, 0))
         elif self.expression[index] is '(':
             self.bracket_validator += 1
-            self.tokens.append(Token(TokenType.SYMBOL, TokenSymbol.BRACKET_LEFT, 0))
+            self.tokens.append(Token(TokenType.BRACKET, TokenSymbol.BRACKET_LEFT, 0))
 
     def parse(self):
         index = 0
