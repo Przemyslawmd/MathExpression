@@ -8,10 +8,10 @@ from Token import TokenValue
 class TestParser(TestCase):
 
     @staticmethod
-    def check_token(token, token_type, token_number, token_symbol):
+    def check_token(token, token_type, token_number, token_value):
         assert token.token_type is token_type
         assert token.token_number == token_number
-        assert token.token_symbol is token_symbol
+        assert token.token_value is token_value
 
     def test_proper_expression_1(self):
         tokens = Parser("2x + 3").parse()
