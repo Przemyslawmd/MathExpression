@@ -1,13 +1,14 @@
 
-from Tokens.Token import TokenType
-from Tokens.Token import TokenValue
+from Tokens.Token import TokenType, TokenValue
+from collections import deque
 
 
 class Postfix:
 
     def __init__(self):
-        self.stack = []
+        self.stack = deque()
         self.postfix_list = []
+
 
     def create_postfix(self, token_group_list):
         for token_group in token_group_list:
@@ -17,14 +18,14 @@ class Postfix:
                 if token_group[0].token_value is TokenValue.BRACKET_LEFT:
                     self.stack.append(token_group[0])
                 else:
-                    self.process_bracket_right(self, token_group)
+                    self.process_bracket_right()
             else:
                 self.postfix_list.append(token_group)
 
         while len(self.stack) > 0:
             self.postfix_list.append(self.stack.pop())
-
         return self.postfix_list
+
 
     def process_operator(self, token):
         if len(self.stack) == 0:
@@ -36,6 +37,7 @@ class Postfix:
         else:
             self.process_stack_operator(token, [TokenValue.MULTIPLICATION, TokenValue.DIVISION])
 
+
     def process_stack_operator(self, token, token_values):
         current_stack = None if len(self.stack) == 0 else self.stack.pop()
         while current_stack is not None and current_stack.token_value in token_values:
@@ -45,18 +47,10 @@ class Postfix:
             self.stack.append(current_stack)
         self.stack.append(token)
 
+
     def process_bracket_right(self):
-        current_stack_index = len(self.stack) - 1
-        self.stack.pop(current_stack_index)
-        current_stack_index -= 1
-        while True:
-            if current_stack_index < 0:
-                raise Exception("No correspoding left bracket")
-            if self.stack[current_stack_index].token_value is TokenValue.BRACKET_LEFT:
-                self.stack.pop(current_stack_index)
-                return
-            else:
-                self.postfix_list.append(self.stack[current_stack_index])
-                self.stack.pop(current_stack_index)
-                current_stack_index -= 1
+        current_stack = self.stack.pop()
+        while current_stack.token_value is not TokenValue.BRACKET_LEFT:
+            self.postfix_list.append(current_stack)
+            current_stack = self.stack.pop()
 
