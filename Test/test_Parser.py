@@ -1,8 +1,7 @@
 
 from unittest import TestCase
 from Tokens.Parser import Parser
-from Tokens.Token import TokenType
-from Tokens.Token import TokenValue
+from Tokens.Token import TokenType, TokenValue
 
 
 class TestParser(TestCase):
@@ -25,15 +24,16 @@ class TestParser(TestCase):
 
     def test_proper_expression_2(self):
         tokens = Parser("3(4x + cos30)").parse()
-        assert len(tokens) is 8
+        assert len(tokens) is 9
         self.check_token(tokens[0], TokenType.NUMBER,       3,  TokenValue.NONE)
-        self.check_token(tokens[1], TokenType.BRACKET,      0,  TokenValue.BRACKET_LEFT)
-        self.check_token(tokens[2], TokenType.NUMBER,       4,  TokenValue.NONE)
-        self.check_token(tokens[3], TokenType.OTHER,        0,  TokenValue.X)
-        self.check_token(tokens[4], TokenType.OPERATION,    0,  TokenValue.PLUS)
-        self.check_token(tokens[5], TokenType.TRIGONOMETRY, 0,  TokenValue.COSINE)
-        self.check_token(tokens[6], TokenType.NUMBER,       30, TokenValue.NONE)
-        self.check_token(tokens[7], TokenType.BRACKET,      0,  TokenValue.BRACKET_RIGHT)
+        self.check_token(tokens[1], TokenType.OPERATION,    0,  TokenValue.MULTIPLICATION)
+        self.check_token(tokens[2], TokenType.BRACKET,      0,  TokenValue.BRACKET_LEFT)
+        self.check_token(tokens[3], TokenType.NUMBER,       4,  TokenValue.NONE)
+        self.check_token(tokens[4], TokenType.OTHER,        0,  TokenValue.X)
+        self.check_token(tokens[5], TokenType.OPERATION,    0,  TokenValue.PLUS)
+        self.check_token(tokens[6], TokenType.TRIGONOMETRY, 0,  TokenValue.COSINE)
+        self.check_token(tokens[7], TokenType.NUMBER,       30, TokenValue.NONE)
+        self.check_token(tokens[8], TokenType.BRACKET,      0,  TokenValue.BRACKET_RIGHT)
 
 
     def test_proper_expression_3(self):

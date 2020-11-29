@@ -1,6 +1,5 @@
 
-from Tokens.Token import Token
-from Tokens.Token import TokenValue
+from Tokens.Token import Token, TokenValue
 
 
 class Parser:
@@ -65,9 +64,15 @@ class Parser:
             self.bracket_validator -= 1
             if self.bracket_validator < 0:
                 raise Exception("Parse failed: improper bracket at index " + str(index))
-            self.tokens.append(Token(TokenValue.BRACKET_RIGHT, 0))
+            if len(self.expression) > index + 1 and self.expression[index + 1] not in [')', '+', '-', '*', '/']:
+                self.tokens.append(Token(TokenValue.BRACKET_RIGHT, 0))
+                self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
+            else:
+                self.tokens.append(Token(TokenValue.BRACKET_RIGHT, 0))
         elif self.expression[index] is '(':
             self.bracket_validator += 1
+            if index > 0 and self.expression[index - 1] not in ['(', ')', '+', '-', '*', '/', 's', 'n','g']:
+                self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
             self.tokens.append(Token(TokenValue.BRACKET_LEFT, 0))
 
 
