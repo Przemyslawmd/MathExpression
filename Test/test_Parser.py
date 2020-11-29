@@ -13,6 +13,7 @@ class TestParser(TestCase):
         assert token.token_number == token_number
         assert token.token_value is token_value
 
+
     def test_proper_expression_1(self):
         tokens = Parser("2x + 3").parse()
         assert len(tokens) is 4
@@ -20,6 +21,7 @@ class TestParser(TestCase):
         self.check_token(tokens[1], TokenType.OTHER,     0, TokenValue.X)
         self.check_token(tokens[2], TokenType.OPERATION, 0, TokenValue.PLUS)
         self.check_token(tokens[3], TokenType.NUMBER,    3, TokenValue.NONE)
+
 
     def test_proper_expression_2(self):
         tokens = Parser("3(4x + cos30)").parse()
@@ -33,6 +35,7 @@ class TestParser(TestCase):
         self.check_token(tokens[6], TokenType.NUMBER,       30, TokenValue.NONE)
         self.check_token(tokens[7], TokenType.BRACKET,      0,  TokenValue.BRACKET_RIGHT)
 
+
     def test_proper_expression_3(self):
         tokens = Parser("3x^3 + log10").parse()
         assert len(tokens) is 7
@@ -43,6 +46,7 @@ class TestParser(TestCase):
         self.check_token(tokens[4], TokenType.OPERATION, 0,  TokenValue.PLUS)
         self.check_token(tokens[5], TokenType.OTHER,     0,  TokenValue.LOG)
         self.check_token(tokens[6], TokenType.NUMBER,    10, TokenValue.NONE)
+
 
     def test_proper_expression_4(self):
         tokens = Parser("5/(2x + 6x^2)").parse()
@@ -58,6 +62,7 @@ class TestParser(TestCase):
         self.check_token(tokens[8],  TokenType.OTHER,     0, TokenValue.POWER)
         self.check_token(tokens[9],  TokenType.NUMBER,    2, TokenValue.NONE)
         self.check_token(tokens[10], TokenType.BRACKET,   0, TokenValue.BRACKET_RIGHT)
+
 
     def test_proper_expression_5(self):
         tokens = Parser("52/(log350x + 55^2 + cos(20x+6))").parse()
@@ -82,28 +87,32 @@ class TestParser(TestCase):
         self.check_token(tokens[17], TokenType.BRACKET,      0,   TokenValue.BRACKET_RIGHT)
         self.check_token(tokens[18], TokenType.BRACKET,      0,   TokenValue.BRACKET_RIGHT)
 
+
     def test_improper_expression_1(self):
         with self.assertRaises(Exception) as exc:
             Parser("(2x + 3) / ((3x + 4)").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parse expression failed: improper brackets")
+        self.assertEqual(str(error), "Parse failed: improper brackets")
+
 
     def test_improper_expression_2(self):
         with self.assertRaises(Exception) as exc:
             Parser("12y + 4").parse()
         error = exc.exception
-        print(str(error))
-        self.assertEqual(str(error), "Parse expression failed: improper symbol at index 2")
+        self.assertEqual(str(error), "Parse failed: improper symbol at index 2")
+
 
     def test_improper_expression_3(self):
         with self.assertRaises(Exception) as exc:
             Parser("tg45 * cor30 - 3").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parse expression failed: improper symbol at index 8 or 9")
+        self.assertEqual(str(error), "Parse failed: improper symbol at index 6 or 7")
+
 
     def test_improper_expression_4(self):
         with self.assertRaises(Exception) as exc:
             Parser(")4x(2x +1)").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parse expression failed: improper bracket at index 0")
+        self.assertEqual(str(error), "Parse failed: improper bracket at index 0")
+
 
