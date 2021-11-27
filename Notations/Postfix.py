@@ -10,17 +10,17 @@ class Postfix:
         self.postfix_list = []
 
 
-    def create_postfix(self, token_group_list):
-        for token_group in token_group_list:
-            if token_group[0].token_type is TokenType.OPERATION:
-                self.process_operator(token_group[0])
-            elif token_group[0].token_type is TokenType.BRACKET:
-                if token_group[0].token_value is TokenValue.BRACKET_LEFT:
-                    self.stack.append(token_group[0])
+    def create_postfix(self, tokens):
+        for token in tokens:
+            if token.token_type is TokenType.OPERATION:
+                self.process_operator(token)
+            elif token.token_type is TokenType.BRACKET:
+                if token.token_value is TokenValue.BRACKET_LEFT:
+                    self.stack.append(token)
                 else:
                     self.process_bracket_right()
             else:
-                self.postfix_list.append(token_group)
+                self.postfix_list.append(token)
 
         while len(self.stack) > 0:
             self.postfix_list.append(self.stack.pop())
@@ -53,4 +53,31 @@ class Postfix:
         while current_stack.token_value is not TokenValue.BRACKET_LEFT:
             self.postfix_list.append(current_stack)
             current_stack = self.stack.pop()
+
+
+    def calculate(self, x):
+        temp_stack = deque()
+        result = []
+
+        for token in self.postfix_list:
+            if token.token_type == TokenType.NUMBER:
+                temp_stack.append(token.token_number)
+            elif token.token_value == TokenValue.X:
+                temp_stack.append(x)
+            elif token.token_type == TokenType.OPERATION:
+                number_1 = temp_stack.pop()
+                number_2 = temp_stack.pop()
+                if token.token_value == TokenValue.PLUS:
+                    temp_stack.append(number_1 + number_2)
+                elif token.token_value == TokenValue.MINUS:
+                    temp_stack.append(number_1 - number_2)
+                elif token.token_value == TokenValue.MULTIPLICATION:
+                    temp_stack.append(number_1 * number_2)
+                elif token.token_value == TokenValue.DIVISION:
+                    temp_stack.append(number_1 / number_2)
+        result.append(temp_stack[0])
+        return result
+
+
+
 
