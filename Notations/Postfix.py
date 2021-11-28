@@ -55,29 +55,30 @@ class Postfix:
             current_stack = self.stack.pop()
 
 
-    def calculate(self, x):
-        temp_stack = deque()
-        result = []
+    def calculate(self, min, max):
+        results = []
+        for x in range(min, max + 1):
+            results.append(deque())
 
         for token in self.postfix_list:
             if token.token_type == TokenType.NUMBER:
-                temp_stack.append(token.token_number)
+                for result in results:
+                    result.append(token.token_number)
             elif token.token_value == TokenValue.X:
-                temp_stack.append(x)
+                number = min
+                for result in results:
+                    result.append(number)
+                    number += 1
             elif token.token_type == TokenType.OPERATION:
-                number_1 = temp_stack.pop()
-                number_2 = temp_stack.pop()
-                if token.token_value == TokenValue.PLUS:
-                    temp_stack.append(number_1 + number_2)
-                elif token.token_value == TokenValue.MINUS:
-                    temp_stack.append(number_1 - number_2)
-                elif token.token_value == TokenValue.MULTIPLICATION:
-                    temp_stack.append(number_1 * number_2)
-                elif token.token_value == TokenValue.DIVISION:
-                    temp_stack.append(number_1 / number_2)
-        result.append(temp_stack[0])
-        return result
-
-
-
-
+                for result in results:
+                    number_1 = result.pop()
+                    number_2 = result.pop()
+                    if token.token_value == TokenValue.PLUS:
+                        result.append(number_1 + number_2)
+                    elif token.token_value == TokenValue.MINUS:
+                        result.append(number_1 - number_2)
+                    elif token.token_value == TokenValue.MULTIPLICATION:
+                        result.append(number_1 * number_2)
+                    elif token.token_value == TokenValue.DIVISION:
+                        result.append(number_1 / number_2)
+        return results
