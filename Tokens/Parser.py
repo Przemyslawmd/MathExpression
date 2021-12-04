@@ -20,6 +20,8 @@ class Parser:
         }
 
     def add_number(self, index):
+        if index != 0 and self.tokens[len(self.tokens) - 1].token_value in [TokenValue.BRACKET_RIGHT, TokenValue.X]:
+            self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
         number = int(self.expression[index], 16)
         shift = 1
         while (index + shift) < len(self.expression) and self.expression[index + shift].isdigit():
