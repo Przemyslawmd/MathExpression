@@ -81,6 +81,13 @@ class Parser:
             self.tokens.append(Token(TokenValue.BRACKET_LEFT, 0))
 
 
+    def check_x_neighbours(self, index):
+        if index != 0 and self.tokens[len(self.tokens) - 1].token_value in [TokenValue.BRACKET_RIGHT, TokenValue.NONE]:
+            self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
+        self.tokens.append(Token(TokenValue.X, 0))
+        self.index += 1
+
+
     def parse(self):
         while self.index < len(self.expression):
             current_char = self.expression[self.index]
@@ -130,8 +137,11 @@ class Parser:
                 token_symbol = self.other_symbols_map.get(current_char)
                 if token_symbol is None:
                     raise Exception("Parse failed: improper symbol at index " + str(self.index))
-                self.tokens.append(Token(token_symbol, 0))
-                self.index += 1
+                if token_symbol is TokenValue.X:
+                    self.check_x_neighbours(self.index)
+                else:
+                    self.tokens.append(Token(token_symbol, 0))
+                    self.index += 1
 
         if self.bracket_validator is not 0:
             raise Exception("Parse failed: improper brackets")
