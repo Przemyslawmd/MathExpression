@@ -9,6 +9,7 @@ class Parser:
         self.expression = expression.replace(" ",'')
         self.tokens = []
         self.bracket_validator = 0
+        self.index = 0
 
         self.other_symbols_map = {
             '+': TokenValue.PLUS,
@@ -30,16 +31,16 @@ class Parser:
 
 
     def check_ctg_or_cos(self, index):
-        if self.expression[index + 1] is 'o' and self.expression[index + 2] is 's':
+        if self.expression[index + 1] == 'o' and self.expression[index + 2] == 's':
             self.tokens.append(Token(TokenValue.COSINE, 0))
-        elif self.expression[index + 1] is 't' and self.expression[index + 2] is 'g':
+        elif self.expression[index + 1] == 't' and self.expression[index + 2] == 'g':
             self.tokens.append(Token(TokenValue.COTANGENT, 0))
         else:
             raise Exception("Parse failed: improper symbol at index " + str(index + 1) + " or " + str(index + 2))
 
 
     def check_sine(self, index):
-        if self.expression[index + 1] is 'i' and self.expression[index + 2] is 'n':
+        if self.expression[index + 1] == 'i' and self.expression[index + 2] == 'n':
             self.tokens.append(Token(TokenValue.SINE, 0))
         else:
             raise Exception("Parse failed: improper symbol at index: " + str(index + 1) + " or " + str(index + 2))
@@ -77,61 +78,60 @@ class Parser:
 
 
     def parse(self):
-        index = 0
-        while index < len(self.expression):
-            current_char = self.expression[index]
+        while self.index < len(self.expression):
+            current_char = self.expression[self.index]
             if current_char.isdigit():
-                index += self.add_number(index)
+                self.index += self.add_number(self.index)
                 continue
             if current_char is 'c':
                 try:
-                    self.check_ctg_or_cos(index)
+                    self.check_ctg_or_cos(self.index)
                 except Exception as exc:
                     raise exc
-                index += 3
+                self.index += 3
                 continue
             if current_char is 's':
                 try:
-                    self.check_sine(index)
+                    self.check_sine(self.index)
                 except Exception as exc:
                     raise exc
-                index += 3
+                self.index += 3
                 continue
             if current_char is 't':
                 try:
-                    self.check_tg(index)
+                    self.check_tg(self.index)
                 except Exception as exc:
                     raise exc
-                index += 2
+                self.index += 2
                 continue
             if current_char is 'l':
                 try:
-                    self.check_log(index)
+                    self.check_log(self.index)
                 except Exception as exc:
                     raise exc
-                index += 3
+                self.index += 3
                 continue
-            if current_char is '^':
+            if current_char == '^':
                 self.tokens.append(Token(TokenValue.POWER, 0))
-                index += 1
+                self.index += 1
                 continue
-            if current_char is "\u221A":
+            if current_char == "\u221A":
                 self.tokens.append(Token(TokenValue.ROOT, 0))
-                index += 1
+                self.index += 1
                 continue
-            if current_char is '(' or current_char is ')':
+            if current_char == '(' or current_char is ')':
                 try:
-                    self.check_brackets(index)
+                    self.check_brackets(self.index)
                 except Exception as exc:
                     raise exc
-                index += 1
+                self.index += 1
                 continue
             else:
                 token_symbol = self.other_symbols_map.get(current_char)
                 if token_symbol is None:
-                    raise Exception("Parse failed: improper symbol at index " + str(index))
+                    raise Exception("Parse failed: improper symbol at index " + str(self.index))
                 self.tokens.append(Token(token_symbol, 0))
-                index += 1
+                self.index += 1
 
         if self.bracket_validator is not 0:
             raise Exception("Parse failed: improper brackets")
