@@ -27,7 +27,7 @@ class Parser:
             number = number * 10 + int(self.expression[index + shift])
             shift += 1
         self.tokens.append(Token(TokenValue.NONE, number))
-        return shift
+        self.index += shift
 
 
     def check_ctg_or_cos(self, index):
@@ -37,6 +37,7 @@ class Parser:
             self.tokens.append(Token(TokenValue.COTANGENT, 0))
         else:
             raise Exception("Parse failed: improper symbol at index " + str(index + 1) + " or " + str(index + 2))
+        self.index += 3
 
 
     def check_sine(self, index):
@@ -44,6 +45,7 @@ class Parser:
             self.tokens.append(Token(TokenValue.SINE, 0))
         else:
             raise Exception("Parse failed: improper symbol at index: " + str(index + 1) + " or " + str(index + 2))
+        self.index += 3
 
 
     def check_tg(self, index):
@@ -51,6 +53,7 @@ class Parser:
             self.tokens.append(Token(TokenValue.TANGENT, 0))
         else:
             raise Exception("Parse failed: improper symbol at index " + str(index + 1))
+        self.index += 2
 
 
     def check_log(self, index):
@@ -58,6 +61,7 @@ class Parser:
             self.tokens.append(Token(TokenValue.LOG, 0))
         else:
             raise Exception("Parse failed: improper symbol at index " + str(index + 1) + " or " + str(index + 2))
+        self.index += 3
 
 
     def check_brackets(self, index):
@@ -81,35 +85,31 @@ class Parser:
         while self.index < len(self.expression):
             current_char = self.expression[self.index]
             if current_char.isdigit():
-                self.index += self.add_number(self.index)
+                self.add_number(self.index)
                 continue
             if current_char is 'c':
                 try:
                     self.check_ctg_or_cos(self.index)
                 except Exception as exc:
                     raise exc
-                self.index += 3
                 continue
             if current_char is 's':
                 try:
                     self.check_sine(self.index)
                 except Exception as exc:
                     raise exc
-                self.index += 3
                 continue
             if current_char is 't':
                 try:
                     self.check_tg(self.index)
                 except Exception as exc:
                     raise exc
-                self.index += 2
                 continue
             if current_char is 'l':
                 try:
                     self.check_log(self.index)
                 except Exception as exc:
                     raise exc
-                self.index += 3
                 continue
             if current_char == '^':
                 self.tokens.append(Token(TokenValue.POWER, 0))
