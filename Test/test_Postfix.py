@@ -116,3 +116,26 @@ class TestPostfix(TestCase):
         assert result[2][0] == 56
         assert result[3][0] == 64
 
+
+    def test_postfix_calculate_4(self):
+        tokens = Parser("(4x + x3)2x").parse()
+        postfix = Postfix()
+        postfix.create_postfix(tokens)
+        result = postfix.calculate(0, 5)
+        assert result[0][0] == 0
+        assert result[1][0] == 14
+        assert result[2][0] == 56
+        assert result[3][0] == 126
+        assert result[4][0] == 224
+        assert result[5][0] == 350
+
+
+    def test_postfix_calculate_5(self):
+        tokens = Parser("(2 - x3)4").parse()
+        postfix = Postfix()
+        postfix.create_postfix(tokens)
+        result = postfix.calculate(10, 12)
+        assert result[0][0] == -112
+        assert result[1][0] == -124
+        assert result[2][0] == -136
+
