@@ -79,7 +79,7 @@ class Postfix:
                     if token.token_value == TokenValue.PLUS:
                         result.append(number_1 + number_2)
                     elif token.token_value == TokenValue.MINUS:
-                        result.append(number_1 - number_2)
+                        result.append(number_2 - number_1)
                     elif token.token_value == TokenValue.MULTIPLICATION:
                         result.append(number_1 * number_2)
                     elif token.token_value == TokenValue.DIVISION:
