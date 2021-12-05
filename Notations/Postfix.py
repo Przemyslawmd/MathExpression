@@ -33,7 +33,10 @@ class Postfix:
             return
 
         if token.token_value in (TokenValue.PLUS, TokenValue.MINUS):
-            self.process_stack_operator(token, [TokenValue.PLUS, TokenValue.MINUS, TokenValue.MULTIPLICATION, TokenValue.DIVISION])
+            self.process_stack_operator(token, [TokenValue.PLUS,
+                                                TokenValue.MINUS,
+                                                TokenValue.MULTIPLICATION,
+                                                TokenValue.DIVISION])
         else:
             self.process_stack_operator(token, [TokenValue.MULTIPLICATION, TokenValue.DIVISION])
 
@@ -55,9 +58,9 @@ class Postfix:
             current_stack = self.stack.pop()
 
 
-    def calculate(self, min, max):
+    def calculate(self, min_x, max_x):
         results = []
-        for x in range(min, max + 1):
+        for x in range(min_x, max_x + 1):
             results.append(deque())
 
         for token in self.postfix_list:
@@ -65,7 +68,7 @@ class Postfix:
                 for result in results:
                     result.append(token.token_number)
             elif token.token_value == TokenValue.X:
-                number = min
+                number = min_x
                 for result in results:
                     result.append(number)
                     number += 1
