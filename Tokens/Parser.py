@@ -19,6 +19,7 @@ class Parser:
             'x': TokenValue.X
         }
 
+
     def add_number(self, index):
         if index != 0 and self.tokens[len(self.tokens) - 1].token_value in [TokenValue.BRACKET_RIGHT, TokenValue.X]:
             self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
@@ -48,6 +49,7 @@ class Parser:
             raise Exception("Parse failed: improper symbol at index: " + str(index + 1) + " or " + str(index + 2))
         self.index += 3
 
+
     def check_tg(self, index):
         if self.expression[index + 1] == 'g':
             self.tokens.append(Token(TokenValue.TANGENT, 0))
@@ -55,12 +57,14 @@ class Parser:
             raise Exception("Parse failed: improper symbol at index " + str(index + 1))
         self.index += 2
 
+
     def check_log(self, index):
         if self.expression[index + 1] == 'o' and self.expression[index + 2] == 'g':
             self.tokens.append(Token(TokenValue.LOG, 0))
         else:
             raise Exception("Parse failed: improper symbol at index " + str(index + 1) + " or " + str(index + 2))
         self.index += 3
+
 
     def check_brackets(self, index):
         if self.expression[index] == ')':
@@ -78,11 +82,24 @@ class Parser:
                 self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
             self.tokens.append(Token(TokenValue.BRACKET_LEFT, 0))
 
+
     def check_x_neighbour(self, index):
         if index != 0 and self.tokens[len(self.tokens) - 1].token_value in [TokenValue.BRACKET_RIGHT, TokenValue.NONE]:
             self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
         self.tokens.append(Token(TokenValue.X, 0))
         self.index += 1
+
+
+    def check_minus(self, index):
+        if index == 0 or self.tokens[len(self.tokens) - 1].token_value in [TokenValue.BRACKET_LEFT,
+                                                                           TokenValue.MULTIPLICATION,
+                                                                           TokenValue.DIVISION,
+                                                                           TokenValue.PLUS]:
+            self.tokens.append(Token(TokenValue.NEGATIVE, 0))
+        else:
+            self.tokens.append(Token(TokenValue.MINUS, 0))
+        self.index += 1
+
 
     def parse(self):
         while self.index < len(self.expression):
@@ -133,8 +150,10 @@ class Parser:
                 token_symbol = self.other_symbols_map.get(current_char)
                 if token_symbol is None:
                     raise Exception("Parse failed: improper symbol at index " + str(self.index))
-                if token_symbol is TokenValue.X:
+                elif token_symbol is TokenValue.X:
                     self.check_x_neighbour(self.index)
+                elif token_symbol is TokenValue.MINUS:
+                    self.check_minus(self.index)
                 else:
                     self.tokens.append(Token(token_symbol, 0))
                     self.index += 1
