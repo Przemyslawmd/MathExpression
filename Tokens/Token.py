@@ -4,7 +4,7 @@ from enum import Enum
 
 class TokenValue(Enum):
 
-    # Token of type NONE
+    # Token of type NUMBER
     NONE = 0
 
     # Tokens of type OPERATION
@@ -25,10 +25,11 @@ class TokenValue(Enum):
     POWER = 11
     ROOT = 12
     X = 13
+    X_NEGATIVE = 14
 
     # Tokens of type BRACKET
-    BRACKET_LEFT = 14
-    BRACKET_RIGHT = 15
+    BRACKET_LEFT = 15
+    BRACKET_RIGHT = 16
 
 
 
