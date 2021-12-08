@@ -72,6 +72,11 @@ class Postfix:
                 for result in results:
                     result.append(number)
                     number += 1
+            elif token.token_value is TokenValue.X_NEGATIVE:
+                number = min_x * -1
+                for result in results:
+                    result.append(number)
+                    number -= 1
             elif token.token_type == TokenType.OPERATION:
                 for result in results:
                     number_1 = result.pop()
@@ -85,3 +90,5 @@ class Postfix:
                     elif token.token_value == TokenValue.DIVISION:
                         result.append(number_1 / number_2)
         return results
+
+

@@ -90,15 +90,38 @@ class Parser:
         self.index += 1
 
 
-    def check_minus(self, index):
+    def check_negative(self, index):
         if index == 0 or self.tokens[len(self.tokens) - 1].token_value in [TokenValue.BRACKET_LEFT,
                                                                            TokenValue.MULTIPLICATION,
                                                                            TokenValue.DIVISION,
                                                                            TokenValue.PLUS]:
             self.tokens.append(Token(TokenValue.NEGATIVE, 0))
+        elif index == len(self.expression) - 1 or self.expression[index + 1] in [')', '*', '/']:
+            raise Exception("Parse failed: improper usage of negative symbol")
         else:
             self.tokens.append(Token(TokenValue.MINUS, 0))
         self.index += 1
+
+
+    def remove_negative_tokens(self):
+        is_current_token_negative = False
+        for index, token in enumerate(self.tokens):
+            if token.token_value is TokenValue.NEGATIVE:
+                is_current_token_negative = True
+                continue
+            if is_current_token_negative:
+                if token.token_value is TokenValue.NONE:
+                    number = token.token_number
+                    self.tokens[index] = Token(TokenValue.NONE, number * -1)
+                elif token.token_value is TokenValue.X:
+                    self.tokens[index] = Token(TokenValue.X_NEGATIVE, 0)
+                else:
+                    raise Exception("Parse failed: improper usage of negative symbol")
+                is_current_token_negative = False
+
+        for i in range(len(self.tokens) - 1, -1, -1):
+            if self.tokens[i].token_value is TokenValue.NEGATIVE:
+                del self.tokens[i]
 
 
     def parse(self):
@@ -153,13 +176,21 @@ class Parser:
                 elif token_symbol is TokenValue.X:
                     self.check_x_neighbour(self.index)
                 elif token_symbol is TokenValue.MINUS:
-                    self.check_minus(self.index)
+                    try:
+                        self.check_negative(self.index)
+                    except Exception as e:
+                        raise Exception(e)
                 else:
                     self.tokens.append(Token(token_symbol, 0))
                     self.index += 1
 
         if self.bracket_validator != 0:
             raise Exception("Parse failed: improper brackets")
+
+        try:
+            self.remove_negative_tokens()
+        except Exception as e:
+            raise Exception(e)
 
         return self.tokens
 
