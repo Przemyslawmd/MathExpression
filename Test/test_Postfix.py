@@ -150,3 +150,26 @@ class TestPostfix(TestCase):
         assert result[2][0] == -40
 
 
+    def test_postfix_calculate_7(self):
+        tokens = Parser("(x +3)(-5)").parse()
+        postfix = Postfix()
+        postfix.create_postfix(tokens)
+        result = postfix.calculate(100, 103)
+        assert result[0][0] == -515
+        assert result[1][0] == -520
+        assert result[2][0] == -525
+        assert result[3][0] == -530
+
+
+    def test_postfix_calculate_8(self):
+        tokens = Parser("(-x -2)(-7)").parse()
+        postfix = Postfix()
+        postfix.create_postfix(tokens)
+        result = postfix.calculate(-2, 2)
+        assert result[0][0] == 0
+        assert result[1][0] == 7
+        assert result[2][0] == 14
+        assert result[3][0] == 21
+        assert result[4][0] == 28
+
+
