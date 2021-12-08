@@ -139,3 +139,14 @@ class TestPostfix(TestCase):
         assert result[1][0] == -124
         assert result[2][0] == -136
 
+
+    def test_postfix_calculate_6(self):
+        tokens = Parser("(-x - 3)4").parse()
+        postfix = Postfix()
+        postfix.create_postfix(tokens)
+        result = postfix.calculate(5, 7)
+        assert result[0][0] == -32
+        assert result[1][0] == -36
+        assert result[2][0] == -40
+
+
