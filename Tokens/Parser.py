@@ -1,6 +1,6 @@
 
 from Tokens.Token import Token, TokenValue
-
+from Tokens.TokenUtils import TokenUtils
 
 class Parser:
 
@@ -34,8 +34,12 @@ class Parser:
 
     def check_ctg_or_cos(self, index):
         if self.expression[index + 1] == 'o' and self.expression[index + 2] == 's':
+            if index != 0 and self.tokens[len(self.tokens) - 1].token_value in [TokenValue.BRACKET_RIGHT, TokenValue.X, TokenValue.NONE]:
+                self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
             self.tokens.append(Token(TokenValue.COSINE, 0))
         elif self.expression[index + 1] == 't' and self.expression[index + 2] == 'g':
+            if index != 0 and self.tokens[len(self.tokens) - 1].token_value in [TokenValue.BRACKET_RIGHT, TokenValue.X, TokenValue.NONE]:
+                self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
             self.tokens.append(Token(TokenValue.COTANGENT, 0))
         else:
             raise Exception("Parse failed: improper symbol at index " + str(index + 1) + " or " + str(index + 2))
@@ -44,6 +48,8 @@ class Parser:
 
     def check_sine(self, index):
         if self.expression[index + 1] == 'i' and self.expression[index + 2] == 'n':
+            if index != 0 and self.tokens[len(self.tokens) - 1].token_value in [TokenValue.BRACKET_RIGHT, TokenValue.X, TokenValue.NONE]:
+                self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
             self.tokens.append(Token(TokenValue.SINE, 0))
         else:
             raise Exception("Parse failed: improper symbol at index: " + str(index + 1) + " or " + str(index + 2))
@@ -52,6 +58,8 @@ class Parser:
 
     def check_tg(self, index):
         if self.expression[index + 1] == 'g':
+            if index != 0 and self.tokens[len(self.tokens) - 1].token_value in [TokenValue.BRACKET_RIGHT, TokenValue.X, TokenValue.NONE]:
+                self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
             self.tokens.append(Token(TokenValue.TANGENT, 0))
         else:
             raise Exception("Parse failed: improper symbol at index " + str(index + 1))

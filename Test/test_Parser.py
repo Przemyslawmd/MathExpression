@@ -1,7 +1,7 @@
 
 from unittest import TestCase
 from Tokens.Parser import Parser
-from Tokens.Token import TokenType, TokenValue
+from Tokens.Token import TokenValue
 
 
 class TestParser(TestCase):
@@ -12,7 +12,7 @@ class TestParser(TestCase):
         assert token.token_value is token_value
 
 
-    def test_proper_expression_1(self):
+    def test_expression_1(self):
         tokens = Parser("2x + 3").parse()
         assert len(tokens) == 5
         self.check_token(tokens[0], 2, TokenValue.NONE)
@@ -22,7 +22,7 @@ class TestParser(TestCase):
         self.check_token(tokens[4], 3, TokenValue.NONE)
 
 
-    def test_proper_expression_2(self):
+    def test_expression_2(self):
         tokens = Parser("3(4x + cos30)").parse()
         assert len(tokens) == 10
         self.check_token(tokens[0], 3,  TokenValue.NONE)
@@ -37,7 +37,46 @@ class TestParser(TestCase):
         self.check_token(tokens[9], 0,  TokenValue.BRACKET_RIGHT)
 
 
-    def test_proper_expression_3(self):
+    def test_expression_3(self):
+        tokens = Parser("3(4x + 12cos30)").parse()
+        assert len(tokens) == 12
+        self.check_token(tokens[0],  3,  TokenValue.NONE)
+        self.check_token(tokens[1],  0,  TokenValue.MULTIPLICATION)
+        self.check_token(tokens[2],  0,  TokenValue.BRACKET_LEFT)
+        self.check_token(tokens[3],  4,  TokenValue.NONE)
+        self.check_token(tokens[4],  0,  TokenValue.MULTIPLICATION)
+        self.check_token(tokens[5],  0,  TokenValue.X)
+        self.check_token(tokens[6],  0,  TokenValue.PLUS)
+        self.check_token(tokens[7],  12, TokenValue.NONE)
+        self.check_token(tokens[8],  0, TokenValue.MULTIPLICATION)
+        self.check_token(tokens[9],  0,  TokenValue.COSINE)
+        self.check_token(tokens[10], 30, TokenValue.NONE)
+        self.check_token(tokens[11], 0,  TokenValue.BRACKET_RIGHT)
+
+
+    def test_expression_4(self):
+        tokens = Parser("(4 + x)sinx").parse()
+        assert len(tokens) == 8
+        self.check_token(tokens[0],  0,  TokenValue.BRACKET_LEFT)
+        self.check_token(tokens[1],  4,  TokenValue.NONE)
+        self.check_token(tokens[2],  0,  TokenValue.PLUS)
+        self.check_token(tokens[3],  0,  TokenValue.X)
+        self.check_token(tokens[4],  0,  TokenValue.BRACKET_RIGHT)
+        self.check_token(tokens[5],  0,  TokenValue.MULTIPLICATION)
+        self.check_token(tokens[6],  0,  TokenValue.SINE)
+        self.check_token(tokens[7],  0, TokenValue.X)
+
+
+    def test_expression_5(self):
+        tokens = Parser("xtg12").parse()
+        assert len(tokens) == 4
+        self.check_token(tokens[0],  0,  TokenValue.X)
+        self.check_token(tokens[1],  0,  TokenValue.MULTIPLICATION)
+        self.check_token(tokens[2],  0,  TokenValue.TANGENT)
+        self.check_token(tokens[3], 12,  TokenValue.NONE)
+
+
+    def test_expression_6(self):
         tokens = Parser("3x^3 + log10").parse()
         assert len(tokens) == 8
         self.check_token(tokens[0], 3,  TokenValue.NONE)
@@ -50,7 +89,7 @@ class TestParser(TestCase):
         self.check_token(tokens[7], 10, TokenValue.NONE)
 
 
-    def test_proper_expression_4(self):
+    def test_expression_7(self):
         tokens = Parser("5/(2x + 6x^2)").parse()
         assert len(tokens) == 13
         self.check_token(tokens[0],  5, TokenValue.NONE)
@@ -68,7 +107,7 @@ class TestParser(TestCase):
         self.check_token(tokens[12], 0, TokenValue.BRACKET_RIGHT)
 
 
-    def test_proper_expression_5(self):
+    def test_expression_8(self):
         tokens = Parser("52/(log350x + 55^2 + cos(20x+6))").parse()
         assert len(tokens) == 21
         self.check_token(tokens[0],  52,  TokenValue.NONE)
@@ -94,7 +133,7 @@ class TestParser(TestCase):
         self.check_token(tokens[20], 0,   TokenValue.BRACKET_RIGHT)
 
 
-    def test_proper_expression_6(self):
+    def test_expression_9(self):
         tokens = Parser("x3 + 4x(2x + 1)").parse()
         assert len(tokens) == 15
         self.check_token(tokens[0],  0, TokenValue.X)
@@ -114,7 +153,7 @@ class TestParser(TestCase):
         self.check_token(tokens[14], 0, TokenValue.BRACKET_RIGHT)
 
 
-    def test_proper_expression_7(self):
+    def test_expression_10(self):
         tokens = Parser("(2x + x)(12 - x5)4x").parse()
         assert len(tokens) == 19
         self.check_token(tokens[0],  0,  TokenValue.BRACKET_LEFT)
