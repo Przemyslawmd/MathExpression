@@ -1,4 +1,5 @@
 
+from Tokens.TokenUtils import TokenUtils
 from Tokens.Token import TokenType, TokenValue
 from collections import deque
 
@@ -12,7 +13,8 @@ class Postfix:
 
     def create_postfix(self, tokens):
         for token in tokens:
-            if token.token_type is TokenType.OPERATION:
+            if TokenUtils.is_operation_token(token):
+            #if token.token_type is TokenType.OPERATION:
                 self.process_operator(token)
             elif token.token_type is TokenType.BRACKET:
                 if token.token_value is TokenValue.BRACKET_LEFT:
