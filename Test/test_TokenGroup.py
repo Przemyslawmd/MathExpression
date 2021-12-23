@@ -22,7 +22,7 @@ class TestTokenGroup(TestCase):
         assert len(tokens_grouped[1]) is 1
         assert len(tokens_grouped[2]) is 2
         self.check_token(tokens_grouped[0][1], TokenType.OTHER, 0, TokenValue.X)
-        self.check_token(tokens_grouped[0][3], TokenType.NUMBER, 3, TokenValue.NONE)
+        self.check_token(tokens_grouped[0][3], TokenType.NUMBER, 3, TokenValue.NUMBER)
 
 
     def test_group_tokens_2(self):
@@ -40,9 +40,9 @@ class TestTokenGroup(TestCase):
         assert len(tokens_grouped[8]) is 1
         assert len(tokens_grouped[9]) is 1
         assert len(tokens_grouped[10]) is 1
-        self.check_token(tokens_grouped[1][0], TokenType.NUMBER, 6, TokenValue.NONE)
+        self.check_token(tokens_grouped[1][0], TokenType.NUMBER, 6, TokenValue.NUMBER)
         self.check_token(tokens_grouped[1][1], TokenType.OTHER,  0, TokenValue.X)
-        self.check_token(tokens_grouped[9][0], TokenType.NUMBER, 4, TokenValue.NONE)
+        self.check_token(tokens_grouped[9][0], TokenType.NUMBER, 4, TokenValue.NUMBER)
 
 
     def test_group_tokens_3(self):
@@ -62,7 +62,7 @@ class TestTokenGroup(TestCase):
         assert len(tokens_grouped[10]) is 1
         assert len(tokens_grouped[11]) is 3
         assert len(tokens_grouped[12]) is 1
-        self.check_token(tokens_grouped[0][0],  TokenType.NUMBER,    2, TokenValue.NONE)
+        self.check_token(tokens_grouped[0][0], TokenType.NUMBER, 2, TokenValue.NUMBER)
         self.check_token(tokens_grouped[3][1],  TokenType.OTHER,     0, TokenValue.X)
         self.check_token(tokens_grouped[10][0], TokenType.OPERATION, 0, TokenValue.PLUS)
         self.check_token(tokens_grouped[11][1], TokenType.OTHER,     0, TokenValue.POWER)
@@ -79,10 +79,10 @@ class TestTokenGroup(TestCase):
         assert len(tokens_grouped[4]) is 1
         assert len(tokens_grouped[5]) is 2
         assert len(tokens_grouped[6]) is 1
-        self.check_token(tokens_grouped[0][0], TokenType.NUMBER, 10, TokenValue.NONE)
+        self.check_token(tokens_grouped[0][0], TokenType.NUMBER, 10, TokenValue.NUMBER)
         self.check_token(tokens_grouped[3][0], TokenType.OTHER,   0, TokenValue.LOG)
         self.check_token(tokens_grouped[3][3], TokenType.OTHER,   0, TokenValue.POWER)
-        self.check_token(tokens_grouped[3][4], TokenType.NUMBER,  4, TokenValue.NONE)
+        self.check_token(tokens_grouped[3][4], TokenType.NUMBER, 4, TokenValue.NUMBER)
         self.check_token(tokens_grouped[6][0], TokenType.BRACKET, 0, TokenValue.BRACKET_RIGHT)
 
 

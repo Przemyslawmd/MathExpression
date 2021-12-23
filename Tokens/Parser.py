@@ -26,7 +26,7 @@ class Parser:
         while (index + shift) < len(self.expression) and self.expression[index + shift].isdigit():
             number = number * 10 + int(self.expression[index + shift])
             shift += 1
-        self.tokens.append(Token(TokenValue.NONE, number))
+        self.tokens.append(Token(TokenValue.NUMBER, number))
         self.index += shift
 
 
@@ -97,8 +97,8 @@ class Parser:
     def add_multiplication(self):
         indices = []
         for index, token in enumerate(self.tokens):
-            if token.token_value in [TokenValue.BRACKET_RIGHT, TokenValue.NONE, TokenValue.X] and index <= (len(self.tokens) - 2) and \
-                    (self.tokens[index + 1].token_value in [TokenValue.X, TokenValue.NONE, TokenValue.BRACKET_LEFT] or self.tokens[index + 1].token_value in TokenUtils.trigonometry):
+            if token.token_value in [TokenValue.BRACKET_RIGHT, TokenValue.NUMBER, TokenValue.X] and index <= (len(self.tokens) - 2) and \
+                    (self.tokens[index + 1].token_value in [TokenValue.X, TokenValue.NUMBER, TokenValue.BRACKET_LEFT] or self.tokens[index + 1].token_value in TokenUtils.trigonometry):
                     indices.append(index + 1)
 
         index_shift = 0
@@ -114,9 +114,9 @@ class Parser:
                 is_current_token_negative = True
                 continue
             if is_current_token_negative:
-                if token.token_value is TokenValue.NONE:
+                if token.token_value is TokenValue.NUMBER:
                     number = token.token_number
-                    self.tokens[index] = Token(TokenValue.NONE, number * -1)
+                    self.tokens[index] = Token(TokenValue.NUMBER, number * -1)
                 elif token.token_value is TokenValue.X:
                     self.tokens[index] = Token(TokenValue.X_NEGATIVE, 0)
                 else:

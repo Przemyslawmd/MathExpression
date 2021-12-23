@@ -70,7 +70,7 @@ class Postfix:
             results.append(deque())
 
         for token in self.postfix_list:
-            if token.token_value is TokenValue.NONE:
+            if token.token_value is TokenValue.NUMBER:
                 for result in results:
                     result.append(token.token_number)
             elif token.token_value == TokenValue.X:

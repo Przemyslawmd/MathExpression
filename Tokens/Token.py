@@ -5,7 +5,7 @@ from enum import Enum
 class TokenValue(Enum):
 
     # Token of type NUMBER
-    NONE = 0
+    NUMBER = 0
 
     # Tokens of type OPERATION
     PLUS = 1
@@ -35,8 +35,8 @@ class TokenValue(Enum):
 class Token:
     def __init__(self, token_value, token_number):
 
-        if token_value != TokenValue.NONE and token_number != 0:
-            raise Exception("For token value other than None token number should be zero")
+        if token_value != TokenValue.NUMBER and token_number != 0:
+            raise Exception("For token value other than Number token number should be zero")
 
         self.token_value = token_value
         self.token_number = token_number
