@@ -35,23 +35,16 @@ class Postfix:
             return
 
         if token.token_value in (TokenValue.PLUS, TokenValue.MINUS):
-            self.process_stack_operator(token, [TokenValue.PLUS,
-                                                TokenValue.MINUS,
-                                                TokenValue.MULTIPLICATION,
-                                                TokenValue.DIVISION,
-                                                TokenValue.SINE,
-                                                TokenValue.COSINE,
-                                                TokenValue.TANGENT,
-                                                TokenValue.COTANGENT])
+            tokens_to_remove_from_stack = []
+            TokenUtils.append_operation(tokens_to_remove_from_stack)
+            TokenUtils.append_trigonometry(tokens_to_remove_from_stack)
+            self.process_stack_operator(token, tokens_to_remove_from_stack)
         elif token.token_value in (TokenValue.MULTIPLICATION, TokenValue.DIVISION):
-            self.process_stack_operator(token, [TokenValue.MULTIPLICATION,
-                                                TokenValue.DIVISION,
-                                                TokenValue.SINE,
-                                                TokenValue.COSINE,
-                                                TokenValue.TANGENT,
-                                                TokenValue.COTANGENT])
+            tokens_to_remove_from_stack = [TokenValue.MULTIPLICATION, TokenValue.DIVISION]
+            TokenUtils.append_trigonometry(tokens_to_remove_from_stack)
+            self.process_stack_operator(token, tokens_to_remove_from_stack)
         else:
-            self.process_stack_operator(token, [TokenValue.SINE, TokenValue.COSINE, TokenValue.TANGENT, TokenValue.COTANGENT])
+            self.process_stack_operator(token, TokenUtils.trigonometry)
 
 
     def process_stack_operator(self, token, token_values):
