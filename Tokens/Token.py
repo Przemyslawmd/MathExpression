@@ -32,15 +32,6 @@ class TokenValue(Enum):
     BRACKET_RIGHT = 16
 
 
-
-class TokenType(Enum):
-    NUMBER = 0
-    BRACKET = 1
-    OPERATION = 2
-    TRIGONOMETRY = 3
-    OTHER = 4
-
-
 class Token:
     def __init__(self, token_value, token_number):
 
@@ -49,18 +40,5 @@ class Token:
 
         self.token_value = token_value
         self.token_number = token_number
-        self.token_type = None
-        self.set_token_type()
 
-    def set_token_type(self):
-        if self.token_value is TokenValue.NONE:
-            self.token_type = TokenType.NUMBER
-        elif self.token_value in (TokenValue.SINE, TokenValue.COSINE, TokenValue.TANGENT, TokenValue.COTANGENT):
-            self.token_type = TokenType.TRIGONOMETRY
-        elif self.token_value in (TokenValue.PLUS, TokenValue.MINUS, TokenValue.MULTIPLICATION, TokenValue.DIVISION):
-            self.token_type = TokenType.OPERATION
-        elif self.token_value in (TokenValue.BRACKET_LEFT, TokenValue.BRACKET_RIGHT):
-            self.token_type = TokenType.BRACKET
-        else:
-            self.token_type = TokenType.OTHER
 

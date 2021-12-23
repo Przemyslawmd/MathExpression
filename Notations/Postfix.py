@@ -1,7 +1,7 @@
-import math
 
+import math
 from Tokens.TokenUtils import TokenUtils
-from Tokens.Token import TokenType, TokenValue
+from Tokens.Token import TokenValue
 from collections import deque
 
 
@@ -16,7 +16,7 @@ class Postfix:
         for token in tokens:
             if token.token_value in TokenUtils.operation or token.token_value in TokenUtils.trigonometry:
                 self.process_operator(token)
-            elif token.token_type is TokenType.BRACKET:
+            elif token.token_value in TokenUtils.bracket:
                 if token.token_value is TokenValue.BRACKET_LEFT:
                     self.stack.append(token)
                 else:
@@ -70,7 +70,7 @@ class Postfix:
             results.append(deque())
 
         for token in self.postfix_list:
-            if token.token_type == TokenType.NUMBER:
+            if token.token_value is TokenValue.NONE:
                 for result in results:
                     result.append(token.token_number)
             elif token.token_value == TokenValue.X:
@@ -83,7 +83,7 @@ class Postfix:
                 for result in results:
                     result.append(number)
                     number -= 1
-            elif token.token_type == TokenType.OPERATION:
+            elif token.token_value in TokenUtils.operation:
                 for result in results:
                     number_1 = result.pop()
                     number_2 = result.pop()
