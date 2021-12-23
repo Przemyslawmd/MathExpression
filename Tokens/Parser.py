@@ -98,8 +98,11 @@ class Parser:
     def add_multiplication(self):
         indices = []
         for index, token in enumerate(self.tokens):
-            if token.value in [TokenValue.BRACKET_RIGHT, TokenValue.NUMBER, TokenValue.X] and index <= (len(self.tokens) - 2) and \
-                    (self.tokens[index + 1].value in [TokenValue.X, TokenValue.NUMBER, TokenValue.BRACKET_LEFT] or self.tokens[index + 1].value in TokenUtils.trigonometry):
+            if token.value in [TokenValue.BRACKET_RIGHT, TokenValue.NUMBER, TokenValue.X] and\
+                    index <= (len(self.tokens) - 2):
+                next_token = self.tokens[index + 1]
+                if next_token.value in [TokenValue.X, TokenValue.NUMBER, TokenValue.BRACKET_LEFT] or\
+                        next_token.value in TokenUtils.trigonometry:
                     indices.append(index + 1)
 
         index_shift = 0
