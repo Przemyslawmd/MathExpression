@@ -98,7 +98,7 @@ class Parser:
         indices = []
         for index, token in enumerate(self.tokens):
             if token.token_value in [TokenValue.BRACKET_RIGHT, TokenValue.NONE, TokenValue.X] and index <= (len(self.tokens) - 2) and \
-                    (self.tokens[index + 1].token_value in [TokenValue.X, TokenValue.NONE, TokenValue.BRACKET_LEFT] or self.tokens[index + 1].token_value in TokenUtils.trigonometry_tokens):
+                    (self.tokens[index + 1].token_value in [TokenValue.X, TokenValue.NONE, TokenValue.BRACKET_LEFT] or self.tokens[index + 1].token_value in TokenUtils.trigonometry):
                     indices.append(index + 1)
 
         index_shift = 0

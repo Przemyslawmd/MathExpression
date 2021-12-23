@@ -1,3 +1,4 @@
+import math
 
 from Tokens.TokenUtils import TokenUtils
 from Tokens.Token import TokenType, TokenValue
@@ -13,8 +14,7 @@ class Postfix:
 
     def create_postfix(self, tokens):
         for token in tokens:
-            if TokenUtils.is_operation_token(token):
-            #if token.token_type is TokenType.OPERATION:
+            if token.token_value in TokenUtils.operation or token.token_value in TokenUtils.trigonometry:
                 self.process_operator(token)
             elif token.token_type is TokenType.BRACKET:
                 if token.token_value is TokenValue.BRACKET_LEFT:
@@ -38,9 +38,20 @@ class Postfix:
             self.process_stack_operator(token, [TokenValue.PLUS,
                                                 TokenValue.MINUS,
                                                 TokenValue.MULTIPLICATION,
-                                                TokenValue.DIVISION])
+                                                TokenValue.DIVISION,
+                                                TokenValue.SINE,
+                                                TokenValue.COSINE,
+                                                TokenValue.TANGENT,
+                                                TokenValue.COTANGENT])
+        elif token.token_value in (TokenValue.MULTIPLICATION, TokenValue.DIVISION):
+            self.process_stack_operator(token, [TokenValue.MULTIPLICATION,
+                                                TokenValue.DIVISION,
+                                                TokenValue.SINE,
+                                                TokenValue.COSINE,
+                                                TokenValue.TANGENT,
+                                                TokenValue.COTANGENT])
         else:
-            self.process_stack_operator(token, [TokenValue.MULTIPLICATION, TokenValue.DIVISION])
+            self.process_stack_operator(token, [TokenValue.SINE, TokenValue.COSINE, TokenValue.TANGENT, TokenValue.COTANGENT])
 
 
     def process_stack_operator(self, token, token_values):
@@ -91,6 +102,22 @@ class Postfix:
                         result.append(number_1 * number_2)
                     elif token.token_value == TokenValue.DIVISION:
                         result.append(number_1 / number_2)
+            elif token.token_value in TokenUtils.trigonometry:
+                for result in results:
+                    number = result.pop()
+                    radian = math.radians(number)
+                    if token.token_value == TokenValue.SINE:
+                        result.append(math.sin(radian))
+                    elif token.token_value == TokenValue.COSINE:
+                        result.append(math.cos(radian))
+                    elif token.token_value == TokenValue.TANGENT:
+                        result.append(math.tan(radian))
+                    elif token.token_value == TokenValue.COTANGENT:
+                        result.append(math.cos(radian) / math.sin(radian))
+
+        for result in results:
+            result[0] = round(result[0], 2)
+
         return results
 
 
