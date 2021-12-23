@@ -14,7 +14,8 @@ class Postfix:
 
     def create_postfix(self, tokens):
         for token in tokens:
-            if token.value in TokenUtils.operation or token.value in TokenUtils.trigonometry:
+            if token.value in TokenUtils.operation or token.value in TokenUtils.trigonometry or\
+                    token.value is TokenValue.LOG:
                 self.process_operator(token)
             elif token.value in TokenUtils.bracket:
                 if token.value is TokenValue.BRACKET_LEFT:
@@ -35,16 +36,18 @@ class Postfix:
             return
 
         if token.value in (TokenValue.PLUS, TokenValue.MINUS):
-            tokens_to_remove_from_stack = []
+            tokens_to_remove_from_stack = [TokenValue.LOG]
             TokenUtils.append_operation(tokens_to_remove_from_stack)
             TokenUtils.append_trigonometry(tokens_to_remove_from_stack)
             self.process_stack_operator(token, tokens_to_remove_from_stack)
         elif token.value in (TokenValue.MULTIPLICATION, TokenValue.DIVISION):
-            tokens_to_remove_from_stack = [TokenValue.MULTIPLICATION, TokenValue.DIVISION]
+            tokens_to_remove_from_stack = [TokenValue.MULTIPLICATION, TokenValue.DIVISION, TokenValue.LOG]
             TokenUtils.append_trigonometry(tokens_to_remove_from_stack)
             self.process_stack_operator(token, tokens_to_remove_from_stack)
         else:
-            self.process_stack_operator(token, TokenUtils.trigonometry)
+            tokens_to_remove_from_stack = [TokenValue.LOG]
+            TokenUtils.append_trigonometry(tokens_to_remove_from_stack)
+            self.process_stack_operator(token, tokens_to_remove_from_stack)
 
 
     def process_stack_operator(self, token, token_values):
