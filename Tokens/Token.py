@@ -39,6 +39,6 @@ class Token:
             raise Exception("For token value other than Number token number should be zero")
 
         self.value = value
-        self.token_number = token_number
+        self.number = token_number
 
 

@@ -116,7 +116,7 @@ class Parser:
                 continue
             if is_current_token_negative:
                 if token.value is TokenValue.NUMBER:
-                    number = token.token_number
+                    number = token.number
                     self.tokens[index] = Token(TokenValue.NUMBER, number * -1)
                 elif token.value is TokenValue.X:
                     self.tokens[index] = Token(TokenValue.X_NEGATIVE)

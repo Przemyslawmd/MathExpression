@@ -10,7 +10,7 @@ class TestTokenGroup(TestCase):
     @staticmethod
     def check_token(token, token_type, token_number, token_value):
         assert token.token_type is token_type
-        assert token.token_number == token_number
+        assert token.number == token_number
         assert token.value is token_value
 
 
