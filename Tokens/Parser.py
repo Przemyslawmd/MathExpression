@@ -2,6 +2,7 @@
 from Tokens.Token import Token, TokenValue
 from Tokens.TokenUtils import TokenUtils
 
+
 class Parser:
 
     def __init__(self, expression):
@@ -32,9 +33,9 @@ class Parser:
 
     def check_ctg_or_cos(self, index):
         if self.expression[index + 1] == 'o' and self.expression[index + 2] == 's':
-            self.tokens.append(Token(TokenValue.COSINE, 0))
+            self.tokens.append(Token(TokenValue.COSINE))
         elif self.expression[index + 1] == 't' and self.expression[index + 2] == 'g':
-            self.tokens.append(Token(TokenValue.COTANGENT, 0))
+            self.tokens.append(Token(TokenValue.COTANGENT))
         else:
             raise Exception("Parse failed: improper symbol at index " + str(index + 1) + " or " + str(index + 2))
         self.index += 3
@@ -42,7 +43,7 @@ class Parser:
 
     def check_sine(self, index):
         if self.expression[index + 1] == 'i' and self.expression[index + 2] == 'n':
-            self.tokens.append(Token(TokenValue.SINE, 0))
+            self.tokens.append(Token(TokenValue.SINE))
         else:
             raise Exception("Parse failed: improper symbol at index: " + str(index + 1) + " or " + str(index + 2))
         self.index += 3
@@ -50,7 +51,7 @@ class Parser:
 
     def check_tg(self, index):
         if self.expression[index + 1] == 'g':
-            self.tokens.append(Token(TokenValue.TANGENT, 0))
+            self.tokens.append(Token(TokenValue.TANGENT))
         else:
             raise Exception("Parse failed: improper symbol at index " + str(index + 1))
         self.index += 2
@@ -58,7 +59,7 @@ class Parser:
 
     def check_log(self, index):
         if self.expression[index + 1] == 'o' and self.expression[index + 2] == 'g':
-            self.tokens.append(Token(TokenValue.LOG, 0))
+            self.tokens.append(Token(TokenValue.LOG))
         else:
             raise Exception("Parse failed: improper symbol at index " + str(index + 1) + " or " + str(index + 2))
         self.index += 3
@@ -70,15 +71,15 @@ class Parser:
             if self.bracket_validator < 0:
                 raise Exception("Parse failed: improper bracket at index " + str(index))
             if len(self.expression) > index + 1 and self.expression[index + 1] not in [')', '+', '-', '*', '/']:
-                self.tokens.append(Token(TokenValue.BRACKET_RIGHT, 0))
-                self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
+                self.tokens.append(Token(TokenValue.BRACKET_RIGHT))
+                self.tokens.append(Token(TokenValue.MULTIPLICATION))
             else:
-                self.tokens.append(Token(TokenValue.BRACKET_RIGHT, 0))
+                self.tokens.append(Token(TokenValue.BRACKET_RIGHT))
         elif self.expression[index] == '(':
             self.bracket_validator += 1
             if index > 0 and self.expression[index - 1] not in ['(', ')', '+', '-', '*', '/', 's', 'n','g']:
-                self.tokens.append(Token(TokenValue.MULTIPLICATION, 0))
-            self.tokens.append(Token(TokenValue.BRACKET_LEFT, 0))
+                self.tokens.append(Token(TokenValue.MULTIPLICATION))
+            self.tokens.append(Token(TokenValue.BRACKET_LEFT))
 
 
     def check_negative(self, index):
@@ -86,11 +87,11 @@ class Parser:
                                                                            TokenValue.MULTIPLICATION,
                                                                            TokenValue.DIVISION,
                                                                            TokenValue.PLUS]:
-            self.tokens.append(Token(TokenValue.NEGATIVE, 0))
+            self.tokens.append(Token(TokenValue.NEGATIVE))
         elif index == len(self.expression) - 1 or self.expression[index + 1] in [')', '*', '/']:
             raise Exception("Parse failed: improper usage of negative symbol")
         else:
-            self.tokens.append(Token(TokenValue.MINUS, 0))
+            self.tokens.append(Token(TokenValue.MINUS))
         self.index += 1
 
 
@@ -103,7 +104,7 @@ class Parser:
 
         index_shift = 0
         for index in indices:
-            self.tokens.insert(index + index_shift, Token(TokenValue.MULTIPLICATION, 0))
+            self.tokens.insert(index + index_shift, Token(TokenValue.MULTIPLICATION))
             index_shift += 1
 
 
@@ -118,7 +119,7 @@ class Parser:
                     number = token.token_number
                     self.tokens[index] = Token(TokenValue.NUMBER, number * -1)
                 elif token.token_value is TokenValue.X:
-                    self.tokens[index] = Token(TokenValue.X_NEGATIVE, 0)
+                    self.tokens[index] = Token(TokenValue.X_NEGATIVE)
                 else:
                     raise Exception("Parse failed: improper usage of negative symbol")
                 is_current_token_negative = False
@@ -159,11 +160,11 @@ class Parser:
                     raise exc
                 continue
             if current_char == '^':
-                self.tokens.append(Token(TokenValue.POWER, 0))
+                self.tokens.append(Token(TokenValue.POWER))
                 self.index += 1
                 continue
             if current_char == "\u221A":
-                self.tokens.append(Token(TokenValue.ROOT, 0))
+                self.tokens.append(Token(TokenValue.ROOT))
                 self.index += 1
                 continue
             if current_char == '(' or current_char == ')':
@@ -178,7 +179,7 @@ class Parser:
                 if token_symbol is None:
                     raise Exception("Parse failed: improper symbol at index " + str(self.index))
                 elif token_symbol is TokenValue.X:
-                    self.tokens.append(Token(TokenValue.X, 0))
+                    self.tokens.append(Token(TokenValue.X))
                     self.index += 1
                 elif token_symbol is TokenValue.MINUS:
                     try:
@@ -186,7 +187,7 @@ class Parser:
                     except Exception as e:
                         raise Exception(e)
                 else:
-                    self.tokens.append(Token(token_symbol, 0))
+                    self.tokens.append(Token(token_symbol))
                     self.index += 1
 
         if self.bracket_validator != 0:
