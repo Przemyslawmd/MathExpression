@@ -83,10 +83,10 @@ class Parser:
 
 
     def check_negative(self, index):
-        if index == 0 or self.tokens[len(self.tokens) - 1].token_value in [TokenValue.BRACKET_LEFT,
-                                                                           TokenValue.MULTIPLICATION,
-                                                                           TokenValue.DIVISION,
-                                                                           TokenValue.PLUS]:
+        if index == 0 or self.tokens[len(self.tokens) - 1].value in [TokenValue.BRACKET_LEFT,
+                                                                     TokenValue.MULTIPLICATION,
+                                                                     TokenValue.DIVISION,
+                                                                     TokenValue.PLUS]:
             self.tokens.append(Token(TokenValue.NEGATIVE))
         elif index == len(self.expression) - 1 or self.expression[index + 1] in [')', '*', '/']:
             raise Exception("Parse failed: improper usage of negative symbol")
@@ -98,8 +98,8 @@ class Parser:
     def add_multiplication(self):
         indices = []
         for index, token in enumerate(self.tokens):
-            if token.token_value in [TokenValue.BRACKET_RIGHT, TokenValue.NUMBER, TokenValue.X] and index <= (len(self.tokens) - 2) and \
-                    (self.tokens[index + 1].token_value in [TokenValue.X, TokenValue.NUMBER, TokenValue.BRACKET_LEFT] or self.tokens[index + 1].token_value in TokenUtils.trigonometry):
+            if token.value in [TokenValue.BRACKET_RIGHT, TokenValue.NUMBER, TokenValue.X] and index <= (len(self.tokens) - 2) and \
+                    (self.tokens[index + 1].value in [TokenValue.X, TokenValue.NUMBER, TokenValue.BRACKET_LEFT] or self.tokens[index + 1].value in TokenUtils.trigonometry):
                     indices.append(index + 1)
 
         index_shift = 0
@@ -111,21 +111,21 @@ class Parser:
     def remove_negative_tokens(self):
         is_current_token_negative = False
         for index, token in enumerate(self.tokens):
-            if token.token_value is TokenValue.NEGATIVE:
+            if token.value is TokenValue.NEGATIVE:
                 is_current_token_negative = True
                 continue
             if is_current_token_negative:
-                if token.token_value is TokenValue.NUMBER:
+                if token.value is TokenValue.NUMBER:
                     number = token.token_number
                     self.tokens[index] = Token(TokenValue.NUMBER, number * -1)
-                elif token.token_value is TokenValue.X:
+                elif token.value is TokenValue.X:
                     self.tokens[index] = Token(TokenValue.X_NEGATIVE)
                 else:
                     raise Exception("Parse failed: improper usage of negative symbol")
                 is_current_token_negative = False
 
         for i in range(len(self.tokens) - 1, -1, -1):
-            if self.tokens[i].token_value is TokenValue.NEGATIVE:
+            if self.tokens[i].value is TokenValue.NEGATIVE:
                 del self.tokens[i]
 
 

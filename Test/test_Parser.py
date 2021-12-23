@@ -9,7 +9,7 @@ class TestParser(TestCase):
     @staticmethod
     def check_token(token, token_number, token_value):
         assert token.token_number == token_number
-        assert token.token_value is token_value
+        assert token.value is token_value
 
 
     def test_expression_1(self):

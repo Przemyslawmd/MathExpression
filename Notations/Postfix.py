@@ -14,10 +14,10 @@ class Postfix:
 
     def create_postfix(self, tokens):
         for token in tokens:
-            if token.token_value in TokenUtils.operation or token.token_value in TokenUtils.trigonometry:
+            if token.value in TokenUtils.operation or token.value in TokenUtils.trigonometry:
                 self.process_operator(token)
-            elif token.token_value in TokenUtils.bracket:
-                if token.token_value is TokenValue.BRACKET_LEFT:
+            elif token.value in TokenUtils.bracket:
+                if token.value is TokenValue.BRACKET_LEFT:
                     self.stack.append(token)
                 else:
                     self.process_bracket_right()
@@ -34,12 +34,12 @@ class Postfix:
             self.stack.append(token)
             return
 
-        if token.token_value in (TokenValue.PLUS, TokenValue.MINUS):
+        if token.value in (TokenValue.PLUS, TokenValue.MINUS):
             tokens_to_remove_from_stack = []
             TokenUtils.append_operation(tokens_to_remove_from_stack)
             TokenUtils.append_trigonometry(tokens_to_remove_from_stack)
             self.process_stack_operator(token, tokens_to_remove_from_stack)
-        elif token.token_value in (TokenValue.MULTIPLICATION, TokenValue.DIVISION):
+        elif token.value in (TokenValue.MULTIPLICATION, TokenValue.DIVISION):
             tokens_to_remove_from_stack = [TokenValue.MULTIPLICATION, TokenValue.DIVISION]
             TokenUtils.append_trigonometry(tokens_to_remove_from_stack)
             self.process_stack_operator(token, tokens_to_remove_from_stack)
@@ -49,7 +49,7 @@ class Postfix:
 
     def process_stack_operator(self, token, token_values):
         current_stack = None if len(self.stack) == 0 else self.stack.pop()
-        while current_stack is not None and current_stack.token_value in token_values:
+        while current_stack is not None and current_stack.value in token_values:
             self.postfix_list.append(current_stack)
             current_stack = None if len(self.stack) == 0 else self.stack.pop()
         if current_stack is not None:
@@ -59,7 +59,7 @@ class Postfix:
 
     def process_bracket_right(self):
         current_stack = self.stack.pop()
-        while current_stack.token_value is not TokenValue.BRACKET_LEFT:
+        while current_stack.value is not TokenValue.BRACKET_LEFT:
             self.postfix_list.append(current_stack)
             current_stack = self.stack.pop()
 
@@ -70,42 +70,42 @@ class Postfix:
             results.append(deque())
 
         for token in self.postfix_list:
-            if token.token_value is TokenValue.NUMBER:
+            if token.value is TokenValue.NUMBER:
                 for result in results:
                     result.append(token.token_number)
-            elif token.token_value == TokenValue.X:
+            elif token.value == TokenValue.X:
                 number = min_x
                 for result in results:
                     result.append(number)
                     number += 1
-            elif token.token_value is TokenValue.X_NEGATIVE:
+            elif token.value is TokenValue.X_NEGATIVE:
                 number = min_x * -1
                 for result in results:
                     result.append(number)
                     number -= 1
-            elif token.token_value in TokenUtils.operation:
+            elif token.value in TokenUtils.operation:
                 for result in results:
                     number_1 = result.pop()
                     number_2 = result.pop()
-                    if token.token_value == TokenValue.PLUS:
+                    if token.value == TokenValue.PLUS:
                         result.append(number_1 + number_2)
-                    elif token.token_value == TokenValue.MINUS:
+                    elif token.value == TokenValue.MINUS:
                         result.append(number_2 - number_1)
-                    elif token.token_value == TokenValue.MULTIPLICATION:
+                    elif token.value == TokenValue.MULTIPLICATION:
                         result.append(number_1 * number_2)
-                    elif token.token_value == TokenValue.DIVISION:
+                    elif token.value == TokenValue.DIVISION:
                         result.append(number_1 / number_2)
-            elif token.token_value in TokenUtils.trigonometry:
+            elif token.value in TokenUtils.trigonometry:
                 for result in results:
                     number = result.pop()
                     radian = math.radians(number)
-                    if token.token_value == TokenValue.SINE:
+                    if token.value == TokenValue.SINE:
                         result.append(math.sin(radian))
-                    elif token.token_value == TokenValue.COSINE:
+                    elif token.value == TokenValue.COSINE:
                         result.append(math.cos(radian))
-                    elif token.token_value == TokenValue.TANGENT:
+                    elif token.value == TokenValue.TANGENT:
                         result.append(math.tan(radian))
-                    elif token.token_value == TokenValue.COTANGENT:
+                    elif token.value == TokenValue.COTANGENT:
                         result.append(math.cos(radian) / math.sin(radian))
 
         for result in results:
