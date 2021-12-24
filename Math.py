@@ -1,6 +1,8 @@
 
 import sys
 
+from Controller import Controller
+
 from PySide2.QtWidgets import (QApplication, QWidget)
 from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout, QGridLayout)
 from PySide2.QtWidgets import (QPushButton, QLineEdit, QTextEdit)
@@ -14,6 +16,7 @@ class MathExpression(QWidget):
     def __init__(self):
         QWidget.__init__(self)
 
+        self.controller = Controller()
         self.plot = pg.PlotWidget()
         self.line_insert = QLineEdit()
         self.area_messages = QTextEdit()
@@ -22,7 +25,14 @@ class MathExpression(QWidget):
 
     @Slot()
     def draw(self):
-        self.area_messages.append("TEST")
+        try:
+            values = self.controller.calculate_values(self.line_insert.text())
+        except Exception as e:
+            self.area_messages.append(str(e))
+            return
+
+        for value in values:
+            self.area_messages.append(str(value[0]))
         return
 
 
