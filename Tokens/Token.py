@@ -33,12 +33,12 @@ class TokenValue(Enum):
 
 
 class Token:
-    def __init__(self, value, token_number=0):
+    def __init__(self, value, number=0):
 
-        if value != TokenValue.NUMBER and token_number != 0:
+        if value != TokenValue.NUMBER and number != 0:
             raise Exception("For token value other than Number token number should be zero")
 
         self.value = value
-        self.number = token_number
+        self.number = number
 
 

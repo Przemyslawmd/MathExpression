@@ -4,8 +4,8 @@ import sys
 
 from Controller import Controller
 
-from PySide2.QtWidgets import (QApplication, QWidget, QLabel, QListWidget, QComboBox)
-from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout, QGridLayout)
+from PySide2.QtWidgets import (QApplication, QWidget, QLabel, QComboBox)
+from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout)
 from PySide2.QtWidgets import (QPushButton, QLineEdit, QTextEdit)
 from PySide2.QtCore import Slot
 
@@ -128,6 +128,7 @@ class MathExpression(QWidget):
         line_sizes = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]
         for i in line_sizes:
             self.edit_line_width.addItem(str(i))
+        self.edit_line_width.setCurrentIndex(4)
         layout_buttons_1.addWidget(label_line_width)
         layout_buttons_1.addWidget(self.edit_line_width)
         layout_buttons_1.addSpacing(20)
@@ -138,6 +139,7 @@ class MathExpression(QWidget):
         line_colors = ["Black", "Blue", "Green", "Orange", "Red", "White", "Yellow"]
         for color in line_colors:
             self.list_color.addItem(color)
+        self.list_color.setCurrentIndex(1)
 
         layout_buttons_1.addWidget(label_line_color)
         layout_buttons_1.addWidget(self.list_color)
@@ -166,6 +168,7 @@ class MathExpression(QWidget):
         layout_main.addSpacing(20)
 
         layout_main.addWidget(self.area_messages)
+        self.area_messages.setMaximumHeight(100)
         layout_main.addSpacing(20)
 
         self.setLayout(layout_main)
