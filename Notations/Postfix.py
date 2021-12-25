@@ -68,51 +68,52 @@ class Postfix:
 
 
     def calculate(self, min_x, max_x):
-        results = []
+        calculation_stack = []
         for x in range(min_x, max_x + 1):
-            results.append(deque())
+            calculation_stack.append(deque())
 
         for token in self.postfix_list:
             if token.value is TokenValue.NUMBER:
-                for result in results:
-                    result.append(token.number)
+                for calculation in calculation_stack:
+                    calculation.append(token.number)
             elif token.value == TokenValue.X:
                 number = min_x
-                for result in results:
-                    result.append(number)
+                for values in calculation_stack:
+                    values.append(number)
                     number += 1
             elif token.value is TokenValue.X_NEGATIVE:
                 number = min_x * -1
-                for result in results:
-                    result.append(number)
+                for calculation in calculation_stack:
+                    calculation.append(number)
                     number -= 1
             elif token.value in TokenUtils.operation:
-                for result in results:
-                    number_1 = result.pop()
-                    number_2 = result.pop()
+                for calculation in calculation_stack:
+                    number_1 = calculation.pop()
+                    number_2 = calculation.pop()
                     if token.value == TokenValue.PLUS:
-                        result.append(number_1 + number_2)
+                        calculation.append(number_1 + number_2)
                     elif token.value == TokenValue.MINUS:
-                        result.append(number_2 - number_1)
+                        calculation.append(number_2 - number_1)
                     elif token.value == TokenValue.MULTIPLICATION:
-                        result.append(number_1 * number_2)
+                        calculation.append(number_1 * number_2)
                     elif token.value == TokenValue.DIVISION:
-                        result.append(number_1 / number_2)
+                        calculation.append(number_1 / number_2)
             elif token.value in TokenUtils.trigonometry:
-                for result in results:
-                    number = result.pop()
+                for calculation in calculation_stack:
+                    number = calculation.pop()
                     radian = math.radians(number)
                     if token.value == TokenValue.SINE:
-                        result.append(math.sin(radian))
+                        calculation.append(math.sin(radian))
                     elif token.value == TokenValue.COSINE:
-                        result.append(math.cos(radian))
+                        calculation.append(math.cos(radian))
                     elif token.value == TokenValue.TANGENT:
-                        result.append(math.tan(radian))
+                        calculation.append(math.tan(radian))
                     elif token.value == TokenValue.COTANGENT:
-                        result.append(math.cos(radian) / math.sin(radian))
+                        calculation.append(math.cos(radian) / math.sin(radian))
 
-        for result in results:
-            result[0] = round(result[0], 2)
+        results = []
+        for calculation in calculation_stack:
+            results.append(round(calculation[0], 2))
 
         return results
 
