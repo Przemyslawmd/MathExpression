@@ -1,7 +1,6 @@
 
-import sys
 
-from PySide2 import QtCore
+import sys
 
 from Controller import Controller
 
@@ -10,8 +9,8 @@ from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout, QGridLayout)
 from PySide2.QtWidgets import (QPushButton, QLineEdit, QTextEdit)
 from PySide2.QtCore import Slot
 
-from pyqtgraph import PlotWidget, plot, mkPen
 import pyqtgraph as pg
+
 
 class MathExpression(QWidget):
 
@@ -21,21 +20,40 @@ class MathExpression(QWidget):
         self.controller = Controller()
         self.plot_widget = pg.PlotWidget()
         self.line_insert = QLineEdit()
+        self.insert_x_min = QLineEdit()
+        self.insert_x_max = QLineEdit()
+        self.edit_line_width = QComboBox()
+        self.list_color = QComboBox()
         self.area_messages = QTextEdit()
+        self.plot_lines = []
+
+        self.penColors = {"Black": [0, 0, 0], "Blue": [0, 0, 255], "Green": [0, 128, 0], "Orange": [255, 140, 0],
+                          "Red": [255, 0, 0], "Yellow": [255, 255, 0], "White": [255, 255, 255]}
+
         self.create_gui()
 
 
     @Slot()
     def draw(self):
         try:
-            values = self.controller.calculate_values(self.line_insert.text())
+            x_min = int(self.insert_x_min.text())
+            x_max = int(self.insert_x_max.text())
+        except Exception:
+            self.area_messages.append("X minimum or maximum value error")
+            return
+
+        try:
+            y = self.controller.calculate_values(self.line_insert.text(), x_min, x_max)
         except Exception as e:
             self.area_messages.append(str(e))
             return
 
-        for value in values:
-            self.area_messages.append(str(value))
-        return
+        x = range(x_min, x_max + 1)
+        line_width = float(self.edit_line_width.currentText())
+        line_color = self.penColors[self.list_color.currentText()]
+        self.plot_lines.append(self.plot_widget.plot(x, y, pen=pg.mkPen(line_color, width=line_width), symbol='x',
+                                                     symbolPen=None, symbolBrush=2.5, name='red'))
+
 
     @Slot()
     def append(self):
@@ -52,17 +70,14 @@ class MathExpression(QWidget):
 
     @Slot()
     def clear_insert_area(self):
-        self.area_messages.append("Clear Insert Area")
+        self.line_insert.clear()
 
 
     @Slot()
     def clear_plot_area(self):
-        self.area_messages.append("Clear Plot Area")
-
-
-    @Slot()
-    def clear(self):
-        self.line_insert.clear()
+        for line in self.plot_lines:
+            self.plot_widget.removeItem(line)
+        self.plot_lines.clear()
 
 
     def create_button(self, label, func):
@@ -93,41 +108,39 @@ class MathExpression(QWidget):
 
         label_x_min = QLabel("X Min")
         label_x_min.setMaximumWidth(35)
-        edit_x_min = QLineEdit()
-        edit_x_min.setMaximumWidth(50)
+        self.insert_x_min.setMaximumWidth(50)
+        self.insert_x_min.setText("0")
         layout_buttons_1.addWidget(label_x_min)
-        layout_buttons_1.addWidget(edit_x_min)
+        layout_buttons_1.addWidget(self.insert_x_min)
         layout_buttons_1.addSpacing(10)
 
         label_x_max = QLabel("X Max")
         label_x_max.setMaximumWidth(40)
-        edit_x_max = QLineEdit()
-        edit_x_max.setMaximumWidth(50)
+        self.insert_x_max.setMaximumWidth(50)
+        self.insert_x_max.setText("3600")
         layout_buttons_1.addWidget(label_x_max)
-        layout_buttons_1.addWidget(edit_x_max)
+        layout_buttons_1.addWidget(self.insert_x_max)
         layout_buttons_1.addSpacing(20)
 
         label_line_width = QLabel("Line Width")
         label_line_width.setMaximumWidth(70)
-        edit_line_width = QLineEdit()
-        edit_line_width.setMaximumWidth(50)
+        self.edit_line_width.setMaximumWidth(50)
+        line_sizes = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]
+        for i in line_sizes:
+            self.edit_line_width.addItem(str(i))
         layout_buttons_1.addWidget(label_line_width)
-        layout_buttons_1.addWidget(edit_line_width)
+        layout_buttons_1.addWidget(self.edit_line_width)
         layout_buttons_1.addSpacing(20)
 
         label_line_color = QLabel("Line Color")
         label_line_color.setMaximumWidth(70)
-        list_color = QComboBox()
-        list_color.setMaximumWidth(80)
-        list_color.addItem("Blue")
-        list_color.addItem("Green")
-        list_color.addItem("Orange")
-        list_color.addItem("Red")
-        list_color.addItem("White")
-        list_color.addItem("Yellow")
+        self.list_color.setMaximumWidth(80)
+        line_colors = ["Black", "Blue", "Green", "Orange", "Red", "White", "Yellow"]
+        for color in line_colors:
+            self.list_color.addItem(color)
 
         layout_buttons_1.addWidget(label_line_color)
-        layout_buttons_1.addWidget(list_color)
+        layout_buttons_1.addWidget(self.list_color)
         layout_buttons_1.addStretch()
 
         layout_main.addLayout(layout_buttons_1)
@@ -147,17 +160,8 @@ class MathExpression(QWidget):
         layout_main.addLayout(layout_buttons_2)
         layout_main.addSpacing(20)
 
-        x = range(0, 10)
-
-        self.plot_widget.setXRange(0, 10)
-        self.plot_widget.setYRange(0, 10)
-
-        y = [1, 2, 3, 4, 50, 6, 7, 8, 9, 10]
-
-        mkPen('y', width=30, style=QtCore.Qt.DashLine)
-        line = self.plot_widget.plot(x, y, pen=pg.mkPen(width=2), symbol='x', symbolPen=None, symbolBrush=2.5, name='red')
-
         self.plot_widget.showGrid(x=True, y=True)
+
         layout_main.addWidget(self.plot_widget)
         layout_main.addSpacing(20)
 
@@ -167,15 +171,12 @@ class MathExpression(QWidget):
         self.setLayout(layout_main)
         self.setContentsMargins(20, 0, 20, 0)
 
-        return
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
     widget = MathExpression()
     widget.resize(1200, 800)
     widget.show()
-
     sys.exit(app.exec_())
+
 

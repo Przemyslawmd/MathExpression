@@ -5,7 +5,7 @@ from Tokens.Parser import Parser
 
 class Controller:
 
-    def calculate_values(self, expression):
+    def calculate_values(self, expression, x_min, x_max):
         try:
             tokens = Parser(expression).parse()
         except Exception as e:
@@ -13,6 +13,6 @@ class Controller:
 
         postfix = Postfix()
         postfix.create_postfix(tokens)
-        result = postfix.calculate(0, 10)
+        result = postfix.calculate(x_min, x_max)
         return result
 
