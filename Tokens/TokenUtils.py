@@ -10,6 +10,8 @@ class TokenUtils:
 
     trigonometry = [TokenValue.COSINE, TokenValue.COTANGENT, TokenValue.SINE, TokenValue.TANGENT]
 
+    operators = operation + trigonometry + [TokenValue.LOG] + [TokenValue.POWER]
+
 
     @staticmethod
     def append_operation(token_values):

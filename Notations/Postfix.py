@@ -14,8 +14,7 @@ class Postfix:
 
     def create_postfix(self, tokens):
         for token in tokens:
-            if token.value in TokenUtils.operation or token.value in TokenUtils.trigonometry or\
-                    token.value is TokenValue.LOG:
+            if token.value in TokenUtils.operators:
                 self.process_operator(token)
             elif token.value in TokenUtils.bracket:
                 if token.value is TokenValue.BRACKET_LEFT:
@@ -36,18 +35,15 @@ class Postfix:
             return
 
         if token.value in (TokenValue.PLUS, TokenValue.MINUS):
-            tokens_to_remove_from_stack = [TokenValue.LOG]
-            TokenUtils.append_operation(tokens_to_remove_from_stack)
-            TokenUtils.append_trigonometry(tokens_to_remove_from_stack)
-            self.process_stack_operator(token, tokens_to_remove_from_stack)
+            self.process_stack_operator(token, TokenUtils.operators)
         elif token.value in (TokenValue.MULTIPLICATION, TokenValue.DIVISION):
-            tokens_to_remove_from_stack = [TokenValue.MULTIPLICATION, TokenValue.DIVISION, TokenValue.LOG]
-            TokenUtils.append_trigonometry(tokens_to_remove_from_stack)
-            self.process_stack_operator(token, tokens_to_remove_from_stack)
+            tokens_to_move = [token for token in TokenUtils.operators if (token not in [TokenValue.PLUS, TokenValue.MINUS])]
+            self.process_stack_operator(token, tokens_to_move)
+        elif token.value in TokenUtils.trigonometry or token.value is TokenValue.LOG:
+            tokens_to_move = [token for token in TokenUtils.operators if (token not in TokenUtils.operation)]
+            self.process_stack_operator(token, tokens_to_move)
         else:
-            tokens_to_remove_from_stack = [TokenValue.LOG]
-            TokenUtils.append_trigonometry(tokens_to_remove_from_stack)
-            self.process_stack_operator(token, tokens_to_remove_from_stack)
+            self.process_stack_operator(token, [TokenValue.POWER])
 
 
     def process_stack_operator(self, token, token_values):
@@ -86,18 +82,20 @@ class Postfix:
                 for calculation in calculation_stack:
                     calculation.append(number)
                     number -= 1
-            elif token.value in TokenUtils.operation:
+            elif token.value in TokenUtils.operation or token.value is TokenValue.POWER:
                 for calculation in calculation_stack:
                     number_1 = calculation.pop()
                     number_2 = calculation.pop()
-                    if token.value == TokenValue.PLUS:
+                    if token.value is TokenValue.PLUS:
                         calculation.append(number_1 + number_2)
-                    elif token.value == TokenValue.MINUS:
+                    elif token.value is TokenValue.MINUS:
                         calculation.append(number_2 - number_1)
-                    elif token.value == TokenValue.MULTIPLICATION:
+                    elif token.value is TokenValue.MULTIPLICATION:
                         calculation.append(number_1 * number_2)
-                    elif token.value == TokenValue.DIVISION:
+                    elif token.value is TokenValue.DIVISION:
                         calculation.append(number_1 / number_2)
+                    elif token.value is TokenValue.POWER:
+                        calculation.append(math.pow(number_2, number_1))
             elif token.value in TokenUtils.trigonometry:
                 for calculation in calculation_stack:
                     number = calculation.pop()
@@ -110,6 +108,10 @@ class Postfix:
                         calculation.append(math.tan(radian))
                     elif token.value == TokenValue.COTANGENT:
                         calculation.append(math.cos(radian) / math.sin(radian))
+            elif token.value is TokenValue.LOG:
+                for calculation in calculation_stack:
+                    number = calculation.pop()
+                    calculation.append(math.log(number, 10))
 
         results = []
         for calculation in calculation_stack:
