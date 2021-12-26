@@ -27,8 +27,9 @@ class MathExpression(QWidget):
         self.area_messages = QTextEdit()
         self.plot_lines = []
 
-        self.penColors = {"Black": [0, 0, 0], "Blue": [0, 0, 255], "Green": [0, 128, 0], "Orange": [255, 140, 0],
-                          "Red": [255, 0, 0], "Yellow": [255, 255, 0], "White": [255, 255, 255]}
+        self.penColors = {"Black": [0, 0, 0], "Blue": [0, 0, 255], "Green": [0, 128, 0], "Light Blue": [0, 191, 255],
+                          "Light Green": [0, 255, 128], "Orange": [255, 140, 0], "Red": [255, 0, 0],
+                          "Yellow": [255, 255, 0], "White": [255, 255, 255]}
 
         self.create_gui()
 
@@ -150,8 +151,8 @@ class MathExpression(QWidget):
 
         label_line_color = QLabel("Line Color")
         label_line_color.setMaximumWidth(70)
-        self.list_color.setMaximumWidth(80)
-        line_colors = ["Black", "Blue", "Green", "Orange", "Red", "White", "Yellow"]
+        self.list_color.setMaximumWidth(100)
+        line_colors = ["Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White", "Yellow"]
         for color in line_colors:
             self.list_color.addItem(color)
         self.list_color.setCurrentIndex(1)
