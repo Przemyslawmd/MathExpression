@@ -35,11 +35,26 @@ class MathExpression(QWidget):
 
     @Slot()
     def draw(self):
+        x_min_str = self.insert_x_min.text().lstrip()
+        x_max_str = self.insert_x_max.text().lstrip()
+
+        x_min_negative = False
+        x_max_negative = False
+        if x_min_str[0] == '-':
+            x_min_negative = True
+            x_min_str = x_min_str[1:]
+        if x_max_str[0] == '-':
+            x_max_negative = True
+            x_max_str = x_max_str[1:]
+
         try:
-            x_min = int(self.insert_x_min.text())
-            x_max = int(self.insert_x_max.text())
+            x_min = int(x_min_str) if x_min_negative is False else int(x_min_str) * -1
+            x_max = int(x_max_str) if x_max_negative is False else int(x_max_str) * -1
         except Exception:
             self.area_messages.append("X minimum or maximum value error")
+            return
+        if x_min > x_max:
+            self.area_messages.append("X range error: minimum higher than maximum")
             return
 
         try:
