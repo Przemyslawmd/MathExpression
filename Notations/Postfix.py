@@ -93,7 +93,8 @@ class Postfix:
                     elif token.value is TokenValue.MULTIPLICATION:
                         calculation.append(number_1 * number_2)
                     elif token.value is TokenValue.DIVISION:
-                        calculation.append(number_1 / number_2)
+                        value = math.nan if number_1 == 0 else number_2 / number_1
+                        calculation.append(value)
                     elif token.value is TokenValue.POWER:
                         calculation.append(math.pow(number_2, number_1))
             elif token.value in TokenUtils.trigonometry:
@@ -107,7 +108,8 @@ class Postfix:
                     elif token.value == TokenValue.TANGENT:
                         calculation.append(math.tan(radian))
                     elif token.value == TokenValue.COTANGENT:
-                        calculation.append(math.cos(radian) / math.sin(radian))
+                        value = math.nan if number == 0 else math.cos(radian) / math.sin(radian)
+                        calculation.append(value)
             elif token.value is TokenValue.LOG:
                 for calculation in calculation_stack:
                     number = calculation.pop()
