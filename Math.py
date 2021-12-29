@@ -19,69 +19,34 @@ class MathExpression(QWidget):
 
         self.controller = Controller()
         self.plot_widget = pg.PlotWidget()
-        self.line_insert = QLineEdit()
+
+        self.insert_expression = QLineEdit()
         self.insert_x_min = QLineEdit()
         self.insert_x_max = QLineEdit()
-        self.edit_line_width = QComboBox()
-        self.list_color = QComboBox()
+        self.insert_y_min = QLineEdit()
+        self.insert_y_max = QLineEdit()
+
+        self.list_pen_width = QComboBox()
+        self.list_pen_color = QComboBox()
         self.area_messages = QTextEdit()
+
         self.plot_lines = []
-
-        self.penColors = {"Black": [0, 0, 0], "Blue": [0, 0, 255], "Green": [0, 128, 0], "Light Blue": [0, 191, 255],
-                          "Light Green": [0, 255, 128], "Orange": [255, 140, 0], "Red": [255, 0, 0],
-                          "Yellow": [255, 255, 0], "White": [255, 255, 255]}
-
+        self.penColors = {
+            "Black": [0, 0, 0], "Blue": [0, 0, 255], "Green": [0, 128, 0], "Light Blue": [0, 191, 255],
+            "Light Green": [0, 255, 128], "Orange": [255, 140, 0], "Red": [255, 0, 0],
+            "Yellow": [255, 255, 0], "White": [255, 255, 255]
+        }
         self.create_gui()
 
 
     @Slot()
     def draw(self):
-        x_min_str = self.insert_x_min.text().lstrip()
-        x_max_str = self.insert_x_max.text().lstrip()
-
-        x_min_negative = False
-        x_max_negative = False
-        if x_min_str[0] == '-':
-            x_min_negative = True
-            x_min_str = x_min_str[1:]
-        if x_max_str[0] == '-':
-            x_max_negative = True
-            x_max_str = x_max_str[1:]
-
-        try:
-            x_min = int(x_min_str) if x_min_negative is False else int(x_min_str) * -1
-            x_max = int(x_max_str) if x_max_negative is False else int(x_max_str) * -1
-        except Exception:
-            self.area_messages.append("X minimum or maximum value error")
-            return
-        if x_min > x_max:
-            self.area_messages.append("X range error: minimum higher than maximum")
-            return
-
-        try:
-            y = self.controller.calculate_values(self.line_insert.text(), x_min, x_max)
-        except Exception as e:
-            self.area_messages.append(str(e))
-            return
-
-        x = range(x_min, x_max + 1)
-        line_width = float(self.edit_line_width.currentText())
-        line_color = self.penColors[self.list_color.currentText()]
-        self.plot_lines.append(self.plot_widget.plot(x, y, pen=pg.mkPen(line_color, width=line_width), symbol='x',
-                                                     symbolPen=None, symbolBrush=2.5, name='red'))
+        self.create_new_graph(True)
 
 
     @Slot()
     def append(self):
-        try:
-            values = self.controller.calculate_values(self.line_insert.text())
-        except Exception as e:
-            self.area_messages.append(str(e))
-            return
-
-        for value in values:
-            self.area_messages.append(str(value))
-        return
+        self.create_new_graph(False)
 
 
     @Slot()
@@ -94,6 +59,59 @@ class MathExpression(QWidget):
         for line in self.plot_lines:
             self.plot_widget.removeItem(line)
         self.plot_lines.clear()
+
+
+    def create_new_graph(self, clear_plot_area):
+        x_min, x_max = self.calculate_range(self.insert_x_min, self.insert_x_max)
+        if x_min == 0 and x_max == 0:
+            return
+
+        if self.insert_y_min.text() != "No" or self.insert_y_max.text() != "No":
+            y_min, y_max = self.calculate_range(self.insert_y_min, self.insert_y_max)
+            if y_min == 0 and y_max == 0:
+                return
+            self.plot_widget.setYRange(y_min, y_max, padding=0)
+
+        try:
+            y = self.controller.calculate_values(self.insert_expression.text(), x_min, x_max)
+        except Exception as e:
+            self.area_messages.append(str(e))
+            return
+
+        if clear_plot_area is True:
+            self.clear_plot_area()
+
+        x = range(x_min, x_max + 1)
+        line_width = float(self.list_pen_width.currentText())
+        line_color = self.penColors[self.list_pen_color.currentText()]
+        self.plot_lines.append(self.plot_widget.plot(x, y, pen=pg.mkPen(line_color, width=line_width), symbol='x',
+                                                     symbolPen=None, symbolBrush=2.5, name='red', connect="finite"))
+
+
+    def calculate_range(self, insert_min, insert_max):
+        min_str = insert_min.text().lstrip()
+        max_str = insert_max.text().lstrip()
+
+        min_negative = False
+        max_negative = False
+        if min_str[0] == '-':
+            min_negative = True
+            min_str = min_str[1:]
+        if max_str[0] == '-':
+            max_negative = True
+            max_str = max_str[1:]
+
+        try:
+            min_value = int(min_str) if min_negative is False else int(min_str) * -1
+            max_value = int(max_str) if max_negative is False else int(max_str) * -1
+        except Exception as e:
+            self.area_messages.append("Error: Parse range values")
+            self.area_messages.append(str(e))
+            return 0, 0
+        if min_value > max_value:
+            self.area_messages.append("Error: Range minimum higher than maximum")
+            return 0, 0
+        return min_value, max_value
 
 
     def create_button(self, label, func):
@@ -109,7 +127,7 @@ class MathExpression(QWidget):
         layout_main = QVBoxLayout()
 
         layout_main.addSpacing(20)
-        layout_main.addWidget(self.line_insert)
+        layout_main.addWidget(self.insert_expression)
         layout_main.addSpacing(10)
 
         layout_buttons_1 = QHBoxLayout()
@@ -122,43 +140,32 @@ class MathExpression(QWidget):
         layout_buttons_1.addWidget(button_append)
         layout_buttons_1.addSpacing(20)
 
-        label_x_min = QLabel("X Min")
-        label_x_min.setMaximumWidth(35)
         self.insert_x_min.setMaximumWidth(50)
-        self.insert_x_min.setText("0")
-        layout_buttons_1.addWidget(label_x_min)
+        self.insert_x_min.setText("-10")
+        layout_buttons_1.addWidget(QLabel("X Min"))
         layout_buttons_1.addWidget(self.insert_x_min)
         layout_buttons_1.addSpacing(10)
 
-        label_x_max = QLabel("X Max")
-        label_x_max.setMaximumWidth(40)
         self.insert_x_max.setMaximumWidth(50)
         self.insert_x_max.setText("3600")
-        layout_buttons_1.addWidget(label_x_max)
+        layout_buttons_1.addWidget(QLabel("X Max"))
         layout_buttons_1.addWidget(self.insert_x_max)
         layout_buttons_1.addSpacing(20)
 
-        label_line_width = QLabel("Line Width")
-        label_line_width.setMaximumWidth(70)
-        self.edit_line_width.setMaximumWidth(50)
-        line_sizes = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]
-        for i in line_sizes:
-            self.edit_line_width.addItem(str(i))
-        self.edit_line_width.setCurrentIndex(4)
-        layout_buttons_1.addWidget(label_line_width)
-        layout_buttons_1.addWidget(self.edit_line_width)
+        self.list_pen_width.setMaximumWidth(50)
+        for i in [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]:
+            self.list_pen_width.addItem(str(i))
+        self.list_pen_width.setCurrentIndex(4)
+        layout_buttons_1.addWidget(QLabel("Line Width"))
+        layout_buttons_1.addWidget(self.list_pen_width)
         layout_buttons_1.addSpacing(20)
 
-        label_line_color = QLabel("Line Color")
-        label_line_color.setMaximumWidth(70)
-        self.list_color.setMaximumWidth(100)
-        line_colors = ["Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White", "Yellow"]
-        for color in line_colors:
-            self.list_color.addItem(color)
-        self.list_color.setCurrentIndex(1)
-
-        layout_buttons_1.addWidget(label_line_color)
-        layout_buttons_1.addWidget(self.list_color)
+        self.list_pen_color.setMaximumWidth(100)
+        for color in ["Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White", "Yellow"]:
+            self.list_pen_color.addItem(color)
+        self.list_pen_color.setCurrentIndex(4)
+        layout_buttons_1.addWidget(QLabel("Line Color"))
+        layout_buttons_1.addWidget(self.list_pen_color)
         layout_buttons_1.addStretch()
 
         layout_main.addLayout(layout_buttons_1)
@@ -173,13 +180,25 @@ class MathExpression(QWidget):
         button_clear_plot = self.create_button("Clear Plot Area", lambda: self.clear_plot_area())
         layout_buttons_2.addWidget(button_clear_plot)
         layout_buttons_2.addSpacing(20)
+
+        self.insert_y_min.setMaximumWidth(50)
+        self.insert_y_min.setText("No")
+        layout_buttons_2.addWidget(QLabel("Y Min"))
+        layout_buttons_2.addWidget(self.insert_y_min)
+        layout_buttons_2.addSpacing(10)
+
+        self.insert_y_max.setMaximumWidth(50)
+        self.insert_y_max.setText("No")
+        layout_buttons_2.addWidget(QLabel("Y Max"))
+        layout_buttons_2.addWidget(self.insert_y_max)
+        layout_buttons_2.addSpacing(20)
+
         layout_buttons_2.addStretch()
 
         layout_main.addLayout(layout_buttons_2)
         layout_main.addSpacing(20)
 
         self.plot_widget.showGrid(x=True, y=True)
-
         layout_main.addWidget(self.plot_widget)
         layout_main.addSpacing(20)
 
