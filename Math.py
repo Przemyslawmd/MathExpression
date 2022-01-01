@@ -8,6 +8,7 @@ from PySide2.QtCore import Slot
 import pyqtgraph as pg
 
 from Controller import Controller
+from WindowAbout import WindowAbout
 
 
 class MathExpression(QMainWindow):
@@ -65,9 +66,8 @@ class MathExpression(QMainWindow):
 
 
     @Slot()
-    def widget_about(self):
-        pass
-
+    def window_about(self):
+        WindowAbout()
 
     def create_new_graph(self, clear_plot_area):
         x_min, x_max = self.calculate_range(self.insert_x_min, self.insert_x_max)
@@ -203,7 +203,7 @@ class MathExpression(QMainWindow):
         settings_action.triggered.connect(lambda: self.widget_settings())
         tool_bar.addAction(settings_action)
         about_action = QAction("About", self)
-        about_action.triggered.connect(lambda: self.widget_about())
+        about_action.triggered.connect(lambda: self.window_about())
         tool_bar.addAction(about_action)
         self.addToolBar(tool_bar)
 
