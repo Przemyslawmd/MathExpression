@@ -1,7 +1,7 @@
 
 import sys
 
-from PySide2.QtWidgets import (QApplication, QWidget, QLabel, QComboBox, QMainWindow)
+from PySide2.QtWidgets import (QApplication, QWidget, QLabel, QComboBox, QMainWindow, QAction, QToolBar)
 from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout)
 from PySide2.QtWidgets import (QPushButton, QLineEdit, QTextEdit)
 from PySide2.QtCore import Slot
@@ -57,6 +57,16 @@ class MathExpression(QMainWindow):
         for line in self.plot_lines:
             self.plot_widget.removeItem(line)
         self.plot_lines.clear()
+
+
+    @Slot()
+    def widget_settings(self):
+        pass
+
+
+    @Slot()
+    def widget_about(self):
+        pass
 
 
     def create_new_graph(self, clear_plot_area):
@@ -187,6 +197,15 @@ class MathExpression(QMainWindow):
 
 
     def create_gui(self):
+
+        tool_bar = QToolBar()
+        settings_action = QAction("Settings", self)
+        settings_action.triggered.connect(lambda: self.widget_settings())
+        tool_bar.addAction(settings_action)
+        about_action = QAction("About", self)
+        about_action.triggered.connect(lambda: self.widget_about())
+        tool_bar.addAction(about_action)
+        self.addToolBar(tool_bar)
 
         layout_main = QVBoxLayout()
         layout_main.addSpacing(20)
