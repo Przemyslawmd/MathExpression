@@ -66,7 +66,7 @@ class Postfix:
             current_stack = self.stack.pop()
 
 
-    def calculate(self, min_x, max_x, x_precision):
+    def calculate(self, min_x, max_x, x_precision=1.0):
         calculation_stack = []
         for x in numpy.arange(min_x, max_x + 1, x_precision):
             calculation_stack.append(deque())
