@@ -1,7 +1,7 @@
 
 from PySide2 import QtCore
 from PySide2.QtCore import Qt, Slot
-from PySide2.QtWidgets import QVBoxLayout, QLabel, QWidget, QPushButton, QGridLayout, QCheckBox, QHBoxLayout
+from PySide2.QtWidgets import QVBoxLayout, QLabel, QWidget, QPushButton, QGridLayout, QCheckBox, QHBoxLayout, QComboBox
 
 
 class WindowSettings(QWidget):
@@ -16,13 +16,22 @@ class WindowSettings(QWidget):
         layout_grid = QGridLayout()
         layout_grid.addWidget(QLabel("X Grid"), 1, 1)
         self.check_x_grid = QCheckBox()
-        self.check_x_grid.setGeometry(100, 50, 10, 10)
         self.check_x_grid.setChecked(self.parent.x_grid)
         layout_grid.addWidget(self.check_x_grid, 1, 2, alignment=QtCore.Qt.AlignRight)
+        layout_grid.setRowMinimumHeight(1, 30)
+
         layout_grid.addWidget(QLabel("Y Grid"), 2, 1)
         self.check_y_grid = QCheckBox()
         self.check_y_grid.setChecked(self.parent.y_grid)
         layout_grid.addWidget(self.check_y_grid, 2, 2, alignment=QtCore.Qt.AlignRight)
+        layout_grid.setRowMinimumHeight(2, 30)
+
+        layout_grid.addWidget(QLabel("X Precision"), 3, 1)
+        self.insert_x_precision = QComboBox()
+        self.insert_x_precision.setMaximumWidth(60)
+        for i in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1]:
+            self.insert_x_precision.addItem(str(i))
+        layout_grid.addWidget(self.insert_x_precision, 3, 2, alignment=QtCore.Qt.AlignRight)
         layout.addLayout(layout_grid)
 
         layout_button = QHBoxLayout()
@@ -33,8 +42,8 @@ class WindowSettings(QWidget):
         layout_button.addStretch()
 
         layout.addLayout(layout_button)
-        self.setMinimumWidth(200)
-        self.setMinimumHeight(150)
+        self.setMinimumWidth(250)
+        self.setMinimumHeight(210)
         self.setWindowModality(Qt.ApplicationModal)
         self.setLayout(layout)
         self.setGeometry(400, 400, 0, 0)
