@@ -40,6 +40,8 @@ class MathExpression(QMainWindow):
         self.x_grid = True
         self.y_grid = True
 
+        self.x_precision = 1.0
+
         self.create_gui()
 
 
@@ -203,7 +205,6 @@ class MathExpression(QMainWindow):
 
 
     def create_gui(self):
-
         tool_bar = QToolBar()
         settings_action = QAction("Settings", self)
         settings_action.triggered.connect(lambda: self.widget_settings())
@@ -242,9 +243,10 @@ class MathExpression(QMainWindow):
         main_widget.setContentsMargins(20, 0, 20, 0)
 
 
-    def apply_settings(self, x_grid, y_grid):
+    def apply_settings(self, x_grid, y_grid, x_precision):
         self.x_grid = x_grid
         self.y_grid = y_grid
+        self.x_precision = x_precision
         self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
 
 

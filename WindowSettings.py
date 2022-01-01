@@ -29,8 +29,12 @@ class WindowSettings(QWidget):
         layout_grid.addWidget(QLabel("X Precision"), 3, 1)
         self.insert_x_precision = QComboBox()
         self.insert_x_precision.setMaximumWidth(60)
-        for i in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1]:
+        index = 0
+        for i in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0]:
             self.insert_x_precision.addItem(str(i))
+            if i == self.parent.x_precision:
+                self.insert_x_precision.setCurrentIndex(index)
+            index += 1
         layout_grid.addWidget(self.insert_x_precision, 3, 2, alignment=QtCore.Qt.AlignRight)
         layout.addLayout(layout_grid)
 
@@ -53,7 +57,8 @@ class WindowSettings(QWidget):
 
     @Slot()
     def accept(self):
-        self.parent.apply_settings(self.check_x_grid.isChecked(), self.check_y_grid.isChecked())
+        self.parent.apply_settings(self.check_x_grid.isChecked(),
+                                   self.check_y_grid.isChecked(),
+                                   float(self.insert_x_precision.currentText()))
         self.close()
-
 
