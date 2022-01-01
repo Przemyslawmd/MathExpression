@@ -1,6 +1,7 @@
 
 import sys
 
+import numpy
 from PySide2.QtWidgets import (QApplication, QWidget, QLabel, QComboBox, QMainWindow, QAction, QToolBar)
 from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout)
 from PySide2.QtWidgets import (QPushButton, QLineEdit, QTextEdit)
@@ -39,8 +40,7 @@ class MathExpression(QMainWindow):
 
         self.x_grid = True
         self.y_grid = True
-
-        self.x_precision = 1.0
+        self.x_precision = 1.00
 
         self.create_gui()
 
@@ -89,7 +89,7 @@ class MathExpression(QMainWindow):
             self.plot_widget.setYRange(y_min, y_max, padding=0)
 
         try:
-            y = self.controller.calculate_values(self.insert_expression.text(), x_min, x_max)
+            y = self.controller.calculate_values(self.insert_expression.text(), x_min, x_max, self.x_precision)
         except Exception as e:
             self.area_messages.append(str(e))
             return
@@ -97,7 +97,7 @@ class MathExpression(QMainWindow):
         if clear_plot_area is True:
             self.clear_plot_area()
 
-        x = range(x_min, x_max + 1)
+        x = numpy.arange(x_min, x_max + 1, self.x_precision)
         line_width = float(self.list_pen_width.currentText())
         line_color = self.penColors[self.list_pen_color.currentText()]
         self.plot_lines.append(self.plot_widget.plot(x, y, pen=pg.mkPen(line_color, width=line_width), symbol='x',
@@ -118,8 +118,8 @@ class MathExpression(QMainWindow):
             max_str = max_str[1:]
 
         try:
-            min_value = int(min_str) if min_negative is False else int(min_str) * -1
-            max_value = int(max_str) if max_negative is False else int(max_str) * -1
+            min_value = float(min_str) if min_negative is False else float(min_str) * -1
+            max_value = float(max_str) if max_negative is False else float(max_str) * -1
         except Exception as e:
             self.area_messages.append("Error: Parse range values")
             self.area_messages.append(str(e))

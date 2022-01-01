@@ -1,5 +1,8 @@
 
 import math
+
+import numpy
+
 from Tokens.TokenUtils import TokenUtils
 from Tokens.Token import TokenValue
 from collections import deque
@@ -63,9 +66,9 @@ class Postfix:
             current_stack = self.stack.pop()
 
 
-    def calculate(self, min_x, max_x):
+    def calculate(self, min_x, max_x, x_precision):
         calculation_stack = []
-        for x in range(min_x, max_x + 1):
+        for x in numpy.arange(min_x, max_x + 1, x_precision):
             calculation_stack.append(deque())
 
         for token in self.postfix_list:
@@ -76,9 +79,9 @@ class Postfix:
                 number = min_x
                 for values in calculation_stack:
                     values.append(number)
-                    number += 1
+                    number += x_precision
             elif token.value is TokenValue.X_NEGATIVE:
-                number = min_x * -1
+                number = min_x * -x_precision
                 for calculation in calculation_stack:
                     calculation.append(number)
                     number -= 1
@@ -93,7 +96,7 @@ class Postfix:
                     elif token.value is TokenValue.MULTIPLICATION:
                         calculation.append(number_1 * number_2)
                     elif token.value is TokenValue.DIVISION:
-                        value = math.nan if number_1 == 0 else number_2 / number_1
+                        value = math.nan if round(number_1, 2) == 0.00 else number_2 / number_1
                         calculation.append(value)
                     elif token.value is TokenValue.POWER:
                         calculation.append(math.pow(number_2, number_1))
@@ -108,7 +111,8 @@ class Postfix:
                     elif token.value == TokenValue.TANGENT:
                         calculation.append(math.tan(radian))
                     elif token.value == TokenValue.COTANGENT:
-                        value = math.nan if number == 0 else math.cos(radian) / math.sin(radian)
+                        sine = math.sin(radian)
+                        value = math.nan if round(sine, 2) == 0.00 else math.cos(radian) / sine
                         calculation.append(value)
             elif token.value is TokenValue.LOG:
                 for calculation in calculation_stack:
