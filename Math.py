@@ -9,6 +9,7 @@ import pyqtgraph as pg
 
 from Controller import Controller
 from WindowAbout import WindowAbout
+from WindowSettings import WindowSettings
 
 
 class MathExpression(QMainWindow):
@@ -35,6 +36,10 @@ class MathExpression(QMainWindow):
             "Light Green": [0, 255, 128], "Orange": [255, 140, 0], "Red": [255, 0, 0],
             "Yellow": [255, 255, 0], "White": [255, 255, 255]
         }
+
+        self.x_grid = True
+        self.y_grid = True
+
         self.create_gui()
 
 
@@ -62,12 +67,13 @@ class MathExpression(QMainWindow):
 
     @Slot()
     def widget_settings(self):
-        pass
+        WindowSettings(self)
 
 
     @Slot()
     def window_about(self):
         WindowAbout()
+
 
     def create_new_graph(self, clear_plot_area):
         x_min, x_max = self.calculate_range(self.insert_x_min, self.insert_x_max)
@@ -221,7 +227,7 @@ class MathExpression(QMainWindow):
         layout_main.addLayout(layout_buttons_second)
         layout_main.addSpacing(20)
 
-        self.plot_widget.showGrid(x=True, y=True)
+        self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
         layout_main.addWidget(self.plot_widget)
         layout_main.addSpacing(20)
 
@@ -234,6 +240,12 @@ class MathExpression(QMainWindow):
 
         main_widget.setLayout(layout_main)
         main_widget.setContentsMargins(20, 0, 20, 0)
+
+
+    def apply_settings(self, x_grid, y_grid):
+        self.x_grid = x_grid
+        self.y_grid = y_grid
+        self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
 
 
 if __name__ == "__main__":

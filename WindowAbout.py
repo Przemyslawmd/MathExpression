@@ -1,11 +1,15 @@
 
+import sys
+
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QVBoxLayout, QLabel, QWidget
 
 
-class WindowAbout:
+class WindowAbout(QWidget):
 
     def __init__(self):
+        super().__init__()
+
         layout = QVBoxLayout()
         layout.setContentsMargins(30, 40, 0, 0)
         label = QLabel("Author:          przemyslawmd@gmail.com")
@@ -17,13 +21,12 @@ class WindowAbout:
         layout.addWidget(label)
         layout.addStretch()
 
-        widget = QWidget()
-        widget.setMinimumWidth(400)
-        widget.setMinimumHeight(150)
-        widget.setWindowModality(Qt.ApplicationModal)
-        widget.setLayout(layout)
-        widget.setGeometry(400, 400, 0, 0)
-        widget.show()
-        widget.exec_()
+        self.setMinimumWidth(400)
+        self.setMinimumHeight(150)
+        self.setWindowModality(Qt.ApplicationModal)
+        self.setLayout(layout)
+        self.setGeometry(400, 400, 0, 0)
+        self.show()
+        sys.exit(self.exec_())
 
 
