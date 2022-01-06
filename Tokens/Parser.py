@@ -49,11 +49,11 @@ class Parser:
                 self.__tokens.append(Token(self.three_chars_tokens.get(sub_str)))
                 self.__index += 3
                 return
-            else:
-                raise Exception(
-                    f"Parser error: improper symbol between numbers {self.__index + 1} and {self.__index + 3}")
+        if expression_len - self.__index >= 4 and self.__expression[self.__index: self.__index + 4] == 'sqrt':
+            self.__tokens.append(Token(TokenValue.ROOT))
+            self.__index += 4
         else:
-            raise Exception(f"Parser error: improper symbol between numbers {self.__index + 1} and {self.__index + 3}")
+            raise Exception(f"Parser error: improper symbol between numbers {self.__index + 1} and {self.__index + 4}")
 
 
     def check_brackets(self, current_char):
@@ -68,7 +68,7 @@ class Parser:
                 self.__tokens.append(Token(TokenValue.BRACKET_RIGHT))
         else:
             self.__bracket_validator += 1
-            if self.__index > 0 and self.__expression[self.__index - 1] not in ['(', ')', '+', '-', '*', '/', 's', 'n','g']:
+            if self.__index > 0 and self.__expression[self.__index - 1] not in ['(', ')', '+', '-', '*', '/', 's', 'n','g', 't']:
                 self.__tokens.append(Token(TokenValue.MULTIPLICATION))
             self.__tokens.append(Token(TokenValue.BRACKET_LEFT))
         self.__index += 1
@@ -135,10 +135,6 @@ class Parser:
                     self.check_multiple_char_token()
                 except Exception as exc:
                     raise exc
-                continue
-            if current_char == "\u221A":
-                self.__tokens.append(Token(TokenValue.ROOT))
-                self.__index += 1
                 continue
             if current_char == '(' or current_char == ')':
                 try:

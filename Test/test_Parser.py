@@ -177,6 +177,33 @@ class TestParser(TestCase):
         self.check_token(tokens[18], 0,  TokenValue.X)
 
 
+    def test_expression_11(self):
+        tokens = Parser("sqrtx + sqrt12").parse()
+        assert len(tokens) == 5
+        self.check_token(tokens[0], 0, TokenValue.ROOT)
+        self.check_token(tokens[1], 0, TokenValue.X)
+        self.check_token(tokens[2], 0, TokenValue.PLUS)
+        self.check_token(tokens[3], 0, TokenValue.ROOT)
+        self.check_token(tokens[4], 12, TokenValue.NUMBER)
+
+
+    def test_expression_12(self):
+        tokens = Parser("sqrt(x + 4) + sqrt(sinx)").parse()
+        assert len(tokens) == 12
+        self.check_token(tokens[0], 0, TokenValue.ROOT)
+        self.check_token(tokens[1], 0, TokenValue.BRACKET_LEFT)
+        self.check_token(tokens[2], 0, TokenValue.X)
+        self.check_token(tokens[3], 0, TokenValue.PLUS)
+        self.check_token(tokens[4], 4, TokenValue.NUMBER)
+        self.check_token(tokens[5], 0, TokenValue.BRACKET_RIGHT)
+        self.check_token(tokens[6], 0, TokenValue.PLUS)
+        self.check_token(tokens[7], 0, TokenValue.ROOT)
+        self.check_token(tokens[8], 0, TokenValue.BRACKET_LEFT)
+        self.check_token(tokens[9], 0, TokenValue.SINE)
+        self.check_token(tokens[10], 0, TokenValue.X)
+        self.check_token(tokens[11], 0, TokenValue.BRACKET_RIGHT)
+
+
     def test_expression_with_negative_1(self):
         tokens = Parser("(-x - 3)4").parse()
         assert len(tokens) == 7
@@ -233,7 +260,7 @@ class TestParser(TestCase):
         with self.assertRaises(Exception) as exc:
             Parser("tg45 * cor30 - 3").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parser error: improper symbol between numbers 6 and 8")
+        self.assertEqual(str(error), "Parser error: improper symbol between numbers 6 and 9")
 
 
     def test_improper_expression_4(self):
