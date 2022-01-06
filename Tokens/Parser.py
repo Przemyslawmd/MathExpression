@@ -20,6 +20,12 @@ class Parser:
             '^': TokenValue.POWER
         }
 
+        self.three_chars_tokens = {
+            'cos': TokenValue.COSINE,
+            'ctg': TokenValue.COTANGENT,
+            'log': TokenValue.LOG,
+            'sin': TokenValue.SINE,
+        }
 
     def add_number(self):
         number = int(self.__expression[self.__index], 16)
@@ -31,29 +37,23 @@ class Parser:
         self.__index += shift
 
 
-    def check_three_char_token(self):
-        if self.__index + 1 > len(self.__expression):
-            raise Exception(f"Parser error: improper symbol at number {self.__index}")
-        sub_str = self.__expression[self.__index: self.__index + 3]
-        if sub_str == "cos":
-            self.__tokens.append(Token(TokenValue.COSINE))
-        elif sub_str == "ctg":
-            self.__tokens.append(Token(TokenValue.COTANGENT))
-        elif sub_str == "sin":
-            self.__tokens.append(Token(TokenValue.SINE))
-        elif sub_str == "log":
-            self.__tokens.append(Token(TokenValue.LOG))
+    def check_multiple_char_token(self):
+        expression_len = len(self.__expression)
+        if expression_len - self.__index >= 2 and self.__expression[self.__index: self.__index + 2] == 'tg':
+            self.__tokens.append(Token(TokenValue.TANGENT))
+            self.__index += 2
+            return
+        if expression_len - self.__index >= 3:
+            sub_str = self.__expression[self.__index: self.__index + 3]
+            if sub_str in self.three_chars_tokens.keys():
+                self.__tokens.append(Token(self.three_chars_tokens.get(sub_str)))
+                self.__index += 3
+                return
+            else:
+                raise Exception(
+                    f"Parser error: improper symbol between numbers {self.__index + 1} and {self.__index + 3}")
         else:
             raise Exception(f"Parser error: improper symbol between numbers {self.__index + 1} and {self.__index + 3}")
-        self.__index += 3
-
-
-    def check_tg(self):
-        if self.__expression[self.__index + 1] == 'g':
-            self.__tokens.append(Token(TokenValue.TANGENT))
-        else:
-            raise Exception(f"Parser error: improper symbol at number {self.__index + 1}")
-        self.__index += 2
 
 
     def check_brackets(self, current_char):
@@ -130,15 +130,9 @@ class Parser:
             if current_char.isdigit():
                 self.add_number()
                 continue
-            if current_char in ['c', 's', 'l']:
+            if current_char in ['c', 's', 'l', 't']:
                 try:
-                    self.check_three_char_token()
-                except Exception as exc:
-                    raise exc
-                continue
-            if current_char == 't':
-                try:
-                    self.check_tg()
+                    self.check_multiple_char_token()
                 except Exception as exc:
                     raise exc
                 continue
