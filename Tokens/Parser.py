@@ -11,7 +11,7 @@ class Parser:
         self.__bracket_validator = 0
         self.__index = 0
 
-        self.other_symbols_map = {
+        self.one_char_tokens = {
             '+': TokenValue.PLUS,
             '-': TokenValue.MINUS,
             '*': TokenValue.MULTIPLICATION,
@@ -182,12 +182,9 @@ class Parser:
                     raise exc
                 continue
             else:
-                token_symbol = self.other_symbols_map.get(current_char)
+                token_symbol = self.one_char_tokens.get(current_char)
                 if token_symbol is None:
                     raise Exception(f'Parser error: improper symbol at number {self.__index + 1}')
-                elif token_symbol is TokenValue.X:
-                    self.__tokens.append(Token(TokenValue.X))
-                    self.__index += 1
                 elif token_symbol is TokenValue.MINUS:
                     try:
                         self.check_negative()
