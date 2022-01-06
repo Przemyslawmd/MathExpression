@@ -16,7 +16,8 @@ class Parser:
             '-': TokenValue.MINUS,
             '*': TokenValue.MULTIPLICATION,
             '/': TokenValue.DIVISION,
-            'x': TokenValue.X
+            'x': TokenValue.X,
+            '^': TokenValue.POWER
         }
 
 
@@ -166,10 +167,6 @@ class Parser:
                     self.check_log()
                 except Exception as exc:
                     raise exc
-                continue
-            if current_char == '^':
-                self.__tokens.append(Token(TokenValue.POWER))
-                self.__index += 1
                 continue
             if current_char == "\u221A":
                 self.__tokens.append(Token(TokenValue.ROOT))
