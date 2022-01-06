@@ -233,7 +233,7 @@ class TestParser(TestCase):
         with self.assertRaises(Exception) as exc:
             Parser("tg45 * cor30 - 3").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parser error: improper symbol at number 7 or 8")
+        self.assertEqual(str(error), "Parser error: improper symbol between numbers 6 and 8")
 
 
     def test_improper_expression_4(self):
