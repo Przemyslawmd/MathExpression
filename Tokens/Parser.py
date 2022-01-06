@@ -31,7 +31,7 @@ class Parser:
         self.__index += shift
 
 
-    def check_ctg_or_cos(self):
+    def check_three_char_token(self):
         if self.__index + 1 > len(self.__expression):
             raise Exception(f"Parser error: improper symbol at number {self.__index}")
         sub_str = self.__expression[self.__index: self.__index + 3]
@@ -39,18 +39,12 @@ class Parser:
             self.__tokens.append(Token(TokenValue.COSINE))
         elif sub_str == "ctg":
             self.__tokens.append(Token(TokenValue.COTANGENT))
+        elif sub_str == "sin":
+            self.__tokens.append(Token(TokenValue.SINE))
+        elif sub_str == "log":
+            self.__tokens.append(Token(TokenValue.LOG))
         else:
             raise Exception(f"Parser error: improper symbol between numbers {self.__index + 1} and {self.__index + 3}")
-        self.__index += 3
-
-
-    def check_sine(self):
-        if self.__index + 1 > len(self.__expression):
-            raise Exception(f"Parser error: improper symbol at number {self.__index}")
-        if self.__expression[self.__index: self.__index + 3] == "sin":
-            self.__tokens.append(Token(TokenValue.SINE))
-        else:
-            raise Exception(f"Parser error: improper symbol between numbers: {self.__index + 1} or {self.__index + 3}")
         self.__index += 3
 
 
@@ -60,14 +54,6 @@ class Parser:
         else:
             raise Exception(f"Parser error: improper symbol at number {self.__index + 1}")
         self.__index += 2
-
-
-    def check_log(self):
-        if self.__expression[self.__index: self.__index + 3] == "log":
-            self.__tokens.append(Token(TokenValue.LOG))
-        else:
-            raise Exception(f"Parser error: improper symbol between numbers {self.__index + 1} or {self.__index + 3}")
-        self.__index += 3
 
 
     def check_brackets(self, current_char):
@@ -144,27 +130,15 @@ class Parser:
             if current_char.isdigit():
                 self.add_number()
                 continue
-            if current_char == 'c':
+            if current_char in ['c', 's', 'l']:
                 try:
-                    self.check_ctg_or_cos()
-                except Exception as exc:
-                    raise exc
-                continue
-            if current_char == 's':
-                try:
-                    self.check_sine()
+                    self.check_three_char_token()
                 except Exception as exc:
                     raise exc
                 continue
             if current_char == 't':
                 try:
                     self.check_tg()
-                except Exception as exc:
-                    raise exc
-                continue
-            if current_char == 'l':
-                try:
-                    self.check_log()
                 except Exception as exc:
                     raise exc
                 continue
