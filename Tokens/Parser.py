@@ -69,30 +69,31 @@ class Parser:
         self.__index += 3
 
 
-    def check_brackets(self, index):
-        if self.__expression[index] == ')':
+    def check_brackets(self, current_char):
+        if current_char == ')':
             self.__bracket_validator -= 1
             if self.__bracket_validator < 0:
-                raise Exception(f"Parser error: improper bracket at number {index + 1}")
-            if len(self.__expression) > index + 1 and self.__expression[index + 1] not in [')', '+', '-', '*', '/']:
+                raise Exception(f"Parser error: improper bracket at number {self.__index + 1}")
+            if len(self.__expression) > self.__index + 1 and self.__expression[self.__index + 1] not in [')', '+', '-', '*', '/']:
                 self.__tokens.append(Token(TokenValue.BRACKET_RIGHT))
                 self.__tokens.append(Token(TokenValue.MULTIPLICATION))
             else:
                 self.__tokens.append(Token(TokenValue.BRACKET_RIGHT))
-        elif self.__expression[index] == '(':
+        else:
             self.__bracket_validator += 1
-            if index > 0 and self.__expression[index - 1] not in ['(', ')', '+', '-', '*', '/', 's', 'n','g']:
+            if self.__index > 0 and self.__expression[self.__index - 1] not in ['(', ')', '+', '-', '*', '/', 's', 'n','g']:
                 self.__tokens.append(Token(TokenValue.MULTIPLICATION))
             self.__tokens.append(Token(TokenValue.BRACKET_LEFT))
+        self.__index += 1
 
 
-    def check_negative(self, index):
-        if index == 0 or self.__tokens[len(self.__tokens) - 1].value in [TokenValue.BRACKET_LEFT,
-                                                                         TokenValue.MULTIPLICATION,
-                                                                         TokenValue.DIVISION,
-                                                                         TokenValue.PLUS]:
+    def check_negative(self):
+        if self.__index == 0 or self.__tokens[len(self.__tokens) - 1].value in [TokenValue.BRACKET_LEFT,
+                                                                                TokenValue.MULTIPLICATION,
+                                                                                TokenValue.DIVISION,
+                                                                                TokenValue.PLUS]:
             self.__tokens.append(Token(TokenValue.NEGATIVE))
-        elif index == len(self.__expression) - 1 or self.__expression[index + 1] in [')', '*', '/']:
+        elif self.__index == len(self.__expression) - 1 or self.__expression[self.__index + 1] in [')', '*', '/']:
             raise Exception("Parser error: improper usage of negative symbol")
         else:
             self.__tokens.append(Token(TokenValue.MINUS))
@@ -176,10 +177,9 @@ class Parser:
                 continue
             if current_char == '(' or current_char == ')':
                 try:
-                    self.check_brackets(self.__index)
+                    self.check_brackets(current_char)
                 except Exception as exc:
                     raise exc
-                self.__index += 1
                 continue
             else:
                 token_symbol = self.other_symbols_map.get(current_char)
@@ -190,7 +190,7 @@ class Parser:
                     self.__index += 1
                 elif token_symbol is TokenValue.MINUS:
                     try:
-                        self.check_negative(self.__index)
+                        self.check_negative()
                     except Exception as e:
                         raise Exception(e)
                 else:
