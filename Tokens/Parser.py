@@ -27,6 +27,7 @@ class Parser:
             'sin': TokenValue.SINE,
         }
 
+
     def add_number(self):
         number = int(self.__expression[self.__index], 16)
         shift = 1
@@ -85,19 +86,18 @@ class Parser:
 
     def add_multiplication(self):
         indices = []
-        for index, token in enumerate(self.__tokens):
-            if token.value == TokenValue.BRACKET_RIGHT and index <= (len(self.__tokens) -2):
+        for index, token in enumerate(self.__tokens[:-1]):
+            if token.value in [TokenValue.BRACKET_RIGHT, TokenValue.X, TokenValue.NUMBER]:
                 next_token = self.__tokens[index + 1]
-                if next_token.value not in [TokenValue.PLUS, TokenValue.MINUS, TokenValue.MULTIPLICATION, TokenValue.DIVISION, TokenValue.BRACKET_RIGHT]:
+                if next_token.value in [TokenValue.SINE,
+                                        TokenValue.COSINE,
+                                        TokenValue.TANGENT,
+                                        TokenValue.COTANGENT,
+                                        TokenValue.X,
+                                        TokenValue.NUMBER,
+                                        TokenValue.BRACKET_LEFT,
+                                        TokenValue.ROOT]:
                     indices.append(index + 1)
-
-            if token.value in [TokenValue.NUMBER, TokenValue.X] and\
-                    index <= (len(self.__tokens) - 2):
-                next_token = self.__tokens[index + 1]
-                if next_token.value in [TokenValue.X, TokenValue.NUMBER, TokenValue.BRACKET_LEFT] or\
-                        next_token.value in TokenUtils.trigonometry:
-                    indices.append(index + 1)
-
         index_shift = 0
         for index in indices:
             self.__tokens.insert(index + index_shift, Token(TokenValue.MULTIPLICATION))
