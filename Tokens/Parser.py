@@ -43,18 +43,19 @@ class Parser:
         if expression_len - index >= 2 and self.expression[index: index + 2] == 'tg':
             self.tokens.append(Token(TokenValue.TANGENT))
             self.index += 2
-            return
+            return True
         if expression_len - index >= 3:
             sub_str = self.expression[index: index + 3]
             if sub_str in self.three_chars_tokens.keys():
                 self.tokens.append(Token(self.three_chars_tokens.get(sub_str)))
                 self.index += 3
-                return
+                return True
         if expression_len - index >= 4 and self.expression[index: index + 4] == 'sqrt':
             self.tokens.append(Token(TokenValue.ROOT))
             self.index += 4
+            return True
         else:
-            raise Exception(f"Parser error: improper symbol between numbers {index + 1} and {index + 4}")
+            return False
 
 
     def check_brackets(self, current_char):
@@ -77,10 +78,11 @@ class Parser:
                                                                           TokenValue.PLUS]:
             self.tokens.append(Token(TokenValue.NEGATIVE))
         elif self.index == len(self.expression) - 1 or self.expression[self.index + 1] in [')', '*', '/']:
-            raise Exception("Parser error: improper usage of negative symbol")
+            return False
         else:
             self.tokens.append(Token(TokenValue.MINUS))
         self.index += 1
+        return True
 
 
     def add_multiplication(self):
@@ -116,12 +118,13 @@ class Parser:
                 elif token.value is TokenValue.X:
                     self.tokens[index] = Token(TokenValue.X_NEGATIVE)
                 else:
-                    raise Exception("Parser error: improper usage of negative symbol")
+                    return False
                 is_current_token_negative = False
 
         for i in range(len(self.tokens) - 1, -1, -1):
             if self.tokens[i].value is TokenValue.NEGATIVE:
                 del self.tokens[i]
+        return True
 
 
     def parse(self):
@@ -131,10 +134,8 @@ class Parser:
                 self.add_number()
                 continue
             if current_char in ['c', 's', 'l', 't']:
-                try:
-                    self.check_multiple_char_token()
-                except Exception as exc:
-                    raise exc
+                if not self.check_multiple_char_token():
+                    raise Exception(f"Parser error: improper symbol between numbers {self.index + 1} and {self.index + 4}")
                 continue
             if current_char == '(' or current_char == ')':
                 if not self.check_brackets(current_char):
@@ -145,23 +146,17 @@ class Parser:
                 if token_symbol is None:
                     raise Exception(f'Parser error: improper symbol at number {self.index + 1}')
                 elif token_symbol is TokenValue.MINUS:
-                    try:
-                        self.check_negative()
-                    except Exception as e:
-                        raise Exception(e)
+                    if not self.check_negative():
+                        raise Exception("Parser error: improper usage of negative symbol")
                 else:
                     self.tokens.append(Token(token_symbol))
                     self.index += 1
 
         if self.bracket_validator != 0:
             raise Exception("Parser error: improper brackets")
-
         self.add_multiplication()
-
-        try:
-            self.remove_negative_tokens()
-        except Exception as e:
-            raise Exception(e)
+        if not self.remove_negative_tokens():
+            raise Exception("Parser error: improper usage of negative symbol")
 
         return self.tokens
 
