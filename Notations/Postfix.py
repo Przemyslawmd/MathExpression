@@ -11,8 +11,8 @@ from collections import deque
 class Postfix:
 
     def __init__(self):
-        self.__stack = deque()
-        self.__postfix_list = []
+        self.stack = deque()
+        self.postfix_list = []
 
 
     def create_postfix(self, tokens):
@@ -21,20 +21,20 @@ class Postfix:
                 self.process_operator(token)
             elif token.value in TokenUtils.bracket:
                 if token.value is TokenValue.BRACKET_LEFT:
-                    self.__stack.append(token)
+                    self.stack.append(token)
                 else:
                     self.process_bracket_right()
             else:
-                self.__postfix_list.append(token)
+                self.postfix_list.append(token)
 
-        while len(self.__stack) > 0:
-            self.__postfix_list.append(self.__stack.pop())
-        return self.__postfix_list
+        while len(self.stack) > 0:
+            self.postfix_list.append(self.stack.pop())
+        return self.postfix_list
 
 
     def process_operator(self, token):
-        if len(self.__stack) == 0:
-            self.__stack.append(token)
+        if len(self.stack) == 0:
+            self.stack.append(token)
             return
 
         if token.value in (TokenValue.PLUS, TokenValue.MINUS):
@@ -50,28 +50,28 @@ class Postfix:
 
 
     def process_stack_operator(self, token, token_values):
-        current_stack = None if len(self.__stack) == 0 else self.__stack.pop()
+        current_stack = None if len(self.stack) == 0 else self.stack.pop()
         while current_stack is not None and current_stack.value in token_values:
-            self.__postfix_list.append(current_stack)
-            current_stack = None if len(self.__stack) == 0 else self.__stack.pop()
+            self.postfix_list.append(current_stack)
+            current_stack = None if len(self.stack) == 0 else self.stack.pop()
         if current_stack is not None:
-            self.__stack.append(current_stack)
-        self.__stack.append(token)
+            self.stack.append(current_stack)
+        self.stack.append(token)
 
 
     def process_bracket_right(self):
-        current_stack = self.__stack.pop()
+        current_stack = self.stack.pop()
         while current_stack.value is not TokenValue.BRACKET_LEFT:
-            self.__postfix_list.append(current_stack)
-            current_stack = self.__stack.pop()
+            self.postfix_list.append(current_stack)
+            current_stack = self.stack.pop()
 
 
     def calculate(self, min_x, max_x, x_precision=1.0):
         calculation_stack = []
-        for x in numpy.arange(min_x, max_x + 1, x_precision):
+        for _ in numpy.arange(min_x, max_x + 1, x_precision):
             calculation_stack.append(deque())
 
-        for token in self.__postfix_list:
+        for token in self.postfix_list:
             if token.value is TokenValue.NUMBER:
                 for calculation in calculation_stack:
                     calculation.append(token.number)
