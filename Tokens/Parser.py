@@ -20,6 +20,14 @@ class Parser:
             '^': TokenValue.POWER
         }
 
+        self.beginning_multi_char_tokens = ['c', 's', 'l', 't']
+
+        self.cosine_tokens = ['s', 'o', 'c']
+        self.cotangent_tokens = ['g', 't', 'c']
+        self.log_tokens = ['g', 'o', 'l']
+        self.root_tokens = ['t', 'r', 'q', 's']
+        self.sine_tokens = ['n', 'i', 's']
+        self.tangent_tokens = ['g', 't']
 
     def add_number(self):
         number = int(self.chars.pop(), 16)
@@ -28,29 +36,29 @@ class Parser:
         self.tokens.append(Token(TokenValue.NUMBER, number))
 
 
-    def check_multiple_char_token(self, current_char):
-        if len(self.chars) >= 2 and self.chars[-2:] == ['g', 't']:
+    def check_multiple_char_token(self):
+        if len(self.chars) >= 2 and self.chars[-2:] == self.tangent_tokens:
             self.tokens.append(Token(TokenValue.TANGENT))
             del self.chars[-2:]
             return True
         if len(self.chars) >= 3:
-            if self.chars[-3:] == ['s', 'o', 'c']:
+            if self.chars[-3:] == self.cosine_tokens:
                 self.tokens.append(Token(TokenValue.COSINE))
                 del self.chars[-3:]
                 return True
-            if self.chars[-3:] == ['g', 't', 'c']:
+            if self.chars[-3:] == self.cotangent_tokens:
                 self.tokens.append(Token(TokenValue.COTANGENT))
                 del self.chars[-3:]
                 return True
-            if self.chars[-3:] == ['n', 'i', 's']:
+            if self.chars[-3:] == self.sine_tokens:
                 self.tokens.append(Token(TokenValue.SINE))
                 del self.chars[-3:]
                 return True
-            if self.chars[-3:] == ['g', 'o', 'l']:
+            if self.chars[-3:] == self.log_tokens:
                 self.tokens.append(Token(TokenValue.LOG))
                 del self.chars[-3:]
                 return True
-        if len(self.chars) >= 4 and self.chars[-4:] == ['t', 'r', 'q', 's']:
+        if len(self.chars) >= 4 and self.chars[-4:] == self.root_tokens:
             self.tokens.append(Token(TokenValue.ROOT))
             del self.chars[-4:]
             return True
@@ -136,8 +144,8 @@ class Parser:
             if current_char.isdigit():
                 self.add_number()
                 continue
-            if current_char in ['c', 's', 'l', 't']:
-                if not self.check_multiple_char_token(current_char):
+            if current_char in self.beginning_multi_char_tokens:
+                if not self.check_multiple_char_token():
                     raise Exception(f"Parser error: improper symbol")
                 continue
             if current_char == '(' or current_char == ')':
