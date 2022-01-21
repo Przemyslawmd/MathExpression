@@ -67,18 +67,18 @@ class Parser:
         else:
             self.bracket_validator += 1
             self.tokens.append(Token(TokenValue.BRACKET_LEFT))
-        del self.chars[-1:]
+        del self.chars[-1]
         return True
 
 
     def check_negative(self):
-        del self.chars[-1:]
+        del self.chars[-1]
         if len(self.chars) == self.initial - 1 or self.tokens[len(self.tokens) - 1].value in [TokenValue.BRACKET_LEFT,
                                                                                               TokenValue.MULTIPLICATION,
                                                                                               TokenValue.DIVISION,
                                                                                               TokenValue.PLUS]:
             self.tokens.append(Token(TokenValue.NEGATIVE))
-        elif not self.chars or self.chars[-1:] in [')', '*', '/'] or (len(self.chars) == 1 and self.chars[0] in [')', '*', '/']):
+        elif not self.chars or self.chars[-1] in [')', '*', '/']:
             return False
         else:
             self.tokens.append(Token(TokenValue.MINUS))
@@ -153,7 +153,7 @@ class Parser:
                         raise Exception("Parser error: improper usage of negative symbol")
                 else:
                     self.tokens.append(Token(token_symbol))
-                    del self.chars[-1:]
+                    del self.chars[-1]
 
         if self.bracket_validator != 0:
             raise Exception("Parser error: improper brackets")
