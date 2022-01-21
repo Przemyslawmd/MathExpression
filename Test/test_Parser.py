@@ -253,21 +253,21 @@ class TestParser(TestCase):
         with self.assertRaises(Exception) as exc:
             Parser("12y + 4").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parser error: improper symbol at number 3")
+        self.assertEqual(str(error), "Parser error: improper symbol")
 
 
     def test_improper_expression_3(self):
         with self.assertRaises(Exception) as exc:
             Parser("tg45 * cor30 - 3").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parser error: improper symbol between numbers 6 and 9")
+        self.assertEqual(str(error), "Parser error: improper symbol")
 
 
     def test_improper_expression_4(self):
         with self.assertRaises(Exception) as exc:
             Parser(")4x(2x +1)").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parser error: improper bracket at number 1")
+        self.assertEqual(str(error), "Parser error: improper bracket")
 
 
     def test_improper_negative_expression_1(self):
@@ -289,5 +289,4 @@ class TestParser(TestCase):
             Parser("(5x + x)(5 + 3-)").parse()
         error = exc.exception
         self.assertEqual(str(error), "Parser error: improper usage of negative symbol")
-
 
