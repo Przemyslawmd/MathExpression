@@ -5,8 +5,7 @@ from Tokens.Token import Token, TokenValue
 class Parser:
 
     def __init__(self, expression):
-        self.expression = expression.replace(" ", '')
-        self.chars = [char for char in self.expression]
+        self.chars = [char for char in expression]
         self.initial = len(self.chars)
         self.chars.reverse()
         self.tokens = []
@@ -131,6 +130,9 @@ class Parser:
     def parse(self):
         while self.chars:
             current_char = self.chars[-1]
+            if current_char == ' ':
+                del self.chars[-1]
+                continue
             if current_char.isdigit():
                 self.add_number()
                 continue
