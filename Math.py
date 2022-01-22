@@ -97,7 +97,7 @@ class MathExpression(QMainWindow):
         if clear_plot_area is True:
             self.clear_plot_area()
 
-        x = numpy.arange(x_min, x_max + 1, self.x_precision)
+        x = numpy.arange(x_min, x_max + self.x_precision, self.x_precision)
         line_width = float(self.list_pen_width.currentText())
         line_color = self.penColors[self.list_pen_color.currentText()]
         self.plot_lines.append(self.plot_widget.plot(x, y, pen=pg.mkPen(line_color, width=line_width), symbol='x',

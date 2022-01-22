@@ -68,7 +68,7 @@ class Postfix:
 
     def calculate(self, min_x, max_x, x_precision=1.0):
         calculation_stack = []
-        for _ in numpy.arange(min_x, max_x + 1, x_precision):
+        for _ in numpy.arange(min_x, max_x + x_precision, x_precision):
             calculation_stack.append(deque())
 
         for token in self.postfix_list:
