@@ -253,7 +253,7 @@ class TestParser(TestCase):
         with self.assertRaises(Exception) as exc:
             Parser("12y + 4").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parser error: improper symbol")
+        self.assertEqual(str(error), "Error: improper symbol at position 3")
 
 
     def test_improper_expression_3(self):
@@ -267,7 +267,7 @@ class TestParser(TestCase):
         with self.assertRaises(Exception) as exc:
             Parser(")4x(2x +1)").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parser error: improper bracket")
+        self.assertEqual(str(error), "Error: improper bracket at position 1")
 
 
     def test_improper_negative_expression_1(self):

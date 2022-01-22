@@ -6,7 +6,7 @@ class Parser:
 
     def __init__(self, expression):
         self.chars = [char for char in expression]
-        self.initial = len(self.chars)
+        self.initial_len = len(self.chars)
         self.chars.reverse()
         self.tokens = []
         self.bracket_validator = 0
@@ -20,45 +20,47 @@ class Parser:
             '^': TokenValue.POWER
         }
 
-        self.beginning_multi_char_tokens = ['c', 's', 'l', 't']
+        # to recognize the beginning of multi chars tokens
+        self.beginning_chars = ['c', 's', 'l', 't']
 
-        self.cosine_tokens = ['s', 'o', 'c']
-        self.cotangent_tokens = ['g', 't', 'c']
-        self.log_tokens = ['g', 'o', 'l']
-        self.root_tokens = ['t', 'r', 'q', 's']
-        self.sine_tokens = ['n', 'i', 's']
-        self.tangent_tokens = ['g', 't']
+        self.cosine_chars = ['s', 'o', 'c']
+        self.cotangent_chars = ['g', 't', 'c']
+        self.log_chars = ['g', 'o', 'l']
+        self.root_chars = ['t', 'r', 'q', 's']
+        self.sine_chars = ['n', 'i', 's']
+        self.tangent_chars = ['g', 't']
+
 
     def add_number(self):
         number = int(self.chars.pop(), 16)
         while self.chars and self.chars[-1].isdigit():
-            number = number * 10 + int(self.chars.pop())
+            number = number * 10 + int(self.chars.pop(), 16)
         self.tokens.append(Token(TokenValue.NUMBER, number))
 
 
     def check_multiple_char_token(self):
-        if len(self.chars) >= 2 and self.chars[-2:] == self.tangent_tokens:
+        if len(self.chars) >= 2 and self.chars[-2:] == self.tangent_chars:
             self.tokens.append(Token(TokenValue.TANGENT))
             del self.chars[-2:]
             return True
         if len(self.chars) >= 3:
-            if self.chars[-3:] == self.cosine_tokens:
+            if self.chars[-3:] == self.cosine_chars:
                 self.tokens.append(Token(TokenValue.COSINE))
                 del self.chars[-3:]
                 return True
-            if self.chars[-3:] == self.cotangent_tokens:
+            if self.chars[-3:] == self.cotangent_chars:
                 self.tokens.append(Token(TokenValue.COTANGENT))
                 del self.chars[-3:]
                 return True
-            if self.chars[-3:] == self.sine_tokens:
+            if self.chars[-3:] == self.sine_chars:
                 self.tokens.append(Token(TokenValue.SINE))
                 del self.chars[-3:]
                 return True
-            if self.chars[-3:] == self.log_tokens:
+            if self.chars[-3:] == self.log_chars:
                 self.tokens.append(Token(TokenValue.LOG))
                 del self.chars[-3:]
                 return True
-        if len(self.chars) >= 4 and self.chars[-4:] == self.root_tokens:
+        if len(self.chars) >= 4 and self.chars[-4:] == self.root_chars:
             self.tokens.append(Token(TokenValue.ROOT))
             del self.chars[-4:]
             return True
@@ -81,10 +83,10 @@ class Parser:
 
     def check_negative(self):
         del self.chars[-1]
-        if len(self.chars) == self.initial - 1 or self.tokens[len(self.tokens) - 1].value in [TokenValue.BRACKET_LEFT,
-                                                                                              TokenValue.MULTIPLICATION,
-                                                                                              TokenValue.DIVISION,
-                                                                                              TokenValue.PLUS]:
+        if len(self.chars) == self.initial_len - 1 or self.tokens[-1].value in [TokenValue.BRACKET_LEFT,
+                                                                                TokenValue.MULTIPLICATION,
+                                                                                TokenValue.DIVISION,
+                                                                                TokenValue.PLUS]:
             self.tokens.append(Token(TokenValue.NEGATIVE))
         elif not self.chars or self.chars[-1] in [')', '*', '/']:
             return False
@@ -144,18 +146,20 @@ class Parser:
             if current_char.isdigit():
                 self.add_number()
                 continue
-            if current_char in self.beginning_multi_char_tokens:
+            if current_char in self.beginning_chars:
                 if not self.check_multiple_char_token():
                     raise Exception(f"Parser error: improper symbol")
                 continue
             if current_char == '(' or current_char == ')':
                 if not self.check_brackets(current_char):
-                    raise Exception(f"Parser error: improper bracket")
+                    position = self.initial_len - len(self.chars) + 1
+                    raise Exception(f"Error: improper bracket at position {position}")
                 continue
             else:
                 token_symbol = self.one_char_tokens.get(current_char)
                 if token_symbol is None:
-                    raise Exception(f"Parser error: improper symbol")
+                    position = self.initial_len - len(self.chars) + 1
+                    raise Exception(f"Error: improper symbol at position {position}")
                 elif token_symbol is TokenValue.MINUS:
                     if not self.check_negative():
                         raise Exception("Parser error: improper usage of negative symbol")
