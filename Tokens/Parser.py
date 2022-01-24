@@ -1,6 +1,6 @@
 
 from Tokens.Token import Token, TokenValue
-
+from Tokens.TokenUtils import TokenUtils
 
 class Parser:
 
@@ -116,20 +116,23 @@ class Parser:
 
 
     def remove_negative_tokens(self):
-        is_current_token_negative = False
+        is_token_negative = False
         for index, token in enumerate(self.tokens):
             if token.value is TokenValue.NEGATIVE:
-                is_current_token_negative = True
+                is_token_negative = True
                 continue
-            if is_current_token_negative:
+            if is_token_negative:
                 if token.value is TokenValue.NUMBER:
                     number = token.number
                     self.tokens[index] = Token(TokenValue.NUMBER, number * -1)
                 elif token.value is TokenValue.X:
                     self.tokens[index] = Token(TokenValue.X_NEGATIVE)
+                elif token.value is TokenValue.BRACKET_LEFT or token.value in TokenUtils.trigonometry:
+                    self.tokens.insert(index, Token(TokenValue.MULTIPLICATION))
+                    self.tokens.insert(index, Token(TokenValue.NUMBER, -1))
                 else:
                     return False
-                is_current_token_negative = False
+                is_token_negative = False
 
         for i in range(len(self.tokens) - 1, -1, -1):
             if self.tokens[i].value is TokenValue.NEGATIVE:

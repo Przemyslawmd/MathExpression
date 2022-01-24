@@ -204,7 +204,7 @@ class TestParser(TestCase):
         self.check_token(tokens[11], 0, TokenValue.BRACKET_RIGHT)
 
 
-    def test_expression_with_negative_1(self):
+    def test_expression_negative_1(self):
         tokens = Parser("(-x - 3)4").parse()
         assert len(tokens) == 7
         self.check_token(tokens[0], 0, TokenValue.BRACKET_LEFT)
@@ -216,7 +216,7 @@ class TestParser(TestCase):
         self.check_token(tokens[6], 4, TokenValue.NUMBER)
 
 
-    def test_expression_with_negative_2(self):
+    def test_expression_negative_2(self):
         tokens = Parser("(x+3)(-5)").parse()
         assert len(tokens) == 9
         self.check_token(tokens[0],  0, TokenValue.BRACKET_LEFT)
@@ -230,7 +230,7 @@ class TestParser(TestCase):
         self.check_token(tokens[8],  0, TokenValue.BRACKET_RIGHT)
 
 
-    def test_expression_with_negative_3(self):
+    def test_expression_negative_3(self):
         tokens = Parser("-x -2(  -7)").parse()
         assert len(tokens) == 7
         self.check_token(tokens[0],  0, TokenValue.X_NEGATIVE)
@@ -239,6 +239,18 @@ class TestParser(TestCase):
         self.check_token(tokens[3],  0, TokenValue.MULTIPLICATION)
         self.check_token(tokens[4],  0, TokenValue.BRACKET_LEFT)
         self.check_token(tokens[5], -7, TokenValue.NUMBER)
+        self.check_token(tokens[6],  0, TokenValue.BRACKET_RIGHT)
+
+
+    def test_expression_negative_4(self):
+        tokens = Parser("-(x^2)").parse()
+        assert len(tokens) == 7
+        self.check_token(tokens[0], -1, TokenValue.NUMBER)
+        self.check_token(tokens[1],  0, TokenValue.MULTIPLICATION)
+        self.check_token(tokens[2],  0, TokenValue.BRACKET_LEFT)
+        self.check_token(tokens[3],  0, TokenValue.X)
+        self.check_token(tokens[4],  0, TokenValue.POWER)
+        self.check_token(tokens[5],  2, TokenValue.NUMBER)
         self.check_token(tokens[6],  0, TokenValue.BRACKET_RIGHT)
 
 
