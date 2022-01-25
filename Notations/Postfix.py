@@ -12,7 +12,7 @@ class Postfix:
 
     def __init__(self):
         self.stack = deque()
-        self.postfix_list = []
+        self.postfix = deque()
 
 
     def create_postfix(self, tokens):
@@ -25,11 +25,11 @@ class Postfix:
                 else:
                     self.process_bracket_right()
             else:
-                self.postfix_list.append(token)
+                self.postfix.append(token)
 
         while len(self.stack) > 0:
-            self.postfix_list.append(self.stack.pop())
-        return self.postfix_list
+            self.postfix.append(self.stack.pop())
+        return self.postfix
 
 
     def process_operator(self, token):
@@ -52,7 +52,7 @@ class Postfix:
     def process_stack_operator(self, token, token_values):
         current_stack = None if len(self.stack) == 0 else self.stack.pop()
         while current_stack is not None and current_stack.value in token_values:
-            self.postfix_list.append(current_stack)
+            self.postfix.append(current_stack)
             current_stack = None if len(self.stack) == 0 else self.stack.pop()
         if current_stack is not None:
             self.stack.append(current_stack)
@@ -62,16 +62,16 @@ class Postfix:
     def process_bracket_right(self):
         current_stack = self.stack.pop()
         while current_stack.value is not TokenValue.BRACKET_LEFT:
-            self.postfix_list.append(current_stack)
+            self.postfix.append(current_stack)
             current_stack = self.stack.pop()
 
 
     def calculate(self, min_x, max_x, x_precision=1.0):
-        calculation_stack = []
+        calculation_stack = deque()
         for _ in numpy.arange(min_x, max_x + x_precision, x_precision):
             calculation_stack.append(deque())
 
-        for token in self.postfix_list:
+        for token in self.postfix:
             if token.value is TokenValue.NUMBER:
                 for calculation in calculation_stack:
                     calculation.append(token.number)
@@ -117,12 +117,13 @@ class Postfix:
             elif token.value is TokenValue.LOG:
                 for calculation in calculation_stack:
                     number = calculation.pop()
+                    if number <= 0:
+                        raise Exception("Error: logarithm calculation for not positive number")
                     calculation.append(math.log(number, 10))
 
         results = []
         for calculation in calculation_stack:
             results.append(round(calculation[0], 2))
-
         return results
 
 
