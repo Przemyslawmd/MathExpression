@@ -2,10 +2,11 @@
 import sys
 
 import numpy
-from PySide2.QtWidgets import (QApplication, QWidget, QLabel, QComboBox, QMainWindow, QAction, QToolBar)
-from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout)
-from PySide2.QtWidgets import (QPushButton, QLineEdit, QTextEdit)
-from PySide2.QtCore import Slot
+from PySide6.QtWidgets import (QApplication, QWidget, QLabel, QComboBox, QMainWindow, QToolBar)
+from PySide6.QtWidgets import (QVBoxLayout, QHBoxLayout)
+from PySide6.QtWidgets import (QPushButton, QLineEdit, QTextEdit)
+from PySide6.QtCore import Slot
+from PySide6.QtGui import QAction
 import pyqtgraph as pg
 
 from Controller import Controller
