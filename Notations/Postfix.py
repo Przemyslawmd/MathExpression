@@ -112,14 +112,13 @@ class Postfix:
                         calculation.append(math.tan(radian))
                     elif token.value == TokenValue.COTANGENT:
                         sine = math.sin(radian)
-                        value = math.nan if round(sine, 2) == 0.00 else math.cos(radian) / sine
-                        calculation.append(value)
+                        result = math.nan if round(sine, 2) == 0.00 else math.cos(radian) / sine
+                        calculation.append(result)
             elif token.value is TokenValue.LOG:
                 for calculation in calculation_stack:
                     number = calculation.pop()
-                    if number <= 0:
-                        raise Exception("Error: logarithm calculation for not positive number")
-                    calculation.append(math.log(number, 10))
+                    result = math.log(number, 10) if number > 0 else math.nan
+                    calculation.append(result)
 
         results = []
         for calculation in calculation_stack:
