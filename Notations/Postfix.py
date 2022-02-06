@@ -14,6 +14,20 @@ class Postfix:
         self.stack = deque()
         self.postfix = deque()
 
+        self.two_args_actions = {
+            TokenValue.DIVISION: lambda a, b: math.nan if round(a, 2) == 0.00 else b / a,
+            TokenValue.MINUS: lambda a, b: b - a,
+            TokenValue.MULTIPLICATION: lambda a, b: a * b,
+            TokenValue.PLUS: lambda a, b: a + b,
+            TokenValue.POWER: lambda a, b: math.pow(b, a),
+        }
+
+        self.one_arg_actions = {
+            TokenValue.COSINE: lambda a: math.cos(a),
+            TokenValue.COTANGENT: lambda a: math.nan if round(math.sin(a), 2) == 0.00 else math.cos(a) / math.sin(a),
+            TokenValue.SINE: lambda a: math.sin(a),
+            TokenValue.TANGENT: lambda a: math.tan(a),
+        }
 
     def create_postfix(self, tokens):
         for token in tokens:
@@ -86,33 +100,14 @@ class Postfix:
                     number -= x_precision
             elif token.value in TokenUtils.operation or token.value is TokenValue.POWER:
                 for calculation in calculation_stack:
-                    number_1 = calculation.pop()
-                    number_2 = calculation.pop()
-                    if token.value is TokenValue.PLUS:
-                        calculation.append(number_1 + number_2)
-                    elif token.value is TokenValue.MINUS:
-                        calculation.append(number_2 - number_1)
-                    elif token.value is TokenValue.MULTIPLICATION:
-                        calculation.append(number_1 * number_2)
-                    elif token.value is TokenValue.DIVISION:
-                        value = math.nan if round(number_1, 2) == 0.00 else number_2 / number_1
-                        calculation.append(value)
-                    elif token.value is TokenValue.POWER:
-                        calculation.append(math.pow(number_2, number_1))
+                    num_1 = calculation.pop()
+                    num_2 = calculation.pop()
+                    calculation.append(self.two_args_actions[token.value](num_1, num_2))
             elif token.value in TokenUtils.trigonometry:
                 for calculation in calculation_stack:
-                    number = calculation.pop()
-                    radian = math.radians(number)
-                    if token.value == TokenValue.SINE:
-                        calculation.append(math.sin(radian))
-                    elif token.value == TokenValue.COSINE:
-                        calculation.append(math.cos(radian))
-                    elif token.value == TokenValue.TANGENT:
-                        calculation.append(math.tan(radian))
-                    elif token.value == TokenValue.COTANGENT:
-                        sine = math.sin(radian)
-                        result = math.nan if round(sine, 2) == 0.00 else math.cos(radian) / sine
-                        calculation.append(result)
+                    num = calculation.pop()
+                    radian = math.radians(num)
+                    calculation.append(self.one_arg_actions[token.value](radian))
             elif token.value is TokenValue.LOG:
                 for calculation in calculation_stack:
                     number = calculation.pop()
