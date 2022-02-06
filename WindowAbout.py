@@ -2,10 +2,10 @@
 import sys
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget
+from PySide6.QtWidgets import QDialog, QLabel, QVBoxLayout
 
 
-class WindowAbout(QWidget):
+class WindowAbout(QDialog):
 
     def __init__(self):
         super().__init__()
@@ -27,6 +27,6 @@ class WindowAbout(QWidget):
         self.setLayout(layout)
         self.setGeometry(400, 400, 0, 0)
         self.show()
-        sys.exit(self.exec())
+        self.exec()
 
 

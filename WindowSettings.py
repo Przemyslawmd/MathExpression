@@ -1,10 +1,10 @@
 
 from PySide6 import QtCore
 from PySide6.QtCore import Qt, Slot
-from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget, QPushButton, QGridLayout, QCheckBox, QHBoxLayout, QComboBox
+from PySide6.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QVBoxLayout, QCheckBox, QComboBox, QLabel, QPushButton
 
 
-class WindowSettings(QWidget):
+class WindowSettings(QDialog):
 
     def __init__(self, parent):
         super().__init__()
@@ -52,7 +52,7 @@ class WindowSettings(QWidget):
         self.setLayout(layout)
         self.setGeometry(400, 400, 0, 0)
         self.show()
-        self.exec_()
+        self.exec()
 
 
     @Slot()
