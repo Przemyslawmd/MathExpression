@@ -256,6 +256,6 @@ if __name__ == "__main__":
     widget = MathExpression()
     widget.resize(1200, 800)
     widget.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 

@@ -1,7 +1,7 @@
 
-from PySide2 import QtCore
-from PySide2.QtCore import Qt, Slot
-from PySide2.QtWidgets import QVBoxLayout, QLabel, QWidget, QPushButton, QGridLayout, QCheckBox, QHBoxLayout, QComboBox
+from PySide6 import QtCore
+from PySide6.QtCore import Qt, Slot
+from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget, QPushButton, QGridLayout, QCheckBox, QHBoxLayout, QComboBox
 
 
 class WindowSettings(QWidget):
