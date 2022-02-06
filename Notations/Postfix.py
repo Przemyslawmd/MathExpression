@@ -19,11 +19,10 @@ class Postfix:
         for token in tokens:
             if token.value in TokenUtils.operators:
                 self.process_operator(token)
-            elif token.value in TokenUtils.bracket:
-                if token.value is TokenValue.BRACKET_LEFT:
-                    self.stack.append(token)
-                else:
-                    self.process_bracket_right()
+            elif token.value is TokenValue.BRACKET_LEFT:
+                self.stack.append(token)
+            elif token.value is TokenValue.BRACKET_RIGHT:
+                self.process_bracket_right()
             else:
                 self.postfix.append(token)
 
