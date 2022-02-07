@@ -256,3 +256,27 @@ class TestPostfix(TestCase):
         assert result[4] == -14.18
 
 
+    def test_postfix_calculate_12(self):
+        tokens = Parser("sqrtx + 10").parse()
+        postfix = Postfix()
+        postfix.create_postfix(tokens)
+        result = postfix.calculate(16, 20)
+        assert result[0] == 14.0
+        assert result[1] == 14.12
+        assert result[2] == 14.24
+        assert result[3] == 14.36
+        assert result[4] == 14.47
+
+
+    def test_postfix_calculate_13(self):
+        tokens = Parser("x + 2sqrt4").parse()
+        postfix = Postfix()
+        postfix.create_postfix(tokens)
+        result = postfix.calculate(10, 15)
+        assert result[0] == 14
+        assert result[1] == 15
+        assert result[2] == 16
+        assert result[3] == 17
+        assert result[4] == 18
+
+

@@ -1,6 +1,5 @@
 
 import math
-
 import numpy
 
 from Tokens.TokenUtils import TokenUtils
@@ -20,7 +19,9 @@ class Postfix:
             TokenValue.MULTIPLICATION: lambda a, b: a * b,
             TokenValue.PLUS: lambda a, b: a + b,
 
+            TokenValue.LOG: lambda a: math.log(a, 10) if a > 0 else math.nan,
             TokenValue.POWER: lambda a, b: math.pow(b, a),
+            TokenValue.ROOT: lambda a: math.nan if a < 0 else math.sqrt(a),
 
             TokenValue.COSINE: lambda a: math.cos(a),
             TokenValue.COTANGENT: lambda a: math.nan if round(math.sin(a), 2) == 0.00 else math.cos(a) / math.sin(a),
@@ -54,7 +55,7 @@ class Postfix:
         elif token.value in (TokenValue.MULTIPLICATION, TokenValue.DIVISION):
             tokens_to_move = [token for token in TokenUtils.operators if (token not in [TokenValue.PLUS, TokenValue.MINUS])]
             self.process_stack_operator(token, tokens_to_move)
-        elif token.value in TokenUtils.trigonometry or token.value is TokenValue.LOG:
+        elif token.value in TokenUtils.trigonometry or token.value is TokenValue.LOG or token.value is TokenValue.ROOT:
             tokens_to_move = [token for token in TokenUtils.operators if (token not in TokenUtils.operation)]
             self.process_stack_operator(token, tokens_to_move)
         else:
@@ -107,11 +108,10 @@ class Postfix:
                     num = calculation.pop()
                     radian = math.radians(num)
                     calculation.append(self.actions[token.value](radian))
-            elif token.value is TokenValue.LOG:
+            elif token.value is TokenValue.LOG or TokenValue.ROOT:
                 for calculation in calculation_stack:
-                    number = calculation.pop()
-                    result = math.log(number, 10) if number > 0 else math.nan
-                    calculation.append(result)
+                    num = calculation.pop()
+                    calculation.append(self.actions[token.value](num))
 
         results = []
         for calculation in calculation_stack:

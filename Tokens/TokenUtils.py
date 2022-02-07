@@ -10,7 +10,7 @@ class TokenUtils:
 
     trigonometry = [TokenValue.COSINE, TokenValue.COTANGENT, TokenValue.SINE, TokenValue.TANGENT]
 
-    operators = operation + trigonometry + [TokenValue.LOG] + [TokenValue.POWER]
+    operators = operation + trigonometry + [TokenValue.LOG, TokenValue.POWER, TokenValue.ROOT]
 
 
     @staticmethod
