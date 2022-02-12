@@ -1,13 +1,13 @@
 
 import sys
 
+import pyqtgraph as pg
 import numpy
-from PySide6.QtWidgets import (QApplication, QWidget, QLabel, QComboBox, QMainWindow, QToolBar)
-from PySide6.QtWidgets import (QVBoxLayout, QHBoxLayout)
-from PySide6.QtWidgets import (QPushButton, QLineEdit, QTextEdit)
+from PySide6.QtWidgets import QApplication, QWidget, QLabel, QComboBox, QMainWindow, QToolBar
+from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout
+from PySide6.QtWidgets import QPushButton, QLineEdit, QTextEdit
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
-import pyqtgraph as pg
 
 from Controller import Controller
 from WindowAbout import WindowAbout
@@ -41,7 +41,7 @@ class MathExpression(QMainWindow):
 
         self.x_grid = True
         self.y_grid = True
-        self.x_precision = 1.00
+        self.x_precision = 0.10
 
         self.create_gui()
 
@@ -58,7 +58,7 @@ class MathExpression(QMainWindow):
 
     @Slot()
     def clear_insert_area(self):
-        self.line_insert.clear()
+        self.insert_expression.clear()
 
 
     @Slot()
@@ -92,7 +92,7 @@ class MathExpression(QMainWindow):
         try:
             y = self.controller.calculate_values(self.insert_expression.text(), x_min, x_max, self.x_precision)
         except Exception as e:
-            self.area_messages.append(str(e))
+            self.area_messages.setText(str(e))
             return
 
         if clear_plot_area is True:
@@ -103,6 +103,7 @@ class MathExpression(QMainWindow):
         line_color = self.penColors[self.list_pen_color.currentText()]
         self.plot_lines.append(self.plot_widget.plot(x, y, pen=pg.mkPen(line_color, width=line_width), symbol='x',
                                                      symbolPen=None, symbolBrush=2.5, name='red', connect="finite"))
+        self.area_messages.clear()
 
 
     def calculate_range(self, insert_min, insert_max):
@@ -151,13 +152,13 @@ class MathExpression(QMainWindow):
         layout.addSpacing(20)
 
         self.insert_x_min.setMaximumWidth(50)
-        self.insert_x_min.setText("-2")
+        self.insert_x_min.setText("-10")
         layout.addWidget(QLabel("X Min"))
         layout.addWidget(self.insert_x_min)
         layout.addSpacing(10)
 
         self.insert_x_max.setMaximumWidth(50)
-        self.insert_x_max.setText("2")
+        self.insert_x_max.setText("10")
         layout.addWidget(QLabel("X Max"))
         layout.addWidget(self.insert_x_max)
         layout.addSpacing(20)
