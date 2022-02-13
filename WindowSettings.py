@@ -62,3 +62,4 @@ class WindowSettings(QDialog):
                                    float(self.insert_x_precision.currentText()))
         self.close()
 
+
