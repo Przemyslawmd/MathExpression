@@ -265,14 +265,14 @@ class TestParser(TestCase):
         with self.assertRaises(Exception) as exc:
             Parser("12y + 4").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Error: improper symbol at position 3")
+        self.assertEqual(str(error), "Parser error: improper symbol: y")
 
 
     def test_improper_expression_3(self):
         with self.assertRaises(Exception) as exc:
             Parser("tg45 * cor30 - 3").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parser error: improper symbol")
+        self.assertEqual(str(error), "Parser error: improper symbol: c")
 
 
     def test_improper_expression_4(self):
@@ -293,12 +293,13 @@ class TestParser(TestCase):
         with self.assertRaises(Exception) as exc:
             Parser("5x * x-").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parser error: improper usage of negative symbol")
+        self.assertEqual(str(error), "Parser error: improper usage of negative symbol at position: 7")
 
 
     def test_improper_negative_expression_3(self):
         with self.assertRaises(Exception) as exc:
             Parser("(5x + x)(5 + 3-)").parse()
         error = exc.exception
-        self.assertEqual(str(error), "Parser error: improper usage of negative symbol")
+        self.assertEqual(str(error), "Parser error: improper usage of negative symbol at position: 15")
+
 

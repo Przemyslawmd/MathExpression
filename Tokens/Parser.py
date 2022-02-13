@@ -151,7 +151,7 @@ class Parser:
                 continue
             if current_char in self.beginning_chars:
                 if not self.check_multiple_char_token():
-                    raise Exception(f"Parser error: improper symbol")
+                    raise Exception(f"Parser error: improper symbol: {current_char}")
                 continue
             if current_char == '(' or current_char == ')':
                 if not self.check_brackets(current_char):
@@ -161,11 +161,11 @@ class Parser:
             else:
                 token_symbol = self.one_char_tokens.get(current_char)
                 if token_symbol is None:
-                    position = self.initial_len - len(self.chars) + 1
-                    raise Exception(f"Error: improper symbol at position {position}")
+                    raise Exception(f"Parser error: improper symbol: {current_char}")
                 elif token_symbol is TokenValue.MINUS:
                     if not self.check_negative():
-                        raise Exception("Parser error: improper usage of negative symbol")
+                        position = self.initial_len - len(self.chars)
+                        raise Exception(f"Parser error: improper usage of negative symbol at position: {position}")
                 else:
                     self.tokens.append(Token(token_symbol))
                     del self.chars[-1]
