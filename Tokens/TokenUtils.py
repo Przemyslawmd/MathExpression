@@ -13,15 +13,3 @@ class TokenUtils:
     operators = operation + trigonometry + [TokenValue.LOG, TokenValue.POWER, TokenValue.ROOT]
 
 
-    @staticmethod
-    def append_operation(token_values):
-        for token_value in TokenUtils.operation:
-            token_values.append(token_value)
-
-
-    @staticmethod
-    def append_trigonometry(token_values):
-        for token_value in TokenUtils.trigonometry:
-            token_values.append(token_value)
-
-
