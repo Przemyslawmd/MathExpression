@@ -91,12 +91,12 @@ class Postfix:
             elif token.value == TokenValue.X:
                 number = min_x
                 for values in calculation_stack:
-                    values.append(number)
+                    values.append(round(number, 2))
                     number += x_precision
             elif token.value is TokenValue.X_NEGATIVE:
-                number = min_x * -1
+                number = min_x * -1.0
                 for calculation in calculation_stack:
-                    calculation.append(number)
+                    calculation.append(round(number, 2))
                     number -= x_precision
             elif token.value in TokenUtils.operation or token.value is TokenValue.POWER:
                 for calculation in calculation_stack:
