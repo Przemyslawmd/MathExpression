@@ -127,7 +127,7 @@ class Parser:
                     self.tokens[index] = Token(TokenValue.NUMBER, number * -1)
                 elif token.value is TokenValue.X:
                     self.tokens[index] = Token(TokenValue.X_NEGATIVE)
-                elif token.value is TokenValue.BRACKET_LEFT or token.value in TokenUtils.trigonometry:
+                elif token.value in [TokenValue.BRACKET_LEFT, TokenValue.ROOT, TokenValue.LOG, TokenUtils.trigonometry]:
                     self.tokens.insert(index, Token(TokenValue.MULTIPLICATION))
                     self.tokens.insert(index, Token(TokenValue.NUMBER, -1))
                 else:
