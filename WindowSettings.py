@@ -26,16 +26,16 @@ class WindowSettings(QDialog):
         layout_grid.addWidget(self.check_y_grid, 2, 2, alignment=QtCore.Qt.AlignRight)
         layout_grid.setRowMinimumHeight(2, 30)
 
-        layout_grid.addWidget(QLabel("X Precision"), 3, 1)
-        self.insert_x_precision = QComboBox()
-        self.insert_x_precision.setMaximumWidth(60)
+        layout_grid.addWidget(QLabel("Precision"), 3, 1)
+        self.insert_precision = QComboBox()
+        self.insert_precision.setMaximumWidth(60)
         index = 0
         for i in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0]:
-            self.insert_x_precision.addItem(str(i))
-            if i == self.parent.x_precision:
-                self.insert_x_precision.setCurrentIndex(index)
+            self.insert_precision.addItem(str(i))
+            if i == self.parent.precision:
+                self.insert_precision.setCurrentIndex(index)
             index += 1
-        layout_grid.addWidget(self.insert_x_precision, 3, 2, alignment=QtCore.Qt.AlignRight)
+        layout_grid.addWidget(self.insert_precision, 3, 2, alignment=QtCore.Qt.AlignRight)
         layout.addLayout(layout_grid)
 
         layout_button = QHBoxLayout()
@@ -59,7 +59,7 @@ class WindowSettings(QDialog):
     def accept(self):
         self.parent.apply_settings(self.check_x_grid.isChecked(),
                                    self.check_y_grid.isChecked(),
-                                   float(self.insert_x_precision.currentText()))
+                                   float(self.insert_precision.currentText()))
         self.close()
 
 

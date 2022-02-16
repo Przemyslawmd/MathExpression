@@ -39,11 +39,11 @@ class MathExpression(QMainWindow):
             "Yellow": [255, 255, 0], "White": [255, 255, 255]
         }
 
-        self.x_min = -100
-        self.x_max = 100
+        self.x_min = -360
+        self.x_max = 360
         self.x_grid = True
         self.y_grid = True
-        self.x_precision = 0.10
+        self.precision = 0.10
 
         self.create_gui()
 
@@ -106,7 +106,7 @@ class MathExpression(QMainWindow):
                 return
 
         try:
-            y = self.controller.calculate_values(self.insert_expression.text(), self.x_min, self.x_max, self.x_precision)
+            y = self.controller.calculate_values(self.insert_expression.text(), self.x_min, self.x_max, self.precision)
         except Exception as e:
             self.set_message(str(e))
             return
@@ -114,11 +114,11 @@ class MathExpression(QMainWindow):
         if clear_plot_area is True:
             self.clear_plot_area()
 
-        x = numpy.arange(self.x_min, self.x_max + self.x_precision, self.x_precision)
+        x = numpy.arange(self.x_min, self.x_max + self.precision, self.precision)
         line_width = float(self.list_pen_width.currentText())
         line_color = self.penColors[self.list_pen_color.currentText()]
         self.plot_lines.append(self.plot_widget.plot(x, y, pen=pg.mkPen(line_color, width=line_width), symbol='x',
-                                                     symbolPen=None, symbolBrush=2.5, name='red', connect="finite"))
+                                                     symbolPen=None, symbolBrush=2.5, connect="finite"))
 
         self.area_messages.clear()
 
@@ -275,10 +275,10 @@ class MathExpression(QMainWindow):
         main_widget.setContentsMargins(20, 0, 20, 0)
 
 
-    def apply_settings(self, x_grid, y_grid, x_precision):
+    def apply_settings(self, x_grid, y_grid, precision):
         self.x_grid = x_grid
         self.y_grid = y_grid
-        self.x_precision = x_precision
+        self.precision = precision
         self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
 
 
