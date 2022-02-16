@@ -39,6 +39,8 @@ class MathExpression(QMainWindow):
             "Yellow": [255, 255, 0], "White": [255, 255, 255]
         }
 
+        self.x_min = -100
+        self.x_max = 100
         self.x_grid = True
         self.y_grid = True
         self.x_precision = 0.10
@@ -78,9 +80,14 @@ class MathExpression(QMainWindow):
         WindowAbout()
 
 
+    @Slot()
+    def change_x_y_ratio(self, ratio):
+        self.plot_widget.setXRange(self.x_min * ratio, self.x_max * ratio)
+
+
     def create_new_graph(self, clear_plot_area):
-        x_min, x_max = self.calculate_range(self.insert_x_min, self.insert_x_max)
-        if x_min == 0 and x_max == 0:
+        self.x_min, self.x_max = self.calculate_range(self.insert_x_min, self.insert_x_max)
+        if self.x_min == 0 and self.x_max == 0:
             return
 
         if self.insert_y_min.text() != "No" or self.insert_y_max.text() != "No":
@@ -90,7 +97,7 @@ class MathExpression(QMainWindow):
             self.plot_widget.setYRange(y_min, y_max, padding=0)
 
         try:
-            y = self.controller.calculate_values(self.insert_expression.text(), x_min, x_max, self.x_precision)
+            y = self.controller.calculate_values(self.insert_expression.text(), self.x_min, self.x_max, self.x_precision)
         except Exception as e:
             self.area_messages.setText(str(e))
             return
@@ -98,11 +105,12 @@ class MathExpression(QMainWindow):
         if clear_plot_area is True:
             self.clear_plot_area()
 
-        x = numpy.arange(x_min, x_max + self.x_precision, self.x_precision)
+        x = numpy.arange(self.x_min, self.x_max + self.x_precision, self.x_precision)
         line_width = float(self.list_pen_width.currentText())
         line_color = self.penColors[self.list_pen_color.currentText()]
         self.plot_lines.append(self.plot_widget.plot(x, y, pen=pg.mkPen(line_color, width=line_width), symbol='x',
                                                      symbolPen=None, symbolBrush=2.5, name='red', connect="finite"))
+
         self.area_messages.clear()
 
 
@@ -132,10 +140,11 @@ class MathExpression(QMainWindow):
         return min_value, max_value
 
 
-    def create_button(self, label, func):
+    @staticmethod
+    def create_button(label, width, func):
         button = QPushButton(label)
-        button.setMaximumWidth(140)
-        button.setMinimumWidth(140)
+        button.setMaximumWidth(width)
+        button.setMinimumWidth(width)
         button.clicked.connect(func)
         return button
 
@@ -143,22 +152,20 @@ class MathExpression(QMainWindow):
     def create_first_layout_buttons(self):
         layout = QHBoxLayout()
 
-        button_draw = self.create_button("Draw Graph", lambda: self.draw())
-        layout.addWidget(button_draw)
+        layout.addWidget(self.create_button("Draw Graph", 140, lambda: self.draw()))
         layout.addSpacing(20)
 
-        button_append = self.create_button("Append Graph", lambda: self.append())
-        layout.addWidget(button_append)
+        layout.addWidget(self.create_button("Append Graph", 140, lambda: self.append()))
         layout.addSpacing(20)
 
         self.insert_x_min.setMaximumWidth(50)
-        self.insert_x_min.setText("-10")
+        self.insert_x_min.setText(str(self.x_min))
         layout.addWidget(QLabel("X Min"))
         layout.addWidget(self.insert_x_min)
         layout.addSpacing(10)
 
         self.insert_x_max.setMaximumWidth(50)
-        self.insert_x_max.setText("10")
+        self.insert_x_max.setText(str(self.x_max))
         layout.addWidget(QLabel("X Max"))
         layout.addWidget(self.insert_x_max)
         layout.addSpacing(20)
@@ -184,12 +191,10 @@ class MathExpression(QMainWindow):
     def create_second_layout_buttons(self):
         layout = QHBoxLayout()
 
-        button_clear_edit = self.create_button("Clear Insert Area", lambda: self.clear_insert_area())
-        layout.addWidget(button_clear_edit)
+        layout.addWidget(self.create_button("Clear Insert Area", 140, lambda: self.clear_insert_area()))
         layout.addSpacing(20)
 
-        button_clear_plot = self.create_button("Clear Plot Area", lambda: self.clear_plot_area())
-        layout.addWidget(button_clear_plot)
+        layout.addWidget(self.create_button("Clear Plot Area", 140, lambda: self.clear_plot_area()))
         layout.addSpacing(20)
 
         self.insert_y_min.setMaximumWidth(50)
@@ -202,6 +207,23 @@ class MathExpression(QMainWindow):
         self.insert_y_max.setText("No")
         layout.addWidget(QLabel("Y Max"))
         layout.addWidget(self.insert_y_max)
+        layout.addSpacing(20)
+
+        layout.addWidget(QLabel("X Y ratio"))
+        layout.addSpacing(15)
+        layout.addWidget(self.create_button("8/1", 40, lambda: self.change_x_y_ratio(0.125)))
+        layout.addSpacing(20)
+        layout.addWidget(self.create_button("4/1", 40, lambda: self.change_x_y_ratio(0.25)))
+        layout.addSpacing(20)
+        layout.addWidget(self.create_button("2/1", 40, lambda: self.change_x_y_ratio(0.5)))
+        layout.addSpacing(20)
+        layout.addWidget(self.create_button("1/1", 40, lambda: self.change_x_y_ratio(1)))
+        layout.addSpacing(20)
+        layout.addWidget(self.create_button("1/2", 40, lambda: self.change_x_y_ratio(2)))
+        layout.addSpacing(20)
+        layout.addWidget(self.create_button("1/4", 40, lambda: self.change_x_y_ratio(4)))
+        layout.addSpacing(20)
+        layout.addWidget(self.create_button("1/8", 40, lambda: self.change_x_y_ratio(8)))
         layout.addSpacing(20)
         return layout
 
