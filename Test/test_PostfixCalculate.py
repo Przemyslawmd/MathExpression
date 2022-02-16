@@ -105,11 +105,11 @@ class TestPostfixCalculate(TestCase):
         postfix = Postfix()
         postfix.create_postfix(tokens)
         result = postfix.calculate(10, 14)
-        assert result[0] == 9.85
-        assert result[1] == 10.83
-        assert result[2] == 11.82
-        assert result[3] == 12.8
-        assert result[4] == 13.79
+        assert result[0] == 9.8481
+        assert result[1] == 10.8329
+        assert result[2] == 11.8177
+        assert result[3] == 12.8025
+        assert result[4] == 13.7873
 
 
     def test_postfix_calculate_11(self):
@@ -117,11 +117,11 @@ class TestPostfixCalculate(TestCase):
         postfix = Postfix()
         postfix.create_postfix(tokens)
         result = postfix.calculate(100, 104)
-        assert result[0] == -39.08
-        assert result[1] == -31.81
-        assert result[2] == -25.37
-        assert result[3] == -19.54
-        assert result[4] == -14.18
+        assert result[0] == -39.0801
+        assert result[1] == -31.8131
+        assert result[2] == -25.3655
+        assert result[3] == -19.5353
+        assert result[4] == -14.1777
 
 
     def test_postfix_calculate_12(self):
@@ -130,10 +130,10 @@ class TestPostfixCalculate(TestCase):
         postfix.create_postfix(tokens)
         result = postfix.calculate(16, 20)
         assert result[0] == 14.0
-        assert result[1] == 14.12
-        assert result[2] == 14.24
-        assert result[3] == 14.36
-        assert result[4] == 14.47
+        assert result[1] == 14.1231
+        assert result[2] == 14.2426
+        assert result[3] == 14.3589
+        assert result[4] == 14.4721
 
 
     def test_postfix_calculate_13(self):
