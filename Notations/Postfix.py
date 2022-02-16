@@ -14,7 +14,7 @@ class Postfix:
         self.postfix = deque()
 
         self.actions = {
-            TokenValue.DIVISION: lambda a, b: math.nan if round(a, 2) == 0.00 else b / a,
+            TokenValue.DIVISION: lambda a, b: math.nan if round(a, 4) == 0.00 else b / a,
             TokenValue.MINUS: lambda a, b: b - a,
             TokenValue.MULTIPLICATION: lambda a, b: a * b,
             TokenValue.PLUS: lambda a, b: a + b,
@@ -24,7 +24,7 @@ class Postfix:
             TokenValue.ROOT: lambda a: math.nan if a < 0 else math.sqrt(a),
 
             TokenValue.COSINE: lambda a: math.cos(a),
-            TokenValue.COTANGENT: lambda a: math.nan if round(math.sin(a), 2) == 0.00 else math.cos(a) / math.sin(a),
+            TokenValue.COTANGENT: lambda a: math.nan if round(math.sin(a), 4) == 0.00 else math.cos(a) / math.sin(a),
             TokenValue.SINE: lambda a: math.sin(a),
             TokenValue.TANGENT: lambda a: math.tan(a),
         }
@@ -91,12 +91,12 @@ class Postfix:
             elif token.value == TokenValue.X:
                 number = min_x
                 for values in calculation_stack:
-                    values.append(round(number, 2))
+                    values.append(round(number, 4))
                     number += x_precision
             elif token.value is TokenValue.X_NEGATIVE:
                 number = min_x * -1.0
                 for calculation in calculation_stack:
-                    calculation.append(round(number, 2))
+                    calculation.append(round(number, 4))
                     number -= x_precision
             elif token.value in TokenUtils.operation or token.value is TokenValue.POWER:
                 for calculation in calculation_stack:
@@ -113,9 +113,6 @@ class Postfix:
                     num = calculation.pop()
                     calculation.append(self.actions[token.value](num))
 
-        results = []
-        for calculation in calculation_stack:
-            results.append(round(calculation[0], 2))
-        return results
+        return [round(x[0], 4) for x in calculation_stack]
 
 
