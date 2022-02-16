@@ -85,21 +85,30 @@ class MathExpression(QMainWindow):
         self.plot_widget.setXRange(self.x_min * ratio, self.x_max * ratio)
 
 
+    def set_message(self, message):
+        self.area_messages.clear()
+        self.area_messages.setText(message)
+
+
     def create_new_graph(self, clear_plot_area):
         self.x_min, self.x_max = self.calculate_range(self.insert_x_min, self.insert_x_max)
         if self.x_min == 0 and self.x_max == 0:
             return
 
-        if self.insert_y_min.text() != "No" or self.insert_y_max.text() != "No":
-            y_min, y_max = self.calculate_range(self.insert_y_min, self.insert_y_max)
-            if y_min == 0 and y_max == 0:
+        if self.insert_y_min.text() or self.insert_y_max.text():
+            if self.insert_y_min.text() and self.insert_y_max.text():
+                y_min, y_max = self.calculate_range(self.insert_y_min, self.insert_y_max)
+                if y_min == 0 and y_max == 0:
+                    return
+                self.plot_widget.setYRange(y_min, y_max, padding=0)
+            else:
+                self.set_message("Range error: only one value for Y range")
                 return
-            self.plot_widget.setYRange(y_min, y_max, padding=0)
 
         try:
             y = self.controller.calculate_values(self.insert_expression.text(), self.x_min, self.x_max, self.x_precision)
         except Exception as e:
-            self.area_messages.setText(str(e))
+            self.set_message(str(e))
             return
 
         if clear_plot_area is True:
@@ -131,11 +140,10 @@ class MathExpression(QMainWindow):
             min_value = float(min_str) if min_negative is False else float(min_str) * -1
             max_value = float(max_str) if max_negative is False else float(max_str) * -1
         except Exception as e:
-            self.area_messages.append("Error: Parse range values")
-            self.area_messages.append(str(e))
+            self.set_message(f"Range error: {str(e)}")
             return 0, 0
         if min_value > max_value:
-            self.area_messages.append("Error: Range minimum higher than maximum")
+            self.set_message("Range error: minimum higher than maximum")
             return 0, 0
         return min_value, max_value
 
@@ -179,8 +187,8 @@ class MathExpression(QMainWindow):
         layout.addSpacing(20)
 
         self.list_pen_color.setMaximumWidth(100)
-        for color in ["Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White", "Yellow"]:
-            self.list_pen_color.addItem(color)
+        self.list_pen_color.addItems(["Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White",
+                                      "Yellow"])
         self.list_pen_color.setCurrentIndex(4)
         layout.addWidget(QLabel("Line Color"))
         layout.addWidget(self.list_pen_color)
@@ -198,13 +206,13 @@ class MathExpression(QMainWindow):
         layout.addSpacing(20)
 
         self.insert_y_min.setMaximumWidth(50)
-        self.insert_y_min.setText("No")
+        self.insert_y_min.setText("")
         layout.addWidget(QLabel("Y Min"))
         layout.addWidget(self.insert_y_min)
         layout.addSpacing(10)
 
         self.insert_y_max.setMaximumWidth(50)
-        self.insert_y_max.setText("No")
+        self.insert_y_max.setText("")
         layout.addWidget(QLabel("Y Max"))
         layout.addWidget(self.insert_y_max)
         layout.addSpacing(20)
