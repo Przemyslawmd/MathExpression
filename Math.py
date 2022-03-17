@@ -1,13 +1,14 @@
 
 import sys
 
-import pyqtgraph as pg
 import numpy
+
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QComboBox, QMainWindow, QToolBar
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout
 from PySide6.QtWidgets import QPushButton, QLineEdit, QTextEdit
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
+from pyqtgraph import PlotWidget, mkPen
 
 from Controller import Controller
 from WindowAbout import WindowAbout
@@ -20,7 +21,7 @@ class MathExpression(QMainWindow):
         QMainWindow.__init__(self)
 
         self.controller = Controller()
-        self.plot_widget = pg.PlotWidget()
+        self.plot_widget = PlotWidget()
 
         self.insert_expression = QLineEdit()
         self.insert_x_min = QLineEdit()
@@ -117,7 +118,7 @@ class MathExpression(QMainWindow):
         x = numpy.arange(self.x_min, self.x_max + self.precision, self.precision)
         line_width = float(self.list_pen_width.currentText())
         line_color = self.penColors[self.list_pen_color.currentText()]
-        self.plot_lines.append(self.plot_widget.plot(x, y, pen=pg.mkPen(line_color, width=line_width), symbol='x',
+        self.plot_lines.append(self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
                                                      symbolPen=None, symbolBrush=2.5, connect="finite"))
 
         self.area_messages.clear()
