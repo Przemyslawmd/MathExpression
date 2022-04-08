@@ -1,6 +1,6 @@
 
 import math
-import numpy
+from numpy import power, arange
 
 from Tokens.TokenUtils import TokenUtils
 from Tokens.Token import TokenValue
@@ -20,7 +20,7 @@ class Postfix:
             TokenValue.PLUS: lambda a, b: a + b,
 
             TokenValue.LOG: lambda a: math.log(a, 10) if a > 0 else math.nan,
-            TokenValue.POWER: lambda a, b: math.pow(b, a),
+            TokenValue.POWER: lambda a, b: math.nan if (float(a).is_integer() is False and b < 0) else power(b, a),
             TokenValue.ROOT: lambda a: math.nan if a < 0 else math.sqrt(a),
 
             TokenValue.COSINE: lambda a: math.cos(a),
@@ -81,7 +81,7 @@ class Postfix:
 
     def calculate(self, min_x, max_x, x_precision=1.0):
         calculation_stack = deque()
-        for _ in numpy.arange(min_x, max_x + x_precision, x_precision):
+        for _ in arange(min_x, max_x + x_precision, x_precision):
             calculation_stack.append(deque())
 
         for token in self.postfix:
