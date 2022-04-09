@@ -167,6 +167,7 @@ class MathExpression(QMainWindow):
             new_widget.setAlignment(Qt.AlignCenter)
         label = QLabel(text)
         label.setFixedSize(text_width, 10)
+        label.setMargin(0)
         layout = QHBoxLayout()
         layout.addWidget(label)
         layout.setSpacing(5)
@@ -175,50 +176,52 @@ class MathExpression(QMainWindow):
         return layout
 
 
-    def create_first_layout_buttons(self, layout):
+    def create_first_grid_row(self, layout):
         layout.addWidget(self.create_button("Draw Graph", 140, lambda: self.draw()), 0, 0)
         layout.addWidget(self.create_button("Append Graph", 140, lambda: self.append()), 0, 1)
         layout.setSpacing(15)
 
-        edit_with_label = self.create_widget_with_label(self.insert_x_min, 40, "X min", 40, str(self.x_min))
-        layout.addLayout(edit_with_label, 0, 3)
+        widget_with_label = self.create_widget_with_label(self.insert_x_min, 40, "X Min", 40, str(self.x_min))
+        layout.addLayout(widget_with_label, 0, 3)
 
-        widget_with_label = self.create_widget_with_label(self.insert_x_max, 40, "X max", 40, str(self.x_max))
+        widget_with_label = self.create_widget_with_label(self.insert_x_max, 40, "X Max", 40, str(self.x_max))
         layout.addLayout(widget_with_label, 0, 4)
 
         for i in [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]:
             self.list_pen_width.addItem(str(i))
         self.list_pen_width.setCurrentIndex(4)
-        widget_with_label = self.create_widget_with_label(self.list_pen_width, 50, "Line width", 65)
-        layout.addLayout(widget_with_label, 0, 6, 1, 2)
+        widget_with_label = self.create_widget_with_label(self.list_pen_width, 100, "Line Width", 65)
+        layout.addLayout(widget_with_label, 0, 6)
+
+        layout_hor = QHBoxLayout()
+        label = QLabel("X:Y Ratio")
+        label.setFixedSize(55, 10)
+        layout_hor.addWidget(label)
+        layout_hor.addWidget(self.create_button("8/1", 50, lambda: self.change_x_y_ratio(0.125)))
+        layout_hor.addWidget(self.create_button("4/1", 50, lambda: self.change_x_y_ratio(0.25)))
+        layout_hor.addWidget(self.create_button("2/1", 50, lambda: self.change_x_y_ratio(0.5)))
+        layout_hor.addWidget(self.create_button("1/1", 50, lambda: self.change_x_y_ratio(1)))
+        layout_hor.addWidget(self.create_button("1/2", 50, lambda: self.change_x_y_ratio(2)))
+        layout_hor.addWidget(self.create_button("1/4", 50, lambda: self.change_x_y_ratio(4)))
+        layout_hor.addWidget(self.create_button("1/8", 50, lambda: self.change_x_y_ratio(8)))
+        layout.addLayout(layout_hor, 0, 7)
+
+
+    def create_second_grid_row(self, layout):
+        layout.addWidget(self.create_button("Clear Insert Area", 140, lambda: self.clear_insert_area()), 1, 0)
+        layout.addWidget(self.create_button("Clear Plot Area", 140, lambda: self.clear_plot_area()), 1, 1)
+
+        widget_with_label = self.create_widget_with_label(self.insert_y_min, 40, "Y Min", 40)
+        layout.addLayout(widget_with_label, 1, 3)
+
+        widget_with_label = self.create_widget_with_label(self.insert_y_max, 40, "Y Max", 40)
+        layout.addLayout(widget_with_label, 1, 4)
 
         self.list_pen_color.addItems(["Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White",
                                       "Yellow"])
         self.list_pen_color.setCurrentIndex(4)
-        widget_with_label = self.create_widget_with_label(self.list_pen_color, 150, "Line color", 65)
-        layout.addLayout(widget_with_label, 0, 8, 1, 3)
-
-
-    def create_second_layout_buttons(self, layout):
-        layout.addWidget(self.create_button("Clear Insert Area", 140, lambda: self.clear_insert_area()), 1, 0)
-        layout.addWidget(self.create_button("Clear Plot Area", 140, lambda: self.clear_plot_area()), 1, 1)
-
-        widget_with_label = self.create_widget_with_label(self.insert_y_min, 40, "Y min", 40)
-        layout.addLayout(widget_with_label, 1, 3)
-
-        widget_with_label = self.create_widget_with_label(self.insert_y_max, 40, "Y max", 40)
-        layout.addLayout(widget_with_label, 1, 4)
-
-        button = self.create_button("8/1", 50, lambda: self.change_x_y_ratio(0.125))
-        widget_with_label = self.create_widget_with_label(button, 50, "X Y ratio", 65)
-        layout.addLayout(widget_with_label, 1, 6, 1, 2)
-
-        layout.addWidget(self.create_button("4/1", 50, lambda: self.change_x_y_ratio(0.25)), 1, 8)
-        layout.addWidget(self.create_button("2/1", 50, lambda: self.change_x_y_ratio(0.5)), 1, 9)
-        layout.addWidget(self.create_button("1/1", 50, lambda: self.change_x_y_ratio(1)), 1, 10)
-        layout.addWidget(self.create_button("1/2", 50, lambda: self.change_x_y_ratio(2)), 1, 11)
-        layout.addWidget(self.create_button("1/4", 50, lambda: self.change_x_y_ratio(4)), 1, 12)
-        layout.addWidget(self.create_button("1/8", 50, lambda: self.change_x_y_ratio(8)), 1, 13)
+        widget_with_label = self.create_widget_with_label(self.list_pen_color, 100, "Line Color", 65)
+        layout.addLayout(widget_with_label, 1, 6)
 
 
     def create_gui(self):
@@ -237,17 +240,14 @@ class MathExpression(QMainWindow):
         layout_main.addSpacing(10)
 
         layout_grid = QGridLayout()
-
-        self.create_first_layout_buttons(layout_grid)
+        self.create_first_grid_row(layout_grid)
+        self.create_second_grid_row(layout_grid)
         layout_grid.setRowMinimumHeight(0, 40)
-
-        self.create_second_layout_buttons(layout_grid)
         layout_grid.setRowMinimumHeight(1, 40)
-
         layout_grid.setColumnStretch(2, 50)
         layout_grid.setColumnStretch(5, 50)
         layout_main.addLayout(layout_grid)
-        layout_main.addSpacing(20)
+        layout_main.addSpacing(15)
 
         self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
         layout_main.addWidget(self.plot_widget)
@@ -274,7 +274,7 @@ class MathExpression(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = MathExpression()
-    widget.resize(1200, 800)
+    widget.resize(1400, 900)
     widget.show()
     sys.exit(app.exec())
 
