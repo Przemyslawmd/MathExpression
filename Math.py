@@ -191,8 +191,8 @@ class MathExpression(QMainWindow):
         widget_with_label = self.create_widget_with_label(self.insert_x_max, 40, "X Max", 40, str(self.x_max))
         layout.addLayout(widget_with_label, 0, 4)
 
-        for i in [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]:
-            self.list_pen_width.addItem(str(i))
+        [self.list_pen_width.addItem(str(x))
+         for x in [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]]
         self.list_pen_width.setCurrentIndex(4)
         widget_with_label = self.create_widget_with_label(self.list_pen_width, 100, "Line Width", 65)
         layout.addLayout(widget_with_label, 0, 6)
