@@ -46,8 +46,10 @@ class MathExpression(QMainWindow):
         self.y_grid = True
         self.precision = 0.10
 
-        self.create_gui()
+        self.ratio_button_active = None
+        self.ratio_buttons = None
 
+        self.create_gui()
 
     @Slot()
     def draw(self):
@@ -82,9 +84,11 @@ class MathExpression(QMainWindow):
 
 
     @Slot()
-    def change_x_y_ratio(self, ratio):
+    def change_x_y_ratio(self, ratio, button_index):
         self.plot_widget.setXRange(self.x_min * ratio, self.x_max * ratio)
-
+        self.ratio_button_active.setStyleSheet("")
+        self.ratio_button_active = self.ratio_buttons[button_index]
+        self.ratio_button_active.setStyleSheet("background-color : #b3b3b3")
 
     def set_message(self, message):
         self.area_messages.clear()
@@ -194,16 +198,20 @@ class MathExpression(QMainWindow):
         layout.addLayout(widget_with_label, 0, 6)
 
         layout_hor = QHBoxLayout()
-        label = QLabel("X:Y Ratio")
-        label.setFixedSize(55, 10)
+        label = QLabel("X : Y Ratio")
+        label.setFixedSize(60, 10)
         layout_hor.addWidget(label)
-        layout_hor.addWidget(self.create_button("8/1", 50, lambda: self.change_x_y_ratio(0.125)))
-        layout_hor.addWidget(self.create_button("4/1", 50, lambda: self.change_x_y_ratio(0.25)))
-        layout_hor.addWidget(self.create_button("2/1", 50, lambda: self.change_x_y_ratio(0.5)))
-        layout_hor.addWidget(self.create_button("1/1", 50, lambda: self.change_x_y_ratio(1)))
-        layout_hor.addWidget(self.create_button("1/2", 50, lambda: self.change_x_y_ratio(2)))
-        layout_hor.addWidget(self.create_button("1/4", 50, lambda: self.change_x_y_ratio(4)))
-        layout_hor.addWidget(self.create_button("1/8", 50, lambda: self.change_x_y_ratio(8)))
+
+        self.ratio_buttons = [self.create_button("8/1", 50, lambda: self.change_x_y_ratio(0.125, 0)),
+                              self.create_button("4/1", 50, lambda: self.change_x_y_ratio(0.25, 1)),
+                              self.create_button("2/1", 50, lambda: self.change_x_y_ratio(0.5, 2)),
+                              self.create_button("1/1", 50, lambda: self.change_x_y_ratio(1, 3)),
+                              self.create_button("1/2", 50, lambda: self.change_x_y_ratio(2, 4)),
+                              self.create_button("1/4", 50, lambda: self.change_x_y_ratio(4, 5)),
+                              self.create_button("1/8", 50, lambda: self.change_x_y_ratio(8, 6))]
+        [layout_hor.addWidget(button) for button in self.ratio_buttons]
+        self.ratio_button_active = self.ratio_buttons[3]
+        self.ratio_button_active.setStyleSheet("background-color : #b3b3b3")
         layout.addLayout(layout_hor, 0, 7)
 
 
