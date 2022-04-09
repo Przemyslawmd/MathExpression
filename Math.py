@@ -1,13 +1,13 @@
 
 import sys
 
-import numpy
+from numpy import arange
 
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QComboBox, QMainWindow, QToolBar
-from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout
+from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QGridLayout
 from PySide6.QtWidgets import QPushButton, QLineEdit, QTextEdit
 from PySide6.QtCore import Slot
-from PySide6.QtGui import QAction
+from PySide6.QtGui import Qt, QAction
 from pyqtgraph import PlotWidget, mkPen
 
 from Controller import Controller
@@ -115,7 +115,7 @@ class MathExpression(QMainWindow):
         if clear_plot_area is True:
             self.clear_plot_area()
 
-        x = numpy.arange(self.x_min, self.x_max + self.precision, self.precision)
+        x = arange(self.x_min, self.x_max + self.precision, self.precision)
         line_width = float(self.list_pen_width.currentText())
         line_color = self.penColors[self.list_pen_color.currentText()]
         self.plot_lines.append(self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
@@ -158,83 +158,67 @@ class MathExpression(QMainWindow):
         return button
 
 
-    def create_first_layout_buttons(self):
+    @staticmethod
+    def create_widget_with_label(new_widget, width, text, text_width, default_value=""):
+        new_widget.setMinimumWidth(width)
+        new_widget.setMaximumWidth(width)
+        if isinstance(new_widget, QLineEdit):
+            new_widget.setText(default_value)
+            new_widget.setAlignment(Qt.AlignCenter)
+        label = QLabel(text)
+        label.setFixedSize(text_width, 10)
         layout = QHBoxLayout()
-
-        layout.addWidget(self.create_button("Draw Graph", 140, lambda: self.draw()))
-        layout.addSpacing(20)
-
-        layout.addWidget(self.create_button("Append Graph", 140, lambda: self.append()))
-        layout.addSpacing(20)
-
-        self.insert_x_min.setMaximumWidth(50)
-        self.insert_x_min.setText(str(self.x_min))
-        layout.addWidget(QLabel("X Min"))
-        layout.addWidget(self.insert_x_min)
+        layout.addWidget(label)
+        layout.setSpacing(5)
+        layout.addWidget(new_widget)
         layout.addSpacing(10)
+        return layout
 
-        self.insert_x_max.setMaximumWidth(50)
-        self.insert_x_max.setText(str(self.x_max))
-        layout.addWidget(QLabel("X Max"))
-        layout.addWidget(self.insert_x_max)
-        layout.addSpacing(20)
 
-        self.list_pen_width.setMaximumWidth(50)
+    def create_first_layout_buttons(self, layout):
+        layout.addWidget(self.create_button("Draw Graph", 140, lambda: self.draw()), 0, 0)
+        layout.addWidget(self.create_button("Append Graph", 140, lambda: self.append()), 0, 1)
+        layout.setSpacing(15)
+
+        edit_with_label = self.create_widget_with_label(self.insert_x_min, 40, "X min", 40, str(self.x_min))
+        layout.addLayout(edit_with_label, 0, 3)
+
+        widget_with_label = self.create_widget_with_label(self.insert_x_max, 40, "X max", 40, str(self.x_max))
+        layout.addLayout(widget_with_label, 0, 4)
+
         for i in [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]:
             self.list_pen_width.addItem(str(i))
         self.list_pen_width.setCurrentIndex(4)
-        layout.addWidget(QLabel("Line Width"))
-        layout.addWidget(self.list_pen_width)
-        layout.addSpacing(20)
+        widget_with_label = self.create_widget_with_label(self.list_pen_width, 50, "Line width", 65)
+        layout.addLayout(widget_with_label, 0, 6, 1, 2)
 
-        self.list_pen_color.setMaximumWidth(100)
         self.list_pen_color.addItems(["Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White",
                                       "Yellow"])
         self.list_pen_color.setCurrentIndex(4)
-        layout.addWidget(QLabel("Line Color"))
-        layout.addWidget(self.list_pen_color)
-        layout.addStretch()
-        return layout
+        widget_with_label = self.create_widget_with_label(self.list_pen_color, 150, "Line color", 65)
+        layout.addLayout(widget_with_label, 0, 8, 1, 3)
 
 
-    def create_second_layout_buttons(self):
-        layout = QHBoxLayout()
+    def create_second_layout_buttons(self, layout):
+        layout.addWidget(self.create_button("Clear Insert Area", 140, lambda: self.clear_insert_area()), 1, 0)
+        layout.addWidget(self.create_button("Clear Plot Area", 140, lambda: self.clear_plot_area()), 1, 1)
 
-        layout.addWidget(self.create_button("Clear Insert Area", 140, lambda: self.clear_insert_area()))
-        layout.addSpacing(20)
+        widget_with_label = self.create_widget_with_label(self.insert_y_min, 40, "Y min", 40)
+        layout.addLayout(widget_with_label, 1, 3)
 
-        layout.addWidget(self.create_button("Clear Plot Area", 140, lambda: self.clear_plot_area()))
-        layout.addSpacing(20)
+        widget_with_label = self.create_widget_with_label(self.insert_y_max, 40, "Y max", 40)
+        layout.addLayout(widget_with_label, 1, 4)
 
-        self.insert_y_min.setMaximumWidth(50)
-        self.insert_y_min.setText("")
-        layout.addWidget(QLabel("Y Min"))
-        layout.addWidget(self.insert_y_min)
-        layout.addSpacing(10)
+        button = self.create_button("8/1", 50, lambda: self.change_x_y_ratio(0.125))
+        widget_with_label = self.create_widget_with_label(button, 50, "X Y ratio", 65)
+        layout.addLayout(widget_with_label, 1, 6, 1, 2)
 
-        self.insert_y_max.setMaximumWidth(50)
-        self.insert_y_max.setText("")
-        layout.addWidget(QLabel("Y Max"))
-        layout.addWidget(self.insert_y_max)
-        layout.addSpacing(20)
-
-        layout.addWidget(QLabel("X Y ratio"))
-        layout.addSpacing(15)
-        layout.addWidget(self.create_button("8/1", 40, lambda: self.change_x_y_ratio(0.125)))
-        layout.addSpacing(20)
-        layout.addWidget(self.create_button("4/1", 40, lambda: self.change_x_y_ratio(0.25)))
-        layout.addSpacing(20)
-        layout.addWidget(self.create_button("2/1", 40, lambda: self.change_x_y_ratio(0.5)))
-        layout.addSpacing(20)
-        layout.addWidget(self.create_button("1/1", 40, lambda: self.change_x_y_ratio(1)))
-        layout.addSpacing(20)
-        layout.addWidget(self.create_button("1/2", 40, lambda: self.change_x_y_ratio(2)))
-        layout.addSpacing(20)
-        layout.addWidget(self.create_button("1/4", 40, lambda: self.change_x_y_ratio(4)))
-        layout.addSpacing(20)
-        layout.addWidget(self.create_button("1/8", 40, lambda: self.change_x_y_ratio(8)))
-        layout.addSpacing(20)
-        return layout
+        layout.addWidget(self.create_button("4/1", 50, lambda: self.change_x_y_ratio(0.25)), 1, 8)
+        layout.addWidget(self.create_button("2/1", 50, lambda: self.change_x_y_ratio(0.5)), 1, 9)
+        layout.addWidget(self.create_button("1/1", 50, lambda: self.change_x_y_ratio(1)), 1, 10)
+        layout.addWidget(self.create_button("1/2", 50, lambda: self.change_x_y_ratio(2)), 1, 11)
+        layout.addWidget(self.create_button("1/4", 50, lambda: self.change_x_y_ratio(4)), 1, 12)
+        layout.addWidget(self.create_button("1/8", 50, lambda: self.change_x_y_ratio(8)), 1, 13)
 
 
     def create_gui(self):
@@ -252,13 +236,17 @@ class MathExpression(QMainWindow):
         layout_main.addWidget(self.insert_expression)
         layout_main.addSpacing(10)
 
-        layout_buttons_first = self.create_first_layout_buttons()
-        layout_main.addLayout(layout_buttons_first)
-        layout_main.addSpacing(20)
+        layout_grid = QGridLayout()
 
-        layout_buttons_second = self.create_second_layout_buttons()
-        layout_buttons_second.addStretch()
-        layout_main.addLayout(layout_buttons_second)
+        self.create_first_layout_buttons(layout_grid)
+        layout_grid.setRowMinimumHeight(0, 40)
+
+        self.create_second_layout_buttons(layout_grid)
+        layout_grid.setRowMinimumHeight(1, 40)
+
+        layout_grid.setColumnStretch(2, 50)
+        layout_grid.setColumnStretch(5, 50)
+        layout_main.addLayout(layout_grid)
         layout_main.addSpacing(20)
 
         self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
