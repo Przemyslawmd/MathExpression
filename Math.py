@@ -198,6 +198,7 @@ class MathExpression(QMainWindow):
         layout.addLayout(widget_with_label, 0, 6)
 
         layout_hor = QHBoxLayout()
+        layout_hor.setSpacing(8)
         label = QLabel("X : Y Ratio")
         label.setFixedSize(60, 10)
         layout_hor.addWidget(label)
