@@ -90,6 +90,7 @@ class MathExpression(QMainWindow):
         self.ratio_button_active = self.ratio_buttons[button_index]
         self.ratio_button_active.setStyleSheet("background-color : #b3b3b3")
 
+
     def set_message(self, message):
         self.area_messages.clear()
         self.area_messages.setText(message)
@@ -181,6 +182,7 @@ class MathExpression(QMainWindow):
 
 
     def create_first_grid_row(self, layout):
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.create_button("Draw Graph", 140, lambda: self.draw()), 0, 0)
         layout.addWidget(self.create_button("Append Graph", 140, lambda: self.append()), 0, 1)
         layout.setSpacing(15)
@@ -197,11 +199,11 @@ class MathExpression(QMainWindow):
         widget_with_label = self.create_widget_with_label(self.list_pen_width, 100, "Line Width", 65)
         layout.addLayout(widget_with_label, 0, 6)
 
-        layout_hor = QHBoxLayout()
-        layout_hor.setSpacing(8)
+        lay_hor = QHBoxLayout()
+        lay_hor.setSpacing(8)
         label = QLabel("X : Y Ratio")
         label.setFixedSize(60, 10)
-        layout_hor.addWidget(label)
+        lay_hor.addWidget(label)
 
         self.ratio_buttons = [self.create_button("8/1", 50, lambda: self.change_x_y_ratio(0.125, 0)),
                               self.create_button("4/1", 50, lambda: self.change_x_y_ratio(0.25, 1)),
@@ -210,10 +212,10 @@ class MathExpression(QMainWindow):
                               self.create_button("1/2", 50, lambda: self.change_x_y_ratio(2, 4)),
                               self.create_button("1/4", 50, lambda: self.change_x_y_ratio(4, 5)),
                               self.create_button("1/8", 50, lambda: self.change_x_y_ratio(8, 6))]
-        [layout_hor.addWidget(button) for button in self.ratio_buttons]
+        [lay_hor.addWidget(button) for button in self.ratio_buttons]
         self.ratio_button_active = self.ratio_buttons[3]
         self.ratio_button_active.setStyleSheet("background-color : #b3b3b3")
-        layout.addLayout(layout_hor, 0, 7)
+        layout.addLayout(lay_hor, 0, 8)
 
 
     def create_second_grid_row(self, layout):
@@ -243,33 +245,38 @@ class MathExpression(QMainWindow):
         tool_bar.addAction(about_action)
         self.addToolBar(tool_bar)
 
-        layout_main = QVBoxLayout()
-        layout_main.addSpacing(20)
-        layout_main.addWidget(self.insert_expression)
-        layout_main.addSpacing(10)
+        lay_main = QVBoxLayout()
+        lay_main.addSpacing(20)
+        lay_main.addWidget(self.insert_expression)
+        lay_main.addSpacing(10)
 
-        layout_grid = QGridLayout()
-        self.create_first_grid_row(layout_grid)
-        self.create_second_grid_row(layout_grid)
-        layout_grid.setRowMinimumHeight(0, 40)
-        layout_grid.setRowMinimumHeight(1, 40)
-        layout_grid.setColumnStretch(2, 50)
-        layout_grid.setColumnStretch(5, 50)
-        layout_main.addLayout(layout_grid)
-        layout_main.addSpacing(15)
+        lay_grid = QGridLayout()
+        self.create_first_grid_row(lay_grid)
+        self.create_second_grid_row(lay_grid)
+        lay_grid.setRowMinimumHeight(0, 40)
+        lay_grid.setRowMinimumHeight(1, 40)
+        lay_grid.setColumnStretch(2, 25)
+        lay_grid.setColumnStretch(5, 25)
+        lay_grid.setColumnStretch(7, 25)
+
+        buttons_widget = QWidget()
+        buttons_widget.setMaximumWidth(1400)
+        buttons_widget.setLayout(lay_grid)
+        lay_main.addWidget(buttons_widget)
+        lay_main.addSpacing(15)
 
         self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
-        layout_main.addWidget(self.plot_widget)
-        layout_main.addSpacing(20)
+        lay_main.addWidget(self.plot_widget)
+        lay_main.addSpacing(20)
 
-        layout_main.addWidget(self.area_messages)
+        lay_main.addWidget(self.area_messages)
         self.area_messages.setMaximumHeight(100)
-        layout_main.addSpacing(20)
+        lay_main.addSpacing(20)
 
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
 
-        main_widget.setLayout(layout_main)
+        main_widget.setLayout(lay_main)
         main_widget.setContentsMargins(20, 0, 20, 0)
 
 
