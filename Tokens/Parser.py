@@ -1,6 +1,7 @@
 
 from Tokens.Token import Token, TokenValue
 from Tokens.TokenUtils import TokenUtils
+from Errors import ErrorType, ErrorMessage
 
 class Parser:
 
@@ -152,7 +153,7 @@ class Parser:
                 continue
             if current_char in self.beginning_chars:
                 if not self.check_multiple_char_token():
-                    raise Exception(f"Parser error: improper symbol: {current_char}")
+                    raise Exception(ErrorMessage[ErrorType.SYMBOL] + f": {current_char}")
                 continue
             if current_char == '(' or current_char == ')':
                 result = self.process_brackets(current_char,
@@ -161,7 +162,7 @@ class Parser:
                                                TokenValue.BRACKET_RIGHT)
                 if result == 0:
                     position = self.initial_len - len(self.chars) + 1
-                    raise Exception(f"Error: improper bracket at position {position}")
+                    raise Exception(ErrorMessage[ErrorType.BRACKET] + f": position {position}")
                 self.bracket_validator += result
                 continue
             if current_char == '[' or current_char == ']':
@@ -171,28 +172,28 @@ class Parser:
                                                TokenValue.BRACKET_SQUARE_RIGHT)
                 if result == 0:
                     position = self.initial_len - len(self.chars) + 1
-                    raise Exception(f"Error: improper square bracket at position {position}")
+                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE] + f": position {position}")
                 self.bracket_square_validator += result
                 continue
             else:
                 token_symbol = self.one_char_tokens.get(current_char)
                 if token_symbol is None:
-                    raise Exception(f"Parser error: improper symbol: {current_char}")
+                    raise Exception(ErrorMessage[ErrorType.SYMBOL] + f": {current_char}")
                 elif token_symbol is TokenValue.MINUS:
                     if not self.check_negative():
                         position = self.initial_len - len(self.chars)
-                        raise Exception(f"Parser error: improper usage of negative symbol at position: {position}")
+                        raise Exception(ErrorMessage[ErrorType.NEGATIVE_SYMBOL] + f": position: {position}")
                 else:
                     self.tokens.append(Token(token_symbol))
                     del self.chars[-1]
 
         if self.bracket_validator != 0:
-            raise Exception("Parser error: improper brackets")
+            raise Exception(ErrorMessage[ErrorType.BRACKET])
         if self.bracket_square_validator != 0:
-            raise Exception("Parser error: improper square brackets")
+            raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
         self.add_multiplication()
         if not self.remove_negative_tokens():
-            raise Exception("Parser error: improper usage of negative symbol")
+            raise Exception(ErrorMessage[ErrorType.NEGATIVE_SYMBOL])
 
         return self.tokens
 
