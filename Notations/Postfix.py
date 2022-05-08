@@ -87,7 +87,7 @@ class Postfix:
         for token in self.postfix:
             if token.value is TokenValue.NUMBER:
                 for calculation in calculation_stack:
-                    calculation.append(token.number)
+                    calculation.append(token.data)
             elif token.value == TokenValue.X:
                 number = min_x
                 for values in calculation_stack:

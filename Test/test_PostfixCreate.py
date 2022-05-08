@@ -11,9 +11,9 @@ class TestPostfixCreate(TestCase):
         tokens = Parser("3 + x * 10 + x").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
         assert len(tokens_postfix) == 7
-        assert tokens_postfix[0].number == 3
+        assert tokens_postfix[0].data == 3
         assert tokens_postfix[1].value is TokenValue.X
-        assert tokens_postfix[2].number == 10
+        assert tokens_postfix[2].data == 10
         assert tokens_postfix[3].value is TokenValue.MULTIPLICATION
         assert tokens_postfix[4].value is TokenValue.PLUS
         assert tokens_postfix[5].value is TokenValue.X
@@ -35,7 +35,7 @@ class TestPostfixCreate(TestCase):
         tokens_postfix = Postfix().create_postfix(tokens)
         assert len(tokens_postfix) == 4
         assert tokens_postfix[0].value == TokenValue.X
-        assert tokens_postfix[1].number == 10
+        assert tokens_postfix[1].data == 10
         assert tokens_postfix[2].value == TokenValue.COSINE
         assert tokens_postfix[3].value is TokenValue.MULTIPLICATION
 
@@ -45,7 +45,7 @@ class TestPostfixCreate(TestCase):
         tokens_postfix = Postfix().create_postfix(tokens)
         assert len(tokens_postfix) == 3
         assert tokens_postfix[0].value == TokenValue.X
-        assert tokens_postfix[1].value is TokenValue.NUMBER and tokens_postfix[1].number == 2
+        assert tokens_postfix[1].value is TokenValue.NUMBER and tokens_postfix[1].data == 2
         assert tokens_postfix[2].value == TokenValue.POWER
 
 
@@ -53,9 +53,9 @@ class TestPostfixCreate(TestCase):
         tokens = Parser("2x^3").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
         assert len(tokens_postfix) == 5
-        assert tokens_postfix[0].value is TokenValue.NUMBER and tokens_postfix[0].number == 2
+        assert tokens_postfix[0].value is TokenValue.NUMBER and tokens_postfix[0].data == 2
         assert tokens_postfix[1].value == TokenValue.X
-        assert tokens_postfix[2].value is TokenValue.NUMBER and tokens_postfix[2].number == 3
+        assert tokens_postfix[2].value is TokenValue.NUMBER and tokens_postfix[2].data == 3
         assert tokens_postfix[3].value == TokenValue.POWER
         assert tokens_postfix[4].value is TokenValue.MULTIPLICATION
 
@@ -64,7 +64,7 @@ class TestPostfixCreate(TestCase):
         tokens = Parser("10tgx - xctgx").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
         assert len(tokens_postfix) == 9
-        assert tokens_postfix[0].number == 10
+        assert tokens_postfix[0].data == 10
         assert tokens_postfix[1].value is TokenValue.X
         assert tokens_postfix[2].value is TokenValue.TANGENT
         assert tokens_postfix[3].value is TokenValue.MULTIPLICATION
@@ -81,10 +81,10 @@ class TestPostfixCreate(TestCase):
         assert len(tokens_postfix) == 9
         assert tokens_postfix[0].value is TokenValue.X
         assert tokens_postfix[1].value is TokenValue.COSINE
-        assert tokens_postfix[2].value is TokenValue.NUMBER and tokens_postfix[2].number == 10
+        assert tokens_postfix[2].value is TokenValue.NUMBER and tokens_postfix[2].data == 10
         assert tokens_postfix[3].value is TokenValue.LOG
         assert tokens_postfix[4].value is TokenValue.MULTIPLICATION
-        assert tokens_postfix[5].value is TokenValue.NUMBER and tokens_postfix[5].number == 12
+        assert tokens_postfix[5].value is TokenValue.NUMBER and tokens_postfix[5].data == 12
         assert tokens_postfix[6].value is TokenValue.X
         assert tokens_postfix[7].value is TokenValue.MULTIPLICATION
         assert tokens_postfix[8].value is TokenValue.PLUS
@@ -94,10 +94,10 @@ class TestPostfixCreate(TestCase):
         tokens = Parser("(3 + x) * (10 + x)").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
         assert len(tokens_postfix) == 7
-        assert tokens_postfix[0].number == 3
+        assert tokens_postfix[0].data == 3
         assert tokens_postfix[1].value is TokenValue.X
         assert tokens_postfix[2].value is TokenValue.PLUS
-        assert tokens_postfix[3].number == 10
+        assert tokens_postfix[3].data == 10
         assert tokens_postfix[4].value is TokenValue.X
         assert tokens_postfix[5].value is TokenValue.PLUS
         assert tokens_postfix[6].value is TokenValue.MULTIPLICATION
@@ -109,7 +109,7 @@ class TestPostfixCreate(TestCase):
         assert len(tokens_postfix) == 12
         assert tokens_postfix[0].value is TokenValue.X
         assert tokens_postfix[1].value is TokenValue.COSINE
-        assert tokens_postfix[2].value is TokenValue.NUMBER and tokens_postfix[2].number == 10
+        assert tokens_postfix[2].value is TokenValue.NUMBER and tokens_postfix[2].data == 10
         assert tokens_postfix[3].value is TokenValue.X
         assert tokens_postfix[4].value is TokenValue.MULTIPLICATION
         assert tokens_postfix[5].value is TokenValue.X
@@ -129,7 +129,7 @@ class TestPostfixCreate(TestCase):
         assert tokens_postfix[1].value is TokenValue.TANGENT
         assert tokens_postfix[2].value is TokenValue.X
         assert tokens_postfix[3].value is TokenValue.COTANGENT
-        assert tokens_postfix[4].number == 12
+        assert tokens_postfix[4].data == 12
         assert tokens_postfix[5].value is TokenValue.X
         assert tokens_postfix[6].value is TokenValue.MULTIPLICATION
         assert tokens_postfix[7].value is TokenValue.X

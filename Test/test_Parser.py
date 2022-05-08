@@ -7,8 +7,8 @@ from Tokens.Token import TokenValue
 class TestParser(TestCase):
 
     @staticmethod
-    def check_token(token, token_number, token_value):
-        assert token.number == token_number
+    def check_token(token, token_data, token_value):
+        assert token.data == token_data
         assert token.value is token_value
 
 

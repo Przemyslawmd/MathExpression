@@ -123,7 +123,7 @@ class Parser:
                 continue
             if is_token_negative:
                 if token.value is TokenValue.NUMBER:
-                    number = token.number
+                    number = token.data
                     self.tokens[index] = Token(TokenValue.NUMBER, number * -1)
                 elif token.value is TokenValue.X:
                     self.tokens[index] = Token(TokenValue.X_NEGATIVE)
