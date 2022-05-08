@@ -10,6 +10,7 @@ class Parser:
         self.chars.reverse()
         self.tokens = []
         self.bracket_validator = 0
+        self.bracket_square_validator = 0
 
         self.one_char_tokens = {
             '+': TokenValue.PLUS,
@@ -68,17 +69,17 @@ class Parser:
             return False
 
 
-    def check_brackets(self, current_char):
-        if current_char == ')':
-            self.bracket_validator -= 1
-            if self.bracket_validator < 0:
-                return False
-            self.tokens.append(Token(TokenValue.BRACKET_RIGHT))
+    def process_brackets(self, current_char, validator, left, right):
+        if current_char == ')' or current_char == ']':
+            if validator == 0:
+                return 0
+            self.tokens.append(Token(right))
+            del self.chars[-1]
+            return -1
         else:
-            self.bracket_validator += 1
-            self.tokens.append(Token(TokenValue.BRACKET_LEFT))
-        del self.chars[-1]
-        return True
+            self.tokens.append(Token(left))
+            del self.chars[-1]
+            return 1
 
 
     def check_negative(self):
@@ -154,9 +155,24 @@ class Parser:
                     raise Exception(f"Parser error: improper symbol: {current_char}")
                 continue
             if current_char == '(' or current_char == ')':
-                if not self.check_brackets(current_char):
+                result = self.process_brackets(current_char,
+                                               self.bracket_validator,
+                                               TokenValue.BRACKET_LEFT,
+                                               TokenValue.BRACKET_RIGHT)
+                if result == 0:
                     position = self.initial_len - len(self.chars) + 1
                     raise Exception(f"Error: improper bracket at position {position}")
+                self.bracket_validator += result
+                continue
+            if current_char == '[' or current_char == ']':
+                result = self.process_brackets(current_char,
+                                               self.bracket_square_validator,
+                                               TokenValue.BRACKET_SQUARE_LEFT,
+                                               TokenValue.BRACKET_SQUARE_RIGHT)
+                if result == 0:
+                    position = self.initial_len - len(self.chars) + 1
+                    raise Exception(f"Error: improper square bracket at position {position}")
+                self.bracket_square_validator += result
                 continue
             else:
                 token_symbol = self.one_char_tokens.get(current_char)
@@ -172,6 +188,8 @@ class Parser:
 
         if self.bracket_validator != 0:
             raise Exception("Parser error: improper brackets")
+        if self.bracket_square_validator != 0:
+            raise Exception("Parser error: improper square brackets")
         self.add_multiplication()
         if not self.remove_negative_tokens():
             raise Exception("Parser error: improper usage of negative symbol")

@@ -254,6 +254,16 @@ class TestParser(TestCase):
         self.check_token(tokens[6],  0, TokenValue.BRACKET_RIGHT)
 
 
+    def test_expression_square_brackets(self):
+        tokens = Parser("sqrt[2]16").parse()
+        assert len(tokens) == 5
+        self.check_token(tokens[0],  0, TokenValue.ROOT)
+        self.check_token(tokens[1],  0, TokenValue.BRACKET_SQUARE_LEFT)
+        self.check_token(tokens[2],  2, TokenValue.NUMBER)
+        self.check_token(tokens[3],  0, TokenValue.BRACKET_SQUARE_RIGHT)
+        self.check_token(tokens[4],  16, TokenValue.NUMBER)
+
+
     def test_improper_expression_1(self):
         with self.assertRaises(Exception) as exc:
             Parser("(2x + 3) / ((3x + 4)").parse()
@@ -301,5 +311,27 @@ class TestParser(TestCase):
             Parser("(5x + x)(5 + 3-)").parse()
         error = exc.exception
         self.assertEqual(str(error), "Parser error: improper usage of negative symbol at position: 15")
+
+
+    def test_improper_square_bracket_1(self):
+        with self.assertRaises(Exception) as exc:
+            Parser("(5x + x)([5] + [3)").parse()
+        error = exc.exception
+        self.assertEqual(str(error), "Parser error: improper square brackets")
+
+
+    def test_improper_square_bracket_2(self):
+        with self.assertRaises(Exception) as exc:
+            Parser("(5x + x)(5 + 3]-)").parse()
+        error = exc.exception
+        self.assertEqual(str(error), "Error: improper square bracket at position 15")
+
+
+    def test_improper_square_bracket_3(self):
+        with self.assertRaises(Exception) as exc:
+            Parser("[(5x + x)(5 + 3)]]").parse()
+        error = exc.exception
+        self.assertEqual(str(error), "Error: improper square bracket at position 18")
+
 
 
