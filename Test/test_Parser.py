@@ -335,4 +335,29 @@ class TestParser(TestCase):
         self.assertEqual(str(error), ErrorMessage[ErrorType.BRACKET_SQUARE] + ": position 18")
 
 
+    def test_improper_square_bracket_4(self):
+        with self.assertRaises(Exception) as exc:
+            Parser("[(5x + x)(5 + 3)]").parse()
+        error = exc.exception
+        self.assertEqual(str(error), ErrorMessage[ErrorType.BRACKET_SQUARE])
 
+
+    def test_improper_square_bracket_5(self):
+        with self.assertRaises(Exception) as exc:
+            Parser("(5x + sqrt[]x)(5 + 3)").parse()
+        error = exc.exception
+        self.assertEqual(str(error), ErrorMessage[ErrorType.BRACKET_SQUARE])
+
+
+    def test_improper_square_bracket_6(self):
+        with self.assertRaises(Exception) as exc:
+            Parser("[](5x)").parse()
+        error = exc.exception
+        self.assertEqual(str(error), ErrorMessage[ErrorType.BRACKET_SQUARE])
+
+
+    def test_improper_square_bracket_7(self):
+        with self.assertRaises(Exception) as exc:
+            Parser("5x + sin[4]x").parse()
+        error = exc.exception
+        self.assertEqual(str(error), ErrorMessage[ErrorType.BRACKET_SQUARE])

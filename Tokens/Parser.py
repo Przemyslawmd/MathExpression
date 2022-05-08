@@ -191,6 +191,17 @@ class Parser:
             raise Exception(ErrorMessage[ErrorType.BRACKET])
         if self.bracket_square_validator != 0:
             raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+        for index, token in enumerate(self.tokens):
+            if token.value is TokenValue.BRACKET_SQUARE_LEFT:
+                if index == 0:
+                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+                if self.tokens[index - 1].value not in [TokenValue.ROOT, TokenValue.LOG]:
+                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+                if self.tokens[index + 1].value is not TokenValue.NUMBER:
+                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+                if self.tokens[index + 2].value is not TokenValue.BRACKET_SQUARE_RIGHT:
+                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+
         self.add_multiplication()
         if not self.remove_negative_tokens():
             raise Exception(ErrorMessage[ErrorType.NEGATIVE_SYMBOL])
