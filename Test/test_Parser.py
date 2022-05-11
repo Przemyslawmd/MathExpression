@@ -86,7 +86,7 @@ class TestParser(TestCase):
         self.check_token(tokens[3], 0,  TokenValue.POWER)
         self.check_token(tokens[4], 3,  TokenValue.NUMBER)
         self.check_token(tokens[5], 0,  TokenValue.PLUS)
-        self.check_token(tokens[6], 0,  TokenValue.LOG)
+        self.check_token(tokens[6], 10,  TokenValue.LOG)
         self.check_token(tokens[7], 10, TokenValue.NUMBER)
 
 
@@ -114,7 +114,7 @@ class TestParser(TestCase):
         self.check_token(tokens[0],  52,  TokenValue.NUMBER)
         self.check_token(tokens[1],  0,   TokenValue.DIVISION)
         self.check_token(tokens[2],  0,   TokenValue.BRACKET_LEFT)
-        self.check_token(tokens[3],  0,   TokenValue.LOG)
+        self.check_token(tokens[3],  10,   TokenValue.LOG)
         self.check_token(tokens[4],  350, TokenValue.NUMBER)
         self.check_token(tokens[5],  0,   TokenValue.MULTIPLICATION)
         self.check_token(tokens[6],  0,   TokenValue.X)
@@ -181,24 +181,24 @@ class TestParser(TestCase):
     def test_expression_11(self):
         tokens = Parser("sqrtx + sqrt12").parse()
         assert len(tokens) == 5
-        self.check_token(tokens[0], 0, TokenValue.ROOT)
+        self.check_token(tokens[0], 2, TokenValue.ROOT)
         self.check_token(tokens[1], 0, TokenValue.X)
         self.check_token(tokens[2], 0, TokenValue.PLUS)
-        self.check_token(tokens[3], 0, TokenValue.ROOT)
+        self.check_token(tokens[3], 2, TokenValue.ROOT)
         self.check_token(tokens[4], 12, TokenValue.NUMBER)
 
 
     def test_expression_12(self):
         tokens = Parser("sqrt(x + 4) + sqrt(sinx)").parse()
         assert len(tokens) == 12
-        self.check_token(tokens[0], 0, TokenValue.ROOT)
+        self.check_token(tokens[0], 2, TokenValue.ROOT)
         self.check_token(tokens[1], 0, TokenValue.BRACKET_LEFT)
         self.check_token(tokens[2], 0, TokenValue.X)
         self.check_token(tokens[3], 0, TokenValue.PLUS)
         self.check_token(tokens[4], 4, TokenValue.NUMBER)
         self.check_token(tokens[5], 0, TokenValue.BRACKET_RIGHT)
         self.check_token(tokens[6], 0, TokenValue.PLUS)
-        self.check_token(tokens[7], 0, TokenValue.ROOT)
+        self.check_token(tokens[7], 2, TokenValue.ROOT)
         self.check_token(tokens[8], 0, TokenValue.BRACKET_LEFT)
         self.check_token(tokens[9], 0, TokenValue.SINE)
         self.check_token(tokens[10], 0, TokenValue.X)
@@ -255,14 +255,11 @@ class TestParser(TestCase):
         self.check_token(tokens[6],  0, TokenValue.BRACKET_RIGHT)
 
 
-    def test_expression_square_brackets(self):
+    def test_expression_square_brackets_1(self):
         tokens = Parser("sqrt[2]16").parse()
-        assert len(tokens) == 5
-        self.check_token(tokens[0],  0, TokenValue.ROOT)
-        self.check_token(tokens[1],  0, TokenValue.BRACKET_SQUARE_LEFT)
-        self.check_token(tokens[2],  2, TokenValue.NUMBER)
-        self.check_token(tokens[3],  0, TokenValue.BRACKET_SQUARE_RIGHT)
-        self.check_token(tokens[4],  16, TokenValue.NUMBER)
+        assert len(tokens) == 2
+        self.check_token(tokens[0],  2, TokenValue.ROOT)
+        self.check_token(tokens[1],  16, TokenValue.NUMBER)
 
 
     def test_improper_expression_1(self):

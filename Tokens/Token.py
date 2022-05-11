@@ -31,10 +31,6 @@ class TokenValue(Enum):
 
 class Token:
     def __init__(self, value, data=0):
-
-        if value != TokenValue.NUMBER and data != 0:
-            raise Exception("For token value other than Number token number should be zero")
-
         self.value = value
         self.data = data
 

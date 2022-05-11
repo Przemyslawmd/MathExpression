@@ -59,11 +59,11 @@ class Parser:
                 del self.chars[-3:]
                 return True
             if self.chars[-3:] == self.log_chars:
-                self.tokens.append(Token(TokenValue.LOG))
+                self.tokens.append(Token(TokenValue.LOG, 10))
                 del self.chars[-3:]
                 return True
         if len(self.chars) >= 4 and self.chars[-4:] == self.root_chars:
-            self.tokens.append(Token(TokenValue.ROOT))
+            self.tokens.append(Token(TokenValue.ROOT, 2))
             del self.chars[-4:]
             return True
         else:
@@ -142,6 +142,28 @@ class Parser:
         return True
 
 
+    def remove_square_brackets(self):
+        tokens_to_remove = []
+        for index, token in enumerate(self.tokens):
+            if token.value is TokenValue.BRACKET_SQUARE_LEFT:
+                if index == 0:
+                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+                if self.tokens[index - 1].value not in [TokenValue.ROOT, TokenValue.LOG]:
+                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+                if self.tokens[index + 1].value is not TokenValue.NUMBER:
+                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+                if self.tokens[index + 2].value is not TokenValue.BRACKET_SQUARE_RIGHT:
+                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+                self.tokens[index - 1].data = self.tokens[index + 1].data
+                tokens_to_remove.append(index)
+                tokens_to_remove.append(index + 1)
+                tokens_to_remove.append(index + 2)
+
+        for i in range(len(self.tokens) - 1, -1, -1):
+            if i in tokens_to_remove:
+                del self.tokens[i]
+
+
     def parse(self):
         while self.chars:
             current_char = self.chars[-1]
@@ -191,16 +213,7 @@ class Parser:
             raise Exception(ErrorMessage[ErrorType.BRACKET])
         if self.bracket_square_validator != 0:
             raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
-        for index, token in enumerate(self.tokens):
-            if token.value is TokenValue.BRACKET_SQUARE_LEFT:
-                if index == 0:
-                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
-                if self.tokens[index - 1].value not in [TokenValue.ROOT, TokenValue.LOG]:
-                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
-                if self.tokens[index + 1].value is not TokenValue.NUMBER:
-                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
-                if self.tokens[index + 2].value is not TokenValue.BRACKET_SQUARE_RIGHT:
-                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+        self.remove_square_brackets()
 
         self.add_multiplication()
         if not self.remove_negative_tokens():
