@@ -21,7 +21,7 @@ class Postfix:
 
             TokenValue.LOG: lambda a: math.log(a, 10) if a > 0 else math.nan,
             TokenValue.POWER: lambda a, b: math.nan if (float(a).is_integer() is False and b < 0) else power(b, a),
-            TokenValue.ROOT: lambda a: math.nan if a < 0 else math.sqrt(a),
+            TokenValue.ROOT: lambda a, b: math.nan if a < 0 else (math.sqrt(a) if b == 2 else power(a, 1/b)),
 
             TokenValue.COSINE: lambda a: math.cos(a),
             TokenValue.COTANGENT: lambda a: math.nan if round(math.sin(a), 4) == 0.00 else math.cos(a) / math.sin(a),
@@ -111,7 +111,7 @@ class Postfix:
             elif token.value is TokenValue.LOG or TokenValue.ROOT:
                 for calculation in calculation_stack:
                     num = calculation.pop()
-                    calculation.append(self.actions[token.value](num))
+                    calculation.append(self.actions[token.value](num, token.data))
 
         return [round(x[0], 4) for x in calculation_stack]
 
