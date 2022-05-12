@@ -2,6 +2,7 @@
 from Tokens.Token import Token, TokenValue
 from Tokens.TokenUtils import TokenUtils
 from Errors import ErrorType, ErrorMessage
+from Tokens.Validator import Validator
 
 class Parser:
 
@@ -218,6 +219,12 @@ class Parser:
         self.add_multiplication()
         if not self.remove_negative_tokens():
             raise Exception(ErrorMessage[ErrorType.NEGATIVE_SYMBOL])
+
+        validator = Validator()
+        try:
+            validator.validate(self.tokens)
+        except Exception as e:
+            raise Exception(e)
 
         return self.tokens
 
