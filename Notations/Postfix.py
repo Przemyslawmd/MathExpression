@@ -19,7 +19,7 @@ class Postfix:
             TokenValue.MULTIPLICATION: lambda a, b: a * b,
             TokenValue.PLUS: lambda a, b: a + b,
 
-            TokenValue.LOG: lambda a: math.log(a, 10) if a > 0 else math.nan,
+            TokenValue.LOG: lambda a, b: math.log(a, b) if a > 0 else math.nan,
             TokenValue.POWER: lambda a, b: math.nan if (float(a).is_integer() is False and b < 0) else power(b, a),
             TokenValue.ROOT: lambda a, b: math.nan if a < 0 else (math.sqrt(a) if b == 2 else power(a, 1/b)),
 
