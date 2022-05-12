@@ -148,13 +148,13 @@ class Parser:
         for index, token in enumerate(self.tokens):
             if token.value is TokenValue.BRACKET_SQUARE_LEFT:
                 if index == 0:
-                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE])
                 if self.tokens[index - 1].value not in [TokenValue.ROOT, TokenValue.LOG]:
-                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE])
                 if self.tokens[index + 1].value is not TokenValue.NUMBER:
-                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE])
                 if self.tokens[index + 2].value is not TokenValue.BRACKET_SQUARE_RIGHT:
-                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE])
                 self.tokens[index - 1].data = self.tokens[index + 1].data
                 tokens_to_remove.append(index)
                 tokens_to_remove.append(index + 1)
@@ -176,7 +176,7 @@ class Parser:
                 continue
             if current_char in self.beginning_chars:
                 if not self.check_multiple_char_token():
-                    raise Exception(ErrorMessage[ErrorType.SYMBOL] + f": {current_char}")
+                    raise Exception(ErrorMessage[ErrorType.PARSER_SYMBOL] + f": {current_char}")
                 continue
             if current_char == '(' or current_char == ')':
                 result = self.process_brackets(current_char,
@@ -185,7 +185,7 @@ class Parser:
                                                TokenValue.BRACKET_RIGHT)
                 if result == 0:
                     position = self.initial_len - len(self.chars) + 1
-                    raise Exception(ErrorMessage[ErrorType.BRACKET] + f": position {position}")
+                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET] + f": position {position}")
                 self.bracket_validator += result
                 continue
             if current_char == '[' or current_char == ']':
@@ -195,30 +195,30 @@ class Parser:
                                                TokenValue.BRACKET_SQUARE_RIGHT)
                 if result == 0:
                     position = self.initial_len - len(self.chars) + 1
-                    raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE] + f": position {position}")
+                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE] + f": position {position}")
                 self.bracket_square_validator += result
                 continue
             else:
                 token_symbol = self.one_char_tokens.get(current_char)
                 if token_symbol is None:
-                    raise Exception(ErrorMessage[ErrorType.SYMBOL] + f": {current_char}")
+                    raise Exception(ErrorMessage[ErrorType.PARSER_SYMBOL] + f": {current_char}")
                 elif token_symbol is TokenValue.MINUS:
                     if not self.check_negative():
                         position = self.initial_len - len(self.chars)
-                        raise Exception(ErrorMessage[ErrorType.NEGATIVE_SYMBOL] + f": position: {position}")
+                        raise Exception(ErrorMessage[ErrorType.PARSER_NEGATIVE_SYMBOL] + f": position: {position}")
                 else:
                     self.tokens.append(Token(token_symbol))
                     del self.chars[-1]
 
         if self.bracket_validator != 0:
-            raise Exception(ErrorMessage[ErrorType.BRACKET])
+            raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET])
         if self.bracket_square_validator != 0:
-            raise Exception(ErrorMessage[ErrorType.BRACKET_SQUARE])
+            raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE])
         self.remove_square_brackets()
 
         self.add_multiplication()
         if not self.remove_negative_tokens():
-            raise Exception(ErrorMessage[ErrorType.NEGATIVE_SYMBOL])
+            raise Exception(ErrorMessage[ErrorType.PARSER_NEGATIVE_SYMBOL])
 
         validator = Validator()
         try:
