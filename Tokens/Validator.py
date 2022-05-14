@@ -11,6 +11,7 @@ class Validator:
         self.filter_negative = TokenUtils.basic_arithmetic + [TokenValue.BRACKET_RIGHT]
 
     def validate(self, tokens):
+        last = len(tokens) - 1
         for index, token in enumerate(tokens):
             if token.value is TokenValue.LOG:
                 if not tokens[index + 1] or tokens[index + 1].value not in self.filter_positive:
@@ -27,3 +28,8 @@ class Validator:
             if token.value in TokenUtils.basic_arithmetic:
                 if not tokens[index + 1] or tokens[index + 1].value in self.filter_negative:
                     raise Exception(ErrorMessage[ErrorType.VALIDATOR_BASIC_ARITHMETIC])
+            if token.value is TokenValue.NUMBER:
+                if index != last and tokens[index + 1].value is TokenValue.NUMBER:
+                    raise Exception(ErrorMessage[ErrorType.VALIDATOR_NUMBER])
+
+

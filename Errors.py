@@ -10,9 +10,10 @@ class ErrorType(Enum):
 
     VALIDATOR_BASIC_ARITHMETIC = 4
     VALIDATOR_LOGARITHM = 5
-    VALIDATOR_POWER = 6
-    VALIDATOR_ROOT = 7
-    VALIDATOR_TRIGONOMETRY = 8
+    VALIDATOR_NUMBER = 6
+    VALIDATOR_POWER = 7
+    VALIDATOR_ROOT = 8
+    VALIDATOR_TRIGONOMETRY = 9
 
 
 ErrorMessage = {
@@ -20,6 +21,7 @@ ErrorMessage = {
     ErrorType.PARSER_BRACKET_SQUARE: "Improper square bracket",
     ErrorType.PARSER_NEGATIVE_SYMBOL: "Improper usage of negative symbol",
     ErrorType.PARSER_SYMBOL: "Improper symbol",
+    ErrorType.VALIDATOR_NUMBER: "Empty space between numbers",
     ErrorType.VALIDATOR_BASIC_ARITHMETIC: "Addition, substraction, multiplication, and division can not be followed"
                                           " by the same symbol and right bracket",
     ErrorType.VALIDATOR_LOGARITHM: "Logarithm can be followed only by : x, number, opening bracket",
