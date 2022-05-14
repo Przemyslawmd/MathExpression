@@ -1,5 +1,6 @@
 
 from Tokens.Token import TokenValue
+from Tokens.TokenUtils import TokenUtils
 from Errors import ErrorType, ErrorMessage
 
 
@@ -16,5 +17,7 @@ class Validator:
             if token.value is TokenValue.ROOT:
                 if not tokens[index + 1] or tokens[index + 1].value not in self.filter:
                     raise Exception(ErrorMessage[ErrorType.VALIDATOR_ROOT])
-
+            if token.value in TokenUtils.trigonometry:
+                if not tokens[index + 1] or tokens[index + 1].value not in self.filter:
+                    raise Exception(ErrorMessage[ErrorType.VALIDATOR_TRIGONOMETRY])
 

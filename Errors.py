@@ -10,6 +10,7 @@ class ErrorType(Enum):
 
     VALIDATOR_LOGARITHM = 4
     VALIDATOR_ROOT = 5
+    VALIDATOR_TRIGONOMETRY = 6
 
 
 ErrorMessage = {
@@ -17,8 +18,9 @@ ErrorMessage = {
     ErrorType.PARSER_BRACKET_SQUARE: "Improper square bracket",
     ErrorType.PARSER_NEGATIVE_SYMBOL: "Improper usage of negative symbol",
     ErrorType.PARSER_SYMBOL: "Improper symbol",
-    ErrorType.VALIDATOR_LOGARITHM: "Symbols allowed to be followed by logarithm: x, number, opening bracket",
-    ErrorType.VALIDATOR_ROOT: "Symbols allowed to be followed by sqrt: x, number, opening bracket",
+    ErrorType.VALIDATOR_LOGARITHM: "Logarithm must be followed by: x, number, opening bracket",
+    ErrorType.VALIDATOR_ROOT: "Root must be followed by: x, number, opening bracket",
+    ErrorType.VALIDATOR_TRIGONOMETRY: "Trigomentry function must be be followed by: x, number, opening bracket",
 }
 
 
