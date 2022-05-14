@@ -110,7 +110,10 @@ class Parser:
                                         TokenValue.X,
                                         TokenValue.NUMBER,
                                         TokenValue.BRACKET_LEFT,
-                                        TokenValue.ROOT]:
+                                        TokenValue.ROOT,
+                                        TokenValue.LOG]:
+                    if token.value is TokenValue.NUMBER and next_token.value is TokenValue.NUMBER:
+                        continue
                     indices.append(index + 1)
         index_shift = 0
         for index in indices:
