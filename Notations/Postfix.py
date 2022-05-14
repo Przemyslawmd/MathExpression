@@ -56,7 +56,7 @@ class Postfix:
             tokens_to_move = [token for token in TokenUtils.operators if (token not in [TokenValue.PLUS, TokenValue.MINUS])]
             self.process_stack_operator(token, tokens_to_move)
         elif token.value in TokenUtils.trigonometry or token.value is TokenValue.LOG or token.value is TokenValue.ROOT:
-            tokens_to_move = [token for token in TokenUtils.operators if (token not in TokenUtils.operation)]
+            tokens_to_move = [token for token in TokenUtils.operators if (token not in TokenUtils.basic_arithmetic)]
             self.process_stack_operator(token, tokens_to_move)
         else:
             self.process_stack_operator(token, [TokenValue.POWER])
@@ -98,7 +98,7 @@ class Postfix:
                 for calculation in calculation_stack:
                     calculation.append(round(number, 4))
                     number -= x_precision
-            elif token.value in TokenUtils.operation or token.value is TokenValue.POWER:
+            elif token.value in TokenUtils.basic_arithmetic or token.value is TokenValue.POWER:
                 for calculation in calculation_stack:
                     num_1 = calculation.pop()
                     num_2 = calculation.pop()
