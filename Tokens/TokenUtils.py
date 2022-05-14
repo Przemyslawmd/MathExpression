@@ -1,15 +1,15 @@
 
-from Tokens.Token import TokenValue
+from Tokens.Token import TokenType
 
 
 class TokenUtils:
 
-    bracket = [TokenValue.BRACKET_LEFT, TokenValue.BRACKET_RIGHT]
+    bracket = [TokenType.BRACKET_LEFT, TokenType.BRACKET_RIGHT]
 
-    basic_arithmetic = [TokenValue.DIVISION, TokenValue.MINUS, TokenValue.MULTIPLICATION, TokenValue.PLUS]
+    basic_arithmetic = [TokenType.DIVISION, TokenType.MINUS, TokenType.MULTIPLICATION, TokenType.PLUS]
 
-    trigonometry = [TokenValue.COSINE, TokenValue.COTANGENT, TokenValue.SINE, TokenValue.TANGENT]
+    trigonometry = [TokenType.COSINE, TokenType.COTANGENT, TokenType.SINE, TokenType.TANGENT]
 
-    operators = basic_arithmetic + trigonometry + [TokenValue.LOG, TokenValue.POWER, TokenValue.ROOT]
+    operators = basic_arithmetic + trigonometry + [TokenType.LOG, TokenType.POWER, TokenType.ROOT]
 
 

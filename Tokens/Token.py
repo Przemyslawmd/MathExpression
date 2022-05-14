@@ -2,7 +2,7 @@
 from enum import Enum
 
 
-class TokenValue(Enum):
+class TokenType(Enum):
 
     NUMBER = 0
 
@@ -30,8 +30,8 @@ class TokenValue(Enum):
 
 
 class Token:
-    def __init__(self, value, data=0):
-        self.value = value
+    def __init__(self, _type, data=0):
+        self.type = _type
         self.data = data
 
 
