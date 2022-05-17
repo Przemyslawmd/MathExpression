@@ -25,8 +25,8 @@ class TokenType(Enum):
 
     BRACKET_LEFT = 15
     BRACKET_RIGHT = 16
-    BRACKET_SQUARE_LEFT = 17
-    BRACKET_SQUARE_RIGHT = 18
+    BRACKET_ANGLE_LEFT = 17
+    BRACKET_ANGLE_RIGHT = 18
 
 
 class Token:

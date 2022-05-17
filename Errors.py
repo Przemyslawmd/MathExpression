@@ -4,7 +4,7 @@ from enum import Enum
 class ErrorType(Enum):
 
     PARSER_BRACKET = 0
-    PARSER_BRACKET_SQUARE = 1
+    PARSER_BRACKET_ANGLE = 1
     PARSER_NEGATIVE_SYMBOL = 2
     PARSER_SYMBOL = 3
 
@@ -18,7 +18,8 @@ class ErrorType(Enum):
 
 ErrorMessage = {
     ErrorType.PARSER_BRACKET: "Improper bracket",
-    ErrorType.PARSER_BRACKET_SQUARE: "Improper square bracket",
+    ErrorType.PARSER_BRACKET_ANGLE: "Improper angle bracket. Angle brackets are allowed only as a base for logarithm "
+                                    "and root",
     ErrorType.PARSER_NEGATIVE_SYMBOL: "Improper usage of negative symbol",
     ErrorType.PARSER_SYMBOL: "Improper symbol",
     ErrorType.VALIDATOR_NUMBER: "Empty space between numbers",

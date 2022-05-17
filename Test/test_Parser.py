@@ -256,7 +256,7 @@ class TestParser(TestCase):
 
 
     def test_square_brackets_1(self):
-        tokens = Parser("sqrt[2]16").parse()
+        tokens = Parser("sqrt<2>16").parse()
         assert len(tokens) == 2
         self.check_token(tokens[0], 2, TokenType.ROOT)
         self.check_token(tokens[1], 16, TokenType.NUMBER)

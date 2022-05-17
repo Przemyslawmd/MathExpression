@@ -12,7 +12,7 @@ class Parser:
         self.chars.reverse()
         self.tokens = []
         self.bracket_validator = 0
-        self.bracket_square_validator = 0
+        self.bracket_angle_validator = 0
 
         self.one_char_tokens = {
             '+': TokenType.PLUS,
@@ -72,7 +72,7 @@ class Parser:
 
 
     def process_brackets(self, current_char, validator, left, right):
-        if current_char == ')' or current_char == ']':
+        if current_char == ')' or current_char == '>':
             if validator == 0:
                 return 0
             self.tokens.append(Token(right))
@@ -146,18 +146,18 @@ class Parser:
         return True
 
 
-    def remove_square_brackets(self):
+    def remove_angle_brackets(self):
         tokens_to_remove = []
         for index, token in enumerate(self.tokens):
-            if token.type is TokenType.BRACKET_SQUARE_LEFT:
+            if token.type is TokenType.BRACKET_ANGLE_LEFT:
                 if index == 0:
-                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE])
+                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
                 if self.tokens[index - 1].type not in [TokenType.ROOT, TokenType.LOG]:
-                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE])
+                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
                 if self.tokens[index + 1].type is not TokenType.NUMBER:
-                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE])
-                if self.tokens[index + 2].type is not TokenType.BRACKET_SQUARE_RIGHT:
-                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE])
+                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+                if self.tokens[index + 2].type is not TokenType.BRACKET_ANGLE_RIGHT:
+                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
                 self.tokens[index - 1].data = self.tokens[index + 1].data
                 tokens_to_remove.append(index)
                 tokens_to_remove.append(index + 1)
@@ -191,15 +191,15 @@ class Parser:
                     raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET] + f": position {position}")
                 self.bracket_validator += result
                 continue
-            if current_char == '[' or current_char == ']':
+            if current_char == '<' or current_char == '>':
                 result = self.process_brackets(current_char,
-                                               self.bracket_square_validator,
-                                               TokenType.BRACKET_SQUARE_LEFT,
-                                               TokenType.BRACKET_SQUARE_RIGHT)
+                                               self.bracket_angle_validator,
+                                               TokenType.BRACKET_ANGLE_LEFT,
+                                               TokenType.BRACKET_ANGLE_RIGHT)
                 if result == 0:
                     position = self.initial_len - len(self.chars) + 1
-                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE] + f": position {position}")
-                self.bracket_square_validator += result
+                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE] + f": position {position}")
+                self.bracket_angle_validator += result
                 continue
             else:
                 token_symbol = self.one_char_tokens.get(current_char)
@@ -215,9 +215,9 @@ class Parser:
 
         if self.bracket_validator != 0:
             raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET])
-        if self.bracket_square_validator != 0:
-            raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_SQUARE])
-        self.remove_square_brackets()
+        if self.bracket_angle_validator != 0:
+            raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+        self.remove_angle_brackets()
 
         self.add_multiplication()
         if not self.remove_negative_tokens():
