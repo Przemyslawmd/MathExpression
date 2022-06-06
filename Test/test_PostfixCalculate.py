@@ -2,7 +2,6 @@
 from unittest import TestCase
 from Notations.Postfix import Postfix
 from Tokens.Parser import Parser
-from Tokens.Token import TokenType
 
 
 class TestPostfixCalculate(TestCase):
