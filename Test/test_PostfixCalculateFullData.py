@@ -36,3 +36,24 @@ class TestPostfixCalculateFullData(TestCase):
             assert x == y
 
 
+    def test_postfix_calculate_full_data_3(self):
+        tokens = Parser("sqrt((1-x)/(1+x))").parse()
+        postfix = Postfix()
+        postfix.create_postfix(tokens)
+        result = postfix.calculate(-6, 5, 0.02)
+        file_result = self.read_data_from_file("Data/resultsC")
+        for x, y in zip(result, file_result):
+            if math.isnan(x):
+                assert math.isnan(y)
+                continue
+            assert x == y
+
+
+    def test_postfix_calculate_full_data_4(self):
+        tokens = Parser("(sinx)^2 + cosx").parse()
+        postfix = Postfix()
+        postfix.create_postfix(tokens)
+        result = postfix.calculate(-360, 360, 0.2)
+        file_result = self.read_data_from_file("Data/resultsD")
+        self.assertListEqual(file_result, result)
+
