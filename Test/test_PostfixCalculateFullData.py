@@ -57,3 +57,25 @@ class TestPostfixCalculateFullData(TestCase):
         file_result = self.read_data_from_file("Data/resultsD")
         self.assertListEqual(file_result, result)
 
+
+    def test_postfix_calculate_full_data_5(self):
+        tokens = Parser("x^2 (x^2 -4)^3").parse()
+        postfix = Postfix()
+        postfix.create_postfix(tokens)
+        result = postfix.calculate(-3, 3, 0.01)
+        file_result = self.read_data_from_file("Data/resultsE")
+        self.assertListEqual(file_result, result)
+
+
+    def test_postfix_calculate_full_data_6(self):
+        tokens = Parser("(15x^2 - 13x -20)/(8x^2 + 10x -7)").parse()
+        postfix = Postfix()
+        postfix.create_postfix(tokens)
+        result = postfix.calculate(-10, 10, 0.01)
+        file_result = self.read_data_from_file("Data/resultsF")
+        for x, y in zip(result, file_result):
+            if math.isnan(x):
+                assert math.isnan(y)
+                continue
+            assert x == y
+
