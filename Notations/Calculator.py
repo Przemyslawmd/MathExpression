@@ -5,6 +5,15 @@ from numpy import power, arange
 from Tokens.TokenUtils import TokenUtils
 from Tokens.Token import TokenType
 from collections import deque
+from enum import Enum
+
+
+class Direction(Enum):
+
+    CONST = 0
+    DOWN = 1
+    UP = 2
+    NONE = 3
 
 
 class Calculator:
@@ -27,12 +36,53 @@ class Calculator:
             TokenType.TANGENT: lambda a: math.tan(a),
         }
 
-    def calculate(self, postfix, min_x, max_x, x_precision=1.0):
+
+    @staticmethod
+    def check_directions(numbers):
+        directions = [Direction.NONE] * len(numbers)
+        for index, number in enumerate(numbers):
+            if index == 0:
+                continue
+            if math.isnan(number):
+                directions[index] = Direction.NONE
+            elif number > numbers[index - 1]:
+                directions[index] = Direction.UP
+            elif number < numbers[index - 1]:
+                directions[index] = Direction.DOWN
+            elif number == numbers[index - 1]:
+                directions[index] = Direction.CONST
+        return directions
+
+
+    @staticmethod
+    def is_discontinuity(directions, numbers, index):
+        if directions[index - 1] == Direction.DOWN and directions[index] == Direction.UP:
+            if directions[index + 1] == Direction.DOWN and numbers[index + 1] > numbers[index - 1]:
+                return True
+        if directions[index - 1] == Direction.UP and directions[index] == Direction.DOWN:
+            if directions[index + 1] == Direction.UP and numbers[index + 1] < numbers[index - 1]:
+                return True
+        return False
+
+
+    def check_continuity(self, numbers):
+        discontinuity_points = []
+        directions = self.check_directions(numbers)
+        for index, direction in enumerate(directions):
+            if index == 0:
+                continue
+            if direction != directions[index - 1]:
+                if self.is_discontinuity(directions, numbers, index):
+                    discontinuity_points.append(index)
+        return discontinuity_points
+
+
+    def calculate(self, postfix_tokens, min_x, max_x, x_precision=1.0):
         calculation_stack = deque()
         for _ in arange(min_x, max_x + x_precision, x_precision):
             calculation_stack.append(deque())
 
-        for token in postfix:
+        for token in postfix_tokens:
             if token.type is TokenType.NUMBER:
                 for calculation in calculation_stack:
                     calculation.append(token.data)
@@ -61,6 +111,16 @@ class Calculator:
                     num = calculation.pop()
                     calculation.append(self.actions[token.type](num, token.data))
 
-        return [round(x[0], 4) for x in calculation_stack]
+        results = [round(x[0], 4) for x in calculation_stack]
+
+        for token in postfix_tokens:
+            discontinuity_points = []
+            if token.type is TokenType.DIVISION:
+                discontinuity_points = self.check_continuity(results)
+                break
+        for point in discontinuity_points:
+            results[point] = math.nan
+
+        return results
 
 
