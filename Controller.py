@@ -1,5 +1,6 @@
 
 from Notations.Postfix import Postfix
+from Notations.Calculator import Calculator
 from Tokens.Parser import Parser
 
 
@@ -12,10 +13,9 @@ class Controller:
         except Exception as e:
             raise Exception(e)
 
-        postfix = Postfix()
-        postfix.create_postfix(tokens)
+        postfix = Postfix().create_postfix(tokens)
         try:
-            result = postfix.calculate(x_min, x_max, x_precision)
+            result = Calculator().calculate(postfix, x_min, x_max, x_precision)
         except Exception as e:
             raise Exception(e)
         return result
