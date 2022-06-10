@@ -10,6 +10,7 @@ from PySide6.QtCore import Slot
 from PySide6.QtGui import Qt, QAction
 from pyqtgraph import PlotWidget, mkPen
 
+from Errors import ErrorType, ErrorMessage
 from Controller import Controller
 from WindowAbout import WindowAbout
 from WindowSettings import WindowSettings
@@ -45,6 +46,7 @@ class MathExpression(QMainWindow):
         self.x_grid = True
         self.y_grid = True
         self.precision = 0.10
+        self.MAX_POINTS = 100000
 
         self.ratio_button_active = None
         self.ratio_buttons = None
@@ -96,10 +98,22 @@ class MathExpression(QMainWindow):
         self.area_messages.setText(message)
 
 
+    def is_max_points_exceeded(self, x_min, x_max, precision):
+        if x_min >= 0 and x_max >= 0:
+            return (x_max - x_min) / precision > self.MAX_POINTS
+        if x_min < 0 and x_max < 0:
+            return (x_min - x_max) * -1 / precision > self.MAX_POINTS
+        return (x_max + x_min * -1) / precision > self.MAX_POINTS
+
+
     def create_new_graph(self, clear_plot_area):
         self.x_min, self.x_max = self.calculate_range(self.insert_x_min, self.insert_x_max)
         if self.x_min == 0 and self.x_max == 0:
             return
+        if self.is_max_points_exceeded(self.x_min, self.x_max, self.precision):
+            self.set_message(ErrorMessage[ErrorType.MAX_POINTS])
+            return
+
 
         if self.insert_y_min.text() or self.insert_y_max.text():
             if self.insert_y_min.text() and self.insert_y_max.text():
