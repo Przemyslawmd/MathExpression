@@ -14,7 +14,7 @@ class WindowAbout(QDialog):
         label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         layout.addWidget(label)
         layout.addSpacing(20)
-        label = QLabel("Web page:     www.przemeknet.pl")
+        label = QLabel("Web page:     www.przemeknet.pl/parser.html")
         label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         layout.addWidget(label)
         layout.addStretch()

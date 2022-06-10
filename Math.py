@@ -113,8 +113,6 @@ class MathExpression(QMainWindow):
         if self.is_max_points_exceeded(self.x_min, self.x_max, self.precision):
             self.set_message(ErrorMessage[ErrorType.MAX_POINTS])
             return
-
-
         if self.insert_y_min.text() or self.insert_y_max.text():
             if self.insert_y_min.text() and self.insert_y_max.text():
                 y_min, y_max = self.calculate_range(self.insert_y_min, self.insert_y_max)
@@ -124,7 +122,6 @@ class MathExpression(QMainWindow):
             else:
                 self.set_message("Range error: only one value for Y range")
                 return
-
         try:
             y = self.controller.calculate_values(self.insert_expression.text(), self.x_min, self.x_max, self.precision)
         except Exception as e:
@@ -139,7 +136,6 @@ class MathExpression(QMainWindow):
         line_color = self.penColors[self.list_pen_color.currentText()]
         self.plot_lines.append(self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
                                                      symbolPen=None, symbolBrush=2.5, connect="finite"))
-
         self.area_messages.clear()
 
 
