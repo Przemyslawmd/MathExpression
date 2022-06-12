@@ -41,24 +41,24 @@ class MathExpression(QMainWindow):
             "Yellow": [255, 255, 0], "White": [255, 255, 255]
         }
 
+        self.x_min = -360
+        self.x_max = 360
         self.x_grid = True
         self.y_grid = True
         self.precision = 0.10
         self.MAX_POINTS = 100000
-
-        self.ratio_button_active = None
         self.ratio_buttons = None
 
         self.create_gui()
 
     @Slot()
     def draw(self):
-        self.create_new_graph(True)
+        self.create_graph(True)
 
 
     @Slot()
     def append(self):
-        self.create_new_graph(False)
+        self.create_graph(False)
 
 
     @Slot()
@@ -84,11 +84,10 @@ class MathExpression(QMainWindow):
 
 
     @Slot()
-    def change_x_y_ratio(self, ratio, button_index):
+    def change_x_y_ratio(self, ratio, index):
         self.plot_widget.setXRange(self.x_min * ratio, self.x_max * ratio)
-        self.ratio_button_active.setStyleSheet("")
-        self.ratio_button_active = self.ratio_buttons[button_index]
-        self.ratio_button_active.setStyleSheet("background-color : #b3b3b3")
+        [x.setStyleSheet("") for x in self.radio_buttons]
+        self.ratio_buttons[index].setStyleSheet("background-color : #b3b3b3")
 
 
     def set_message(self, message):
@@ -104,11 +103,11 @@ class MathExpression(QMainWindow):
         return (x_max + x_min * -1) / precision > self.MAX_POINTS
 
 
-    def create_new_graph(self, clear_plot_area):
-        x_min, x_max = self.calculate_range(self.widget_x_min, self.widget_x_max)
-        if x_min == 0 and x_max == 0:
+    def create_graph(self, clear_plot_area):
+        self.x_min, self.x_max = self.calculate_range(self.widget_x_min, self.widget_x_max)
+        if self.x_min == 0 and self.x_max == 0:
             return
-        if self.is_max_points_exceeded(x_min, x_max, self.precision):
+        if self.is_max_points_exceeded(self.x_min, self.x_max, self.precision):
             self.set_message(ErrorMessage[ErrorType.MAX_POINTS])
             return
         if self.widget_y_min.text() or self.widget_y_max.text():
@@ -121,7 +120,7 @@ class MathExpression(QMainWindow):
                 self.set_message("Range error: only one value for Y range")
                 return
         try:
-            y = self.controller.calculate_values(self.insert_expression.text(), x_min, x_max, self.precision)
+            y = self.controller.calculate_values(self.insert_expression.text(), self.x_min, self.x_max, self.precision)
         except Exception as e:
             self.set_message(str(e))
             return
@@ -129,7 +128,7 @@ class MathExpression(QMainWindow):
         if clear_plot_area is True:
             self.clear_plot_area()
 
-        x = arange(x_min, x_max + self.precision, self.precision)
+        x = arange(self.x_min, self.x_max + self.precision, self.precision)
         line_width = float(self.list_pen_width.currentText())
         line_color = self.penColors[self.list_pen_color.currentText()]
         self.plot_lines.append(self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
@@ -195,10 +194,10 @@ class MathExpression(QMainWindow):
         layout.addWidget(self.create_button("Append Graph", 140, lambda: self.append()), 0, 1)
         layout.setSpacing(15)
 
-        widget_with_label = self.create_widget_with_label(self.widget_x_min, 40, "X Min", 40, "-360")
+        widget_with_label = self.create_widget_with_label(self.widget_x_min, 40, "X Min", 40, str(self.x_min))
         layout.addLayout(widget_with_label, 0, 3)
 
-        widget_with_label = self.create_widget_with_label(self.widget_x_max, 40, "X Max", 40, "360")
+        widget_with_label = self.create_widget_with_label(self.widget_x_max, 40, "X Max", 40, str(self.x_max))
         layout.addLayout(widget_with_label, 0, 4)
 
         [self.list_pen_width.addItem(str(x))
@@ -221,8 +220,7 @@ class MathExpression(QMainWindow):
                               self.create_button("1/4", 50, lambda: self.change_x_y_ratio(4, 5)),
                               self.create_button("1/8", 50, lambda: self.change_x_y_ratio(8, 6))]
         [lay_hor.addWidget(button) for button in self.ratio_buttons]
-        self.ratio_button_active = self.ratio_buttons[3]
-        self.ratio_button_active.setStyleSheet("background-color : #b3b3b3")
+        self.ratio_buttons[3].setStyleSheet("background-color : #b3b3b3")
         layout.addLayout(lay_hor, 0, 8)
 
 
