@@ -25,10 +25,10 @@ class MathExpression(QMainWindow):
         self.plot_widget = PlotWidget()
 
         self.insert_expression = QLineEdit()
-        self.insert_x_min = QLineEdit()
-        self.insert_x_max = QLineEdit()
-        self.insert_y_min = QLineEdit()
-        self.insert_y_max = QLineEdit()
+        self.widget_x_min = QLineEdit()
+        self.widget_x_max = QLineEdit()
+        self.widget_y_min = QLineEdit()
+        self.widget_y_max = QLineEdit()
 
         self.list_pen_width = QComboBox()
         self.list_pen_color = QComboBox()
@@ -41,8 +41,6 @@ class MathExpression(QMainWindow):
             "Yellow": [255, 255, 0], "White": [255, 255, 255]
         }
 
-        self.x_min = -360
-        self.x_max = 360
         self.x_grid = True
         self.y_grid = True
         self.precision = 0.10
@@ -107,15 +105,15 @@ class MathExpression(QMainWindow):
 
 
     def create_new_graph(self, clear_plot_area):
-        self.x_min, self.x_max = self.calculate_range(self.insert_x_min, self.insert_x_max)
-        if self.x_min == 0 and self.x_max == 0:
+        x_min, x_max = self.calculate_range(self.widget_x_min, self.widget_x_max)
+        if x_min == 0 and x_max == 0:
             return
-        if self.is_max_points_exceeded(self.x_min, self.x_max, self.precision):
+        if self.is_max_points_exceeded(x_min, x_max, self.precision):
             self.set_message(ErrorMessage[ErrorType.MAX_POINTS])
             return
-        if self.insert_y_min.text() or self.insert_y_max.text():
-            if self.insert_y_min.text() and self.insert_y_max.text():
-                y_min, y_max = self.calculate_range(self.insert_y_min, self.insert_y_max)
+        if self.widget_y_min.text() or self.widget_y_max.text():
+            if self.widget_y_min.text() and self.widget_y_max.text():
+                y_min, y_max = self.calculate_range(self.widget_y_min, self.widget_y_max)
                 if y_min == 0 and y_max == 0:
                     return
                 self.plot_widget.setYRange(y_min, y_max, padding=0)
@@ -123,7 +121,7 @@ class MathExpression(QMainWindow):
                 self.set_message("Range error: only one value for Y range")
                 return
         try:
-            y = self.controller.calculate_values(self.insert_expression.text(), self.x_min, self.x_max, self.precision)
+            y = self.controller.calculate_values(self.insert_expression.text(), x_min, x_max, self.precision)
         except Exception as e:
             self.set_message(str(e))
             return
@@ -131,7 +129,7 @@ class MathExpression(QMainWindow):
         if clear_plot_area is True:
             self.clear_plot_area()
 
-        x = arange(self.x_min, self.x_max + self.precision, self.precision)
+        x = arange(x_min, x_max + self.precision, self.precision)
         line_width = float(self.list_pen_width.currentText())
         line_color = self.penColors[self.list_pen_color.currentText()]
         self.plot_lines.append(self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
@@ -197,10 +195,10 @@ class MathExpression(QMainWindow):
         layout.addWidget(self.create_button("Append Graph", 140, lambda: self.append()), 0, 1)
         layout.setSpacing(15)
 
-        widget_with_label = self.create_widget_with_label(self.insert_x_min, 40, "X Min", 40, str(self.x_min))
+        widget_with_label = self.create_widget_with_label(self.widget_x_min, 40, "X Min", 40, "-360")
         layout.addLayout(widget_with_label, 0, 3)
 
-        widget_with_label = self.create_widget_with_label(self.insert_x_max, 40, "X Max", 40, str(self.x_max))
+        widget_with_label = self.create_widget_with_label(self.widget_x_max, 40, "X Max", 40, "360")
         layout.addLayout(widget_with_label, 0, 4)
 
         [self.list_pen_width.addItem(str(x))
@@ -232,10 +230,10 @@ class MathExpression(QMainWindow):
         layout.addWidget(self.create_button("Clear Insert Area", 140, lambda: self.clear_insert_area()), 1, 0)
         layout.addWidget(self.create_button("Clear Plot Area", 140, lambda: self.clear_plot_area()), 1, 1)
 
-        widget_with_label = self.create_widget_with_label(self.insert_y_min, 40, "Y Min", 40)
+        widget_with_label = self.create_widget_with_label(self.widget_y_min, 40, "Y Min", 40)
         layout.addLayout(widget_with_label, 1, 3)
 
-        widget_with_label = self.create_widget_with_label(self.insert_y_max, 40, "Y Max", 40)
+        widget_with_label = self.create_widget_with_label(self.widget_y_max, 40, "Y Max", 40)
         layout.addLayout(widget_with_label, 1, 4)
 
         self.list_pen_color.addItems(["Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White",
