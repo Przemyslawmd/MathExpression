@@ -28,11 +28,6 @@ class MathExpression(QMainWindow):
         self.insert_expression = QLineEdit()
         self.area_messages = QTextEdit()
         self.plot_lines = []
-        self.penColors = {
-            "Black": [0, 0, 0], "Blue": [0, 0, 255], "Green": [0, 128, 0], "Light Blue": [0, 191, 255],
-            "Light Green": [0, 255, 128], "Orange": [255, 140, 0], "Red": [255, 0, 0],
-            "Yellow": [255, 255, 0], "White": [255, 255, 255]
-        }
 
         self.x_min = -360
         self.x_max = 360
@@ -122,7 +117,7 @@ class MathExpression(QMainWindow):
 
         x = arange(self.x_min, self.x_max + self.precision, self.precision)
         line_width = float(self.panel.pen_width.currentText())
-        line_color = self.penColors[self.panel.pen_color.currentText()]
+        line_color = self.panel.get_current_color()
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
                                      symbolPen=None, symbolBrush=2.5, connect="finite")
         self.plot_lines.append(plot)

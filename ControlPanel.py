@@ -16,6 +16,11 @@ class ControlPanel:
         self.pen_color = QComboBox()
         self.ratio_buttons = []
 
+        self.colors = {
+            "Black": [0, 0, 0], "Blue": [0, 0, 255], "Green": [0, 128, 0], "Light Blue": [0, 191, 255],
+            "Light Green": [0, 255, 128], "Orange": [255, 140, 0], "Red": [255, 0, 0],
+            "Yellow": [255, 255, 0], "White": [255, 255, 255]
+        }
 
     @staticmethod
     def create_button(label, width, func=None):
@@ -100,5 +105,9 @@ class ControlPanel:
 
     def connect_ratio_button(self, index, func):
         self.ratio_buttons[index].clicked.connect(func)
+
+
+    def get_current_color(self):
+        return self.colors[self.pen_color.currentText()]
 
 
