@@ -62,7 +62,7 @@ class ControlPanel:
         layout.addLayout(widget_with_label, 0, 4)
 
         [self.pen_width.addItem(str(x))
-         for x in [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]]
+         for x in (0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10)]
         self.pen_width.setCurrentIndex(4)
         widget_with_label = self.create_widget_with_label(self.pen_width, 100, "Line Width", 65)
         layout.addLayout(widget_with_label, 0, 6)
@@ -73,13 +73,13 @@ class ControlPanel:
         label.setFixedSize(60, 10)
         lay_hor.addWidget(label)
 
-        self.ratio_buttons = [self.create_button("8/1", 50),
+        self.ratio_buttons = (self.create_button("8/1", 50),
                               self.create_button("4/1", 50),
                               self.create_button("2/1", 50),
                               self.create_button("1/1", 50),
                               self.create_button("1/2", 50),
                               self.create_button("1/4", 50),
-                              self.create_button("1/8", 50)]
+                              self.create_button("1/8", 50))
         [lay_hor.addWidget(button) for button in self.ratio_buttons]
 
         self.ratio_buttons[3].setStyleSheet("background-color : #b3b3b3")
@@ -96,8 +96,8 @@ class ControlPanel:
         widget_with_label = self.create_widget_with_label(self.y_max, 40, "Y Max", 40)
         layout.addLayout(widget_with_label, 1, 4)
 
-        self.pen_color.addItems(["Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White",
-                                 "Yellow"])
+        self.pen_color.addItems(("Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White",
+                                 "Yellow"))
         self.pen_color.setCurrentIndex(4)
         widget_with_label = self.create_widget_with_label(self.pen_color, 100, "Line Color", 65)
         layout.addLayout(widget_with_label, 1, 6)
