@@ -53,12 +53,13 @@ class MathExpression(QMainWindow):
 
     @Slot()
     def draw(self):
-        self.create_graph(True)
+        self.clear_plot_area()
+        self.create_graph()
 
 
     @Slot()
     def append(self):
-        self.create_graph(False)
+        self.create_graph()
 
 
     @Slot()
@@ -103,7 +104,7 @@ class MathExpression(QMainWindow):
         return (x_max + x_min * -1) / precision > self.MAX_POINTS
 
 
-    def create_graph(self, clear_plot_area):
+    def create_graph(self):
         self.x_min, self.x_max = self.calculate_range(self.widget_x_min, self.widget_x_max)
         if self.x_min == 0 and self.x_max == 0:
             return
@@ -125,14 +126,12 @@ class MathExpression(QMainWindow):
             self.set_message(str(e))
             return
 
-        if clear_plot_area is True:
-            self.clear_plot_area()
-
         x = arange(self.x_min, self.x_max + self.precision, self.precision)
         line_width = float(self.list_pen_width.currentText())
         line_color = self.penColors[self.list_pen_color.currentText()]
-        self.plot_lines.append(self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
-                                                     symbolPen=None, symbolBrush=2.5, connect="finite"))
+        plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
+                                     symbolPen=None, symbolBrush=2.5, connect="finite")
+        self.plot_lines.append(plot)
         self.area_messages.clear()
 
 
