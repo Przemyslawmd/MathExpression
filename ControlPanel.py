@@ -1,9 +1,8 @@
 
-from PySide6.QtWidgets import QApplication, QWidget, QLabel, QComboBox, QMainWindow, QToolBar
-from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QGridLayout
-from PySide6.QtWidgets import QPushButton, QLineEdit, QTextEdit
-from PySide6.QtCore import Slot
-from PySide6.QtGui import Qt, QAction
+from PySide6.QtWidgets import QLabel, QComboBox
+from PySide6.QtWidgets import QHBoxLayout
+from PySide6.QtWidgets import QPushButton, QLineEdit
+from PySide6.QtGui import Qt
 
 
 class ControlPanel:
@@ -11,8 +10,11 @@ class ControlPanel:
     def __init__(self):
         self.x_min = QLineEdit()
         self.x_max = QLineEdit()
+        self.y_min = QLineEdit()
+        self.y_max = QLineEdit()
         self.pen_width = QComboBox()
-        self.ratio_buttons = None
+        self.pen_color = QComboBox()
+        self.ratio_buttons = []
 
 
     @staticmethod
@@ -42,7 +44,7 @@ class ControlPanel:
         return layout
 
 
-    def create_upper_row(self, layout, func_draw, func_append, x_min, x_max):
+    def create_first_row(self, layout, func_draw, func_append, x_min, x_max):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.create_button("Draw Graph", 140, func_draw), 0, 0)
         layout.addWidget(self.create_button("Append Graph", 140, func_append), 0, 1)
@@ -55,7 +57,7 @@ class ControlPanel:
         layout.addLayout(widget_with_label, 0, 4)
 
         [self.pen_width.addItem(str(x))
-        for x in [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]]
+         for x in [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]]
         self.pen_width.setCurrentIndex(4)
         widget_with_label = self.create_widget_with_label(self.pen_width, 100, "Line Width", 65)
         layout.addLayout(widget_with_label, 0, 6)
@@ -65,15 +67,6 @@ class ControlPanel:
         label = QLabel("X : Y Ratio")
         label.setFixedSize(60, 10)
         lay_hor.addWidget(label)
-
-        #self.ratio_buttons = [self.create_button("8/1", 50, lambda: self.change_x_y_ratio(0.125, 0)),
-        #                      self.create_button("4/1", 50, lambda: self.change_x_y_ratio(0.25, 1)),
-        #                      self.create_button("2/1", 50, lambda: self.change_x_y_ratio(0.5, 2)),
-        #                      self.create_button("1/1", 50, lambda: self.change_x_y_ratio(1, 3)),
-        #                      self.create_button("1/2", 50, lambda: self.change_x_y_ratio(2, 4)),
-        #                      self.create_button("1/4", 50, lambda: self.change_x_y_ratio(4, 5)),
-        #                      self.create_button("1/8", 50, lambda: self.change_x_y_ratio(8, 6))]
-        #[lay_hor.addWidget(button) for button in self.ratio_buttons]
 
         self.ratio_buttons = [self.create_button("8/1", 50),
                               self.create_button("4/1", 50),
@@ -86,4 +79,26 @@ class ControlPanel:
 
         self.ratio_buttons[3].setStyleSheet("background-color : #b3b3b3")
         layout.addLayout(lay_hor, 0, 8)
+
+
+    def create_second_row(self, layout, func_clear_insert, func_clear_plot):
+        layout.addWidget(self.create_button("Clear Insert Area", 140, func_clear_insert), 1, 0)
+        layout.addWidget(self.create_button("Clear Plot Area", 140, func_clear_plot), 1, 1)
+
+        widget_with_label = self.create_widget_with_label(self.y_min, 40, "Y Min", 40)
+        layout.addLayout(widget_with_label, 1, 3)
+
+        widget_with_label = self.create_widget_with_label(self.y_max, 40, "Y Max", 40)
+        layout.addLayout(widget_with_label, 1, 4)
+
+        self.pen_color.addItems(["Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White",
+                                 "Yellow"])
+        self.pen_color.setCurrentIndex(4)
+        widget_with_label = self.create_widget_with_label(self.pen_color, 100, "Line Color", 65)
+        layout.addLayout(widget_with_label, 1, 6)
+
+
+    def connect_ratio_button(self, index, func):
+        self.ratio_buttons[index].clicked.connect(func)
+
 

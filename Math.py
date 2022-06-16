@@ -3,11 +3,11 @@ import sys
 
 from numpy import arange
 
-from PySide6.QtWidgets import QApplication, QWidget, QLabel, QComboBox, QMainWindow, QToolBar
-from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QGridLayout
-from PySide6.QtWidgets import QPushButton, QLineEdit, QTextEdit
+from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QToolBar
+from PySide6.QtWidgets import QVBoxLayout, QGridLayout
+from PySide6.QtWidgets import QLineEdit, QTextEdit
 from PySide6.QtCore import Slot
-from PySide6.QtGui import Qt, QAction
+from PySide6.QtGui import QAction
 from pyqtgraph import PlotWidget, mkPen
 
 from Errors import ErrorType, ErrorMessage
@@ -25,17 +25,8 @@ class MathExpression(QMainWindow):
         self.controller = Controller()
         self.panel = ControlPanel()
         self.plot_widget = PlotWidget()
-
         self.insert_expression = QLineEdit()
-        #self.widget_x_min = QLineEdit()
-        #self.widget_x_max = QLineEdit()
-        self.widget_y_min = QLineEdit()
-        self.widget_y_max = QLineEdit()
-
-        #self.list_pen_width = QComboBox()
-        self.list_pen_color = QComboBox()
         self.area_messages = QTextEdit()
-
         self.plot_lines = []
         self.penColors = {
             "Black": [0, 0, 0], "Blue": [0, 0, 255], "Green": [0, 128, 0], "Light Blue": [0, 191, 255],
@@ -52,6 +43,7 @@ class MathExpression(QMainWindow):
         self.ratio_buttons = None
 
         self.create_gui()
+
 
     @Slot()
     def draw(self):
@@ -87,10 +79,10 @@ class MathExpression(QMainWindow):
 
 
     @Slot()
-    def change_x_y_ratio(self, ratio, index):
+    def change_ratio(self, ratio, index):
         self.plot_widget.setXRange(self.x_min * ratio, self.x_max * ratio)
-        [x.setStyleSheet("") for x in self.radio_buttons]
-        self.ratio_buttons[index].setStyleSheet("background-color : #b3b3b3")
+        [x.setStyleSheet("") for x in self.panel.ratio_buttons]
+        self.panel.ratio_buttons[index].setStyleSheet("background-color : #b3b3b3")
 
 
     def set_message(self, message):
@@ -113,9 +105,9 @@ class MathExpression(QMainWindow):
         if self.is_max_points_exceeded(self.x_min, self.x_max, self.precision):
             self.set_message(ErrorMessage[ErrorType.MAX_POINTS])
             return
-        if self.widget_y_min.text() or self.widget_y_max.text():
-            if self.widget_y_min.text() and self.widget_y_max.text():
-                y_min, y_max = self.calculate_range(self.widget_y_min, self.widget_y_max)
+        if self.panel.y_min.text() or self.panel.y_max.text():
+            if self.panel.y_min.text() and self.panel.y_max.text():
+                y_min, y_max = self.calculate_range(self.panel.y_min, self.panel.y_max)
                 if y_min == 0 and y_max == 0:
                     return
                 self.plot_widget.setYRange(y_min, y_max, padding=0)
@@ -130,7 +122,7 @@ class MathExpression(QMainWindow):
 
         x = arange(self.x_min, self.x_max + self.precision, self.precision)
         line_width = float(self.panel.pen_width.currentText())
-        line_color = self.penColors[self.list_pen_color.currentText()]
+        line_color = self.penColors[self.panel.pen_color.currentText()]
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
                                      symbolPen=None, symbolBrush=2.5, connect="finite")
         self.plot_lines.append(plot)
@@ -149,7 +141,6 @@ class MathExpression(QMainWindow):
         if max_str[0] == '-':
             max_negative = True
             max_str = max_str[1:]
-
         try:
             min_value = float(min_str) if min_negative is False else float(min_str) * -1
             max_value = float(max_str) if max_negative is False else float(max_str) * -1
@@ -160,86 +151,6 @@ class MathExpression(QMainWindow):
             self.set_message("Range error: minimum higher than maximum")
             return 0, 0
         return min_value, max_value
-
-
-    @staticmethod
-    def create_button(label, width, func):
-        button = QPushButton(label)
-        button.setMaximumWidth(width)
-        button.setMinimumWidth(width)
-        button.clicked.connect(func)
-        return button
-
-
-    @staticmethod
-    def create_widget_with_label(new_widget, width, text, text_width, default_value=""):
-        new_widget.setMinimumWidth(width)
-        new_widget.setMaximumWidth(width)
-        if isinstance(new_widget, QLineEdit):
-            new_widget.setText(default_value)
-            new_widget.setAlignment(Qt.AlignCenter)
-        label = QLabel(text)
-        label.setFixedSize(text_width, 10)
-        label.setMargin(0)
-        layout = QHBoxLayout()
-        layout.addWidget(label)
-        layout.setSpacing(5)
-        layout.addWidget(new_widget)
-        layout.addSpacing(10)
-        return layout
-
-
-    def create_first_grid_row(self, layout):
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.create_button("Draw Graph", 140, lambda: self.draw()), 0, 0)
-        layout.addWidget(self.create_button("Append Graph", 140, lambda: self.append()), 0, 1)
-        layout.setSpacing(15)
-
-        widget_with_label = self.create_widget_with_label(self.widget_x_min, 40, "X Min", 40, str(self.x_min))
-        layout.addLayout(widget_with_label, 0, 3)
-
-        widget_with_label = self.create_widget_with_label(self.widget_x_max, 40, "X Max", 40, str(self.x_max))
-        layout.addLayout(widget_with_label, 0, 4)
-
-        [self.list_pen_width.addItem(str(x))
-         for x in [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10]]
-        self.list_pen_width.setCurrentIndex(4)
-        widget_with_label = self.create_widget_with_label(self.list_pen_width, 100, "Line Width", 65)
-        layout.addLayout(widget_with_label, 0, 6)
-
-        lay_hor = QHBoxLayout()
-        lay_hor.setSpacing(8)
-        label = QLabel("X : Y Ratio")
-        label.setFixedSize(60, 10)
-        lay_hor.addWidget(label)
-
-        self.ratio_buttons = [self.create_button("8/1", 50, lambda: self.change_x_y_ratio(0.125, 0)),
-                              self.create_button("4/1", 50, lambda: self.change_x_y_ratio(0.25, 1)),
-                              self.create_button("2/1", 50, lambda: self.change_x_y_ratio(0.5, 2)),
-                              self.create_button("1/1", 50, lambda: self.change_x_y_ratio(1, 3)),
-                              self.create_button("1/2", 50, lambda: self.change_x_y_ratio(2, 4)),
-                              self.create_button("1/4", 50, lambda: self.change_x_y_ratio(4, 5)),
-                              self.create_button("1/8", 50, lambda: self.change_x_y_ratio(8, 6))]
-        [lay_hor.addWidget(button) for button in self.ratio_buttons]
-        self.ratio_buttons[3].setStyleSheet("background-color : #b3b3b3")
-        layout.addLayout(lay_hor, 0, 8)
-
-
-    def create_second_grid_row(self, layout):
-        layout.addWidget(self.create_button("Clear Insert Area", 140, lambda: self.clear_insert_area()), 1, 0)
-        layout.addWidget(self.create_button("Clear Plot Area", 140, lambda: self.clear_plot_area()), 1, 1)
-
-        widget_with_label = self.create_widget_with_label(self.widget_y_min, 40, "Y Min", 40)
-        layout.addLayout(widget_with_label, 1, 3)
-
-        widget_with_label = self.create_widget_with_label(self.widget_y_max, 40, "Y Max", 40)
-        layout.addLayout(widget_with_label, 1, 4)
-
-        self.list_pen_color.addItems(["Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White",
-                                      "Yellow"])
-        self.list_pen_color.setCurrentIndex(4)
-        widget_with_label = self.create_widget_with_label(self.list_pen_color, 100, "Line Color", 65)
-        layout.addLayout(widget_with_label, 1, 6)
 
 
     def create_gui(self):
@@ -258,9 +169,16 @@ class MathExpression(QMainWindow):
         lay_main.addSpacing(10)
 
         lay_grid = QGridLayout()
-        self.panel.create_upper_row(lay_grid, lambda: self.draw(), lambda: self.draw(), self.x_min, self.x_max)
-        #self.create_first_grid_row(lay_grid)
-        self.create_second_grid_row(lay_grid)
+        self.panel.create_first_row(lay_grid, lambda: self.draw(), lambda: self.append(), self.x_min, self.x_max)
+        self.panel.connect_ratio_button(0, lambda: self.change_ratio(0.125, 0))
+        self.panel.connect_ratio_button(1, lambda: self.change_ratio(0.25, 1))
+        self.panel.connect_ratio_button(2, lambda: self.change_ratio(0.5, 2))
+        self.panel.connect_ratio_button(3, lambda: self.change_ratio(1, 3))
+        self.panel.connect_ratio_button(4, lambda: self.change_ratio(2, 4))
+        self.panel.connect_ratio_button(5, lambda: self.change_ratio(4, 5))
+        self.panel.connect_ratio_button(6, lambda: self.change_ratio(8, 6))
+
+        self.panel.create_second_row(lay_grid, lambda: self.clear_insert_area(), lambda: self.clear_plot_area())
         lay_grid.setRowMinimumHeight(0, 40)
         lay_grid.setRowMinimumHeight(1, 40)
         lay_grid.setColumnStretch(2, 25)
