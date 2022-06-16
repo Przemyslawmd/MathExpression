@@ -36,6 +36,7 @@ class MathExpression(QMainWindow):
         self.precision = 0.10
         self.MAX_POINTS = 100000
         self.ratio_buttons = None
+        self.background = 'black'
 
         self.create_gui()
 
@@ -120,6 +121,7 @@ class MathExpression(QMainWindow):
         line_color = self.panel.get_current_color()
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
                                      symbolPen=None, symbolBrush=2.5, connect="finite")
+        self.plot_widget.setBackground(self.background)
         self.plot_lines.append(plot)
         self.area_messages.clear()
 
@@ -187,6 +189,7 @@ class MathExpression(QMainWindow):
         lay_main.addSpacing(15)
 
         self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
+        self.plot_widget.setStyleSheet("border: 1px solid black")
         lay_main.addWidget(self.plot_widget)
         lay_main.addSpacing(20)
 
@@ -201,11 +204,12 @@ class MathExpression(QMainWindow):
         main_widget.setContentsMargins(20, 0, 20, 0)
 
 
-    def apply_settings(self, x_grid, y_grid, precision):
+    def apply_settings(self, x_grid, y_grid, precision, background):
         self.x_grid = x_grid
         self.y_grid = y_grid
         self.precision = precision
         self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
+        self.background = background
 
 
 if __name__ == "__main__":

@@ -28,14 +28,23 @@ class WindowSettings(QDialog):
 
         layout_grid.addWidget(QLabel("Precision"), 3, 1)
         self.insert_precision = QComboBox()
-        self.insert_precision.setMaximumWidth(60)
-        index = 0
-        for i in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0]:
-            self.insert_precision.addItem(str(i))
-            if i == self.parent.precision:
-                self.insert_precision.setCurrentIndex(index)
-            index += 1
+        self.insert_precision.setMaximumWidth(100)
+        for i, precision in enumerate((0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0)):
+            self.insert_precision.addItem(str(precision))
+            if precision == self.parent.precision:
+                self.insert_precision.setCurrentIndex(i)
         layout_grid.addWidget(self.insert_precision, 3, 2, alignment=QtCore.Qt.AlignRight)
+
+        layout_grid.addWidget(QLabel("Background color"), 4, 1)
+        self.background = QComboBox()
+        self.background.setMaximumWidth(120)
+        for i, color in enumerate(
+                ('black', 'blue', 'green', 'light blue', 'light green', 'orange', 'red', 'white', 'yellow')):
+            self.background.addItem(color)
+            if color == self.parent.background:
+                self.background.setCurrentIndex(i)
+        layout_grid.addWidget(self.background, 4, 2, alignment=QtCore.Qt.AlignRight)
+
         layout.addLayout(layout_grid)
 
         layout_button = QHBoxLayout()
@@ -46,11 +55,11 @@ class WindowSettings(QDialog):
         layout_button.addStretch()
 
         layout.addLayout(layout_button)
-        self.setMinimumWidth(250)
-        self.setMinimumHeight(210)
+        self.setMinimumWidth(300)
+        self.setMinimumHeight(220)
         self.setWindowModality(Qt.ApplicationModal)
         self.setLayout(layout)
-        self.setGeometry(400, 400, 0, 0)
+        self.setGeometry(550, 500, 0, 0)
         self.show()
         self.exec()
 
@@ -59,7 +68,8 @@ class WindowSettings(QDialog):
     def accept(self):
         self.parent.apply_settings(self.check_x_grid.isChecked(),
                                    self.check_y_grid.isChecked(),
-                                   float(self.insert_precision.currentText()))
+                                   float(self.insert_precision.currentText()),
+                                   self.background.currentText())
         self.close()
 
 
