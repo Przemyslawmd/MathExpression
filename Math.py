@@ -12,6 +12,7 @@ from pyqtgraph import PlotWidget, mkPen
 
 from Errors import ErrorType, ErrorMessage
 from Controller import Controller
+from ControlPanel import ControlPanel
 from WindowAbout import WindowAbout
 from WindowSettings import WindowSettings
 
@@ -22,15 +23,16 @@ class MathExpression(QMainWindow):
         QMainWindow.__init__(self)
 
         self.controller = Controller()
+        self.panel = ControlPanel()
         self.plot_widget = PlotWidget()
 
         self.insert_expression = QLineEdit()
-        self.widget_x_min = QLineEdit()
-        self.widget_x_max = QLineEdit()
+        #self.widget_x_min = QLineEdit()
+        #self.widget_x_max = QLineEdit()
         self.widget_y_min = QLineEdit()
         self.widget_y_max = QLineEdit()
 
-        self.list_pen_width = QComboBox()
+        #self.list_pen_width = QComboBox()
         self.list_pen_color = QComboBox()
         self.area_messages = QTextEdit()
 
@@ -105,7 +107,7 @@ class MathExpression(QMainWindow):
 
 
     def create_graph(self):
-        self.x_min, self.x_max = self.calculate_range(self.widget_x_min, self.widget_x_max)
+        self.x_min, self.x_max = self.calculate_range(self.panel.x_min, self.panel.x_max)
         if self.x_min == 0 and self.x_max == 0:
             return
         if self.is_max_points_exceeded(self.x_min, self.x_max, self.precision):
@@ -127,7 +129,7 @@ class MathExpression(QMainWindow):
             return
 
         x = arange(self.x_min, self.x_max + self.precision, self.precision)
-        line_width = float(self.list_pen_width.currentText())
+        line_width = float(self.panel.pen_width.currentText())
         line_color = self.penColors[self.list_pen_color.currentText()]
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
                                      symbolPen=None, symbolBrush=2.5, connect="finite")
@@ -256,7 +258,8 @@ class MathExpression(QMainWindow):
         lay_main.addSpacing(10)
 
         lay_grid = QGridLayout()
-        self.create_first_grid_row(lay_grid)
+        self.panel.create_upper_row(lay_grid, lambda: self.draw(), lambda: self.draw(), self.x_min, self.x_max)
+        #self.create_first_grid_row(lay_grid)
         self.create_second_grid_row(lay_grid)
         lay_grid.setRowMinimumHeight(0, 40)
         lay_grid.setRowMinimumHeight(1, 40)
