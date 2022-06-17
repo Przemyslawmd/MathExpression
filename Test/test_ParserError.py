@@ -1,5 +1,5 @@
 from unittest import TestCase
-from Tokens.Parser import Parser
+from Token.Parser import Parser
 from Errors import ErrorType, ErrorMessage
 
 

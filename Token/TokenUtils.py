@@ -1,5 +1,5 @@
 
-from Tokens.Token import TokenType
+from Token.Token import TokenType
 
 
 class TokenUtils:

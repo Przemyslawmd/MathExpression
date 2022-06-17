@@ -2,4 +2,4 @@
 venv/*
 __pycache__/
 Notations/__pycache__/
-Tokens/__pycache__/
+Token/__pycache__/

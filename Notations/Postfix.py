@@ -1,6 +1,6 @@
 
-from Tokens.TokenUtils import TokenUtils
-from Tokens.Token import TokenType
+from Token.TokenUtils import TokenUtils
+from Token.Token import TokenType
 from collections import deque
 
 

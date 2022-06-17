@@ -2,7 +2,7 @@ import math
 from unittest import TestCase
 from Notations.Postfix import Postfix
 from Notations.Calculator import Calculator
-from Tokens.Parser import Parser
+from Token.Parser import Parser
 
 
 class TestPostfixCalculateFullData(TestCase):

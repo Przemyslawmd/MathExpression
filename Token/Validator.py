@@ -1,6 +1,6 @@
 
-from Tokens.Token import TokenType
-from Tokens.TokenUtils import TokenUtils
+from Token.Token import TokenType
+from Token.TokenUtils import TokenUtils
 from Errors import ErrorType, ErrorMessage
 
 

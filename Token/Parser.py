@@ -1,8 +1,9 @@
 
-from Tokens.Token import Token, TokenType
-from Tokens.TokenUtils import TokenUtils
+from Token.Token import Token, TokenType
+from Token.TokenUtils import TokenUtils
 from Errors import ErrorType, ErrorMessage
-from Tokens.Validator import Validator
+from Token.Validator import Validator
+
 
 class Parser:
 
@@ -149,19 +150,20 @@ class Parser:
     def remove_angle_brackets(self):
         tokens_to_remove = []
         for index, token in enumerate(self.tokens):
-            if token.type is TokenType.BRACKET_ANGLE_LEFT:
-                if index == 0:
-                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
-                if self.tokens[index - 1].type not in [TokenType.ROOT, TokenType.LOG]:
-                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
-                if self.tokens[index + 1].type is not TokenType.NUMBER:
-                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
-                if self.tokens[index + 2].type is not TokenType.BRACKET_ANGLE_RIGHT:
-                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
-                self.tokens[index - 1].data = self.tokens[index + 1].data
-                tokens_to_remove.append(index)
-                tokens_to_remove.append(index + 1)
-                tokens_to_remove.append(index + 2)
+            if token.type is not TokenType.BRACKET_ANGLE_LEFT:
+                continue
+            if index == 0:
+                raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+            if self.tokens[index - 1].type not in [TokenType.ROOT, TokenType.LOG]:
+                raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+            if self.tokens[index + 1].type is not TokenType.NUMBER:
+                raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+            if self.tokens[index + 2].type is not TokenType.BRACKET_ANGLE_RIGHT:
+                raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+            self.tokens[index - 1].data = self.tokens[index + 1].data
+            tokens_to_remove.append(index)
+            tokens_to_remove.append(index + 1)
+            tokens_to_remove.append(index + 2)
 
         for i in range(len(self.tokens) - 1, -1, -1):
             if i in tokens_to_remove:
@@ -222,10 +224,8 @@ class Parser:
         self.add_multiplication()
         if not self.remove_negative_tokens():
             raise Exception(ErrorMessage[ErrorType.PARSER_NEGATIVE_SYMBOL])
-
-        validator = Validator()
         try:
-            validator.validate(self.tokens)
+            Validator().validate(self.tokens)
         except Exception as e:
             raise Exception(e)
 

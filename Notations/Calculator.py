@@ -2,8 +2,8 @@
 import math
 from numpy import power, arange
 
-from Tokens.TokenUtils import TokenUtils
-from Tokens.Token import TokenType
+from Token.TokenUtils import TokenUtils
+from Token.Token import TokenType
 from collections import deque
 from enum import Enum
 
