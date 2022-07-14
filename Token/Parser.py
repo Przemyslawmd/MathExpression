@@ -24,9 +24,6 @@ class Parser:
             '^': TokenType.POWER
         }
 
-        # to recognize the beginning of multi chars tokens
-        self.beginning_chars = ['c', 's', 'l', 't']
-
         self.cosine_chars = ['s', 'o', 'c']
         self.cotangent_chars = ['g', 't', 'c']
         self.log_chars = ['g', 'o', 'l']
@@ -42,7 +39,7 @@ class Parser:
         self.tokens.append(Token(TokenType.NUMBER, number))
 
 
-    def check_multiple_char_token(self):
+    def check_multi_char_token(self):
         if len(self.chars) >= 2 and self.chars[-2:] == self.tangent_chars:
             self.tokens.append(Token(TokenType.TANGENT))
             del self.chars[-2:]
@@ -179,10 +176,6 @@ class Parser:
             if current_char.isdigit():
                 self.add_number()
                 continue
-            if current_char in self.beginning_chars:
-                if not self.check_multiple_char_token():
-                    raise Exception(ErrorMessage[ErrorType.PARSER_SYMBOL] + f": {current_char}")
-                continue
             if current_char == '(' or current_char == ')':
                 result = self.process_brackets(current_char,
                                                self.bracket_validator,
@@ -202,6 +195,8 @@ class Parser:
                     position = self.initial_len - len(self.chars) + 1
                     raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE] + f": position {position}")
                 self.bracket_angle_validator += result
+                continue
+            if self.check_multi_char_token():
                 continue
             else:
                 token_symbol = self.one_char_tokens.get(current_char)
