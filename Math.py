@@ -94,7 +94,14 @@ class MathExpression(QMainWindow):
         return (x_max + x_min * -1) / precision > self.MAX_POINTS
 
 
+    def mouse_moved(self, evt):
+        print(self.plot_widget.plotItem.vb.mapSceneToView(evt).x())
+        print(self.plot_widget.plotItem.vb.mapSceneToView(evt).y())
+
+
     def create_graph(self):
+
+        self.plot_widget.scene().sigMouseMoved.connect(self.mouse_moved)
         self.x_min, self.x_max = self.calculate_range(self.panel.x_min, self.panel.x_max)
         if self.x_min == 0 and self.x_max == 0:
             return
@@ -121,6 +128,7 @@ class MathExpression(QMainWindow):
         line_color = self.panel.get_current_color()
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
                                      symbolPen=None, symbolBrush=2.5, connect="finite")
+
         self.plot_widget.setBackground(self.background)
         self.plot_lines.append(plot)
         self.area_messages.clear()
