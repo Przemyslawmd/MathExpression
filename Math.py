@@ -1,6 +1,7 @@
-
+import math
 import sys
 
+from PySide6 import QtGui
 from numpy import arange
 
 from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QToolBar
@@ -15,6 +16,14 @@ from Controller import Controller
 from ControlPanel import ControlPanel
 from WindowAbout import WindowAbout
 from WindowSettings import WindowSettings
+
+import pyqtgraph as pg
+
+
+class Points:
+    def __init__(self, _x, _y):
+        self.x = _x
+        self.y = _y
 
 
 class MathExpression(QMainWindow):
@@ -33,10 +42,14 @@ class MathExpression(QMainWindow):
         self.x_max = 360
         self.x_grid = True
         self.y_grid = True
-        self.precision = 0.10
+        self.precision = 0.1
         self.MAX_POINTS = 100000
         self.ratio_buttons = None
         self.background = 'black'
+        self.picture = QtGui.QPicture()
+        self.cursor = None
+
+        self.points = []
 
         self.create_gui()
 
@@ -44,6 +57,7 @@ class MathExpression(QMainWindow):
     @Slot()
     def draw(self):
         self.clear_plot_area()
+        self.points.clear()
         self.create_graph()
 
 
@@ -98,6 +112,30 @@ class MathExpression(QMainWindow):
         print(self.plot_widget.plotItem.vb.mapSceneToView(evt).x())
         print(self.plot_widget.plotItem.vb.mapSceneToView(evt).y())
 
+        x_coordinate = self.plot_widget.plotItem.vb.mapSceneToView(evt).x()
+        y_coordinate = self.plot_widget.plotItem.vb.mapSceneToView(evt).y()
+
+        if self.cursor is not None:
+            self.plot_widget.removeItem(self.cursor)
+
+        is_cursor = False
+        for points in self.points:
+            index = -1
+            for i, x in enumerate(points.x):
+                if math.isclose(x, x_coordinate, rel_tol=0.1):
+                    index = i
+                    break
+            if index > -1 and math.isclose(points.y[index], y_coordinate, rel_tol=0.1):
+                is_cursor = True
+                break
+
+        if is_cursor is False:
+            return
+        self.cursor = pg.QtGui.QGraphicsEllipseItem(x_coordinate, y_coordinate, 10, 20)
+        self.cursor.setPen(pg.mkPen((0, 0, 0, 100)))
+        self.cursor.setBrush(pg.mkBrush((50, 50, 200)))
+        self.plot_widget.addItem(self.cursor)
+
 
     def create_graph(self):
 
@@ -124,6 +162,9 @@ class MathExpression(QMainWindow):
             return
 
         x = arange(self.x_min, self.x_max + self.precision, self.precision)
+
+        self.points.append(Points(x, y))
+
         line_width = float(self.panel.pen_width.currentText())
         line_color = self.panel.get_current_color()
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
