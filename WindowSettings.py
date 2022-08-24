@@ -18,24 +18,27 @@ class WindowSettings(QDialog):
         self.check_x_grid = QCheckBox()
         self.check_x_grid.setChecked(self.parent.x_grid)
         layout_grid.addWidget(self.check_x_grid, 1, 2, alignment=QtCore.Qt.AlignRight)
-        layout_grid.setRowMinimumHeight(1, 30)
 
         layout_grid.addWidget(QLabel("Y Grid"), 2, 1)
         self.check_y_grid = QCheckBox()
         self.check_y_grid.setChecked(self.parent.y_grid)
         layout_grid.addWidget(self.check_y_grid, 2, 2, alignment=QtCore.Qt.AlignRight)
-        layout_grid.setRowMinimumHeight(2, 30)
 
-        layout_grid.addWidget(QLabel("Precision"), 3, 1)
+        layout_grid.addWidget(QLabel("Display coordinates"), 3, 1)
+        self.coordinates = QCheckBox()
+        self.coordinates.setChecked(self.parent.coordinates)
+        layout_grid.addWidget(self.coordinates, 3, 2, alignment=QtCore.Qt.AlignRight)
+
+        layout_grid.addWidget(QLabel("Precision"), 4, 1)
         self.insert_precision = QComboBox()
         self.insert_precision.setMaximumWidth(100)
         for i, precision in enumerate((0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0)):
             self.insert_precision.addItem(str(precision))
             if precision == self.parent.precision:
                 self.insert_precision.setCurrentIndex(i)
-        layout_grid.addWidget(self.insert_precision, 3, 2, alignment=QtCore.Qt.AlignRight)
+        layout_grid.addWidget(self.insert_precision, 4, 2, alignment=QtCore.Qt.AlignRight)
 
-        layout_grid.addWidget(QLabel("Background color"), 4, 1)
+        layout_grid.addWidget(QLabel("Background color"), 5, 1)
         self.background = QComboBox()
         self.background.setMaximumWidth(120)
         for i, color in enumerate(
@@ -43,7 +46,10 @@ class WindowSettings(QDialog):
             self.background.addItem(color)
             if color == self.parent.background:
                 self.background.setCurrentIndex(i)
-        layout_grid.addWidget(self.background, 4, 2, alignment=QtCore.Qt.AlignRight)
+        layout_grid.addWidget(self.background, 5, 2, alignment=QtCore.Qt.AlignRight)
+
+        for row in range(1, layout_grid.rowCount()):
+            layout_grid.setRowMinimumHeight(row, 30)
 
         layout.addLayout(layout_grid)
 
@@ -55,8 +61,8 @@ class WindowSettings(QDialog):
         layout_button.addStretch()
 
         layout.addLayout(layout_button)
-        self.setMinimumWidth(300)
-        self.setMinimumHeight(220)
+        self.setMinimumWidth(320)
+        self.setMinimumHeight(280)
         self.setWindowModality(Qt.ApplicationModal)
         self.setLayout(layout)
         self.setGeometry(550, 500, 0, 0)
@@ -68,6 +74,7 @@ class WindowSettings(QDialog):
     def accept(self):
         self.parent.apply_settings(self.check_x_grid.isChecked(),
                                    self.check_y_grid.isChecked(),
+                                   self.coordinates.isChecked(),
                                    float(self.insert_precision.currentText()),
                                    self.background.currentText())
         self.close()

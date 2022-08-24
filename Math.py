@@ -33,10 +33,11 @@ class MathExpression(QMainWindow):
         self.x_max = 360
         self.x_grid = True
         self.y_grid = True
-        self.precision = 0.10
+        self.precision = 0.1
         self.MAX_POINTS = 100000
         self.ratio_buttons = None
         self.background = 'black'
+        self.coordinates = False
 
         self.create_gui()
 
@@ -94,6 +95,12 @@ class MathExpression(QMainWindow):
         return (x_max + x_min * -1) / precision > self.MAX_POINTS
 
 
+    def mouse_moved(self, evt):
+        x = self.plot_widget.plotItem.vb.mapSceneToView(evt).x()
+        y = self.plot_widget.plotItem.vb.mapSceneToView(evt).y()
+        self.panel.coordinates.setText(f"  X: {str(x)}  ;  Y: {str(y)} ")
+
+
     def create_graph(self):
         self.x_min, self.x_max = self.calculate_range(self.panel.x_min, self.panel.x_max)
         if self.x_min == 0 and self.x_max == 0:
@@ -121,6 +128,7 @@ class MathExpression(QMainWindow):
         line_color = self.panel.get_current_color()
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
                                      symbolPen=None, symbolBrush=2.5, connect="finite")
+
         self.plot_widget.setBackground(self.background)
         self.plot_lines.append(plot)
         self.area_messages.clear()
@@ -204,12 +212,18 @@ class MathExpression(QMainWindow):
         main_widget.setContentsMargins(20, 0, 20, 0)
 
 
-    def apply_settings(self, x_grid, y_grid, precision, background):
+    def apply_settings(self, x_grid, y_grid, coordinates, precision, background):
         self.x_grid = x_grid
         self.y_grid = y_grid
         self.precision = precision
         self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
         self.background = background
+        if self.coordinates != coordinates and coordinates is True:
+            self.plot_widget.scene().sigMouseMoved.connect(self.mouse_moved)
+            self.coordinates = coordinates
+        elif self.coordinates != coordinates and coordinates is False:
+            self.plot_widget.scene().sigMouseMoved.disconnect(self.mouse_moved)
+            self.coordinates = coordinates
 
 
 if __name__ == "__main__":

@@ -12,6 +12,7 @@ class ControlPanel:
         self.x_max = QLineEdit()
         self.y_min = QLineEdit()
         self.y_max = QLineEdit()
+        self.coordinates = QLineEdit()
         self.pen_width = QComboBox()
         self.pen_color = QComboBox()
         self.ratio_buttons = []
@@ -32,12 +33,13 @@ class ControlPanel:
 
 
     @staticmethod
-    def create_widget_with_label(new_widget, width, text, text_width, default_value=""):
+    def create_widget_with_label(new_widget, width, text, text_width, alignment=None, default_value=""):
         new_widget.setMinimumWidth(width)
         new_widget.setMaximumWidth(width)
         if isinstance(new_widget, QLineEdit):
             new_widget.setText(default_value)
-            new_widget.setAlignment(Qt.AlignCenter)
+        if alignment is not None:
+            new_widget.setAlignment(alignment)
         label = QLabel(text)
         label.setFixedSize(text_width, 10)
         label.setMargin(0)
@@ -55,10 +57,10 @@ class ControlPanel:
         layout.addWidget(self.create_button("Append Graph", 140, func_append), 0, 1)
         layout.setSpacing(15)
 
-        widget_with_label = self.create_widget_with_label(self.x_min, 40, "X Min", 40, str(x_min))
+        widget_with_label = self.create_widget_with_label(self.x_min, 40, "X Min", 40, Qt.AlignCenter, str(x_min))
         layout.addLayout(widget_with_label, 0, 3)
 
-        widget_with_label = self.create_widget_with_label(self.x_max, 40, "X Max", 40, str(x_max))
+        widget_with_label = self.create_widget_with_label(self.x_max, 40, "X Max", 40, Qt.AlignCenter, str(x_max))
         layout.addLayout(widget_with_label, 0, 4)
 
         [self.pen_width.addItem(str(x))
@@ -90,10 +92,10 @@ class ControlPanel:
         layout.addWidget(self.create_button("Clear Insert Area", 140, func_clear_insert), 1, 0)
         layout.addWidget(self.create_button("Clear Plot Area", 140, func_clear_plot), 1, 1)
 
-        widget_with_label = self.create_widget_with_label(self.y_min, 40, "Y Min", 40)
+        widget_with_label = self.create_widget_with_label(self.y_min, 40, "Y Min", 40, Qt.AlignCenter)
         layout.addLayout(widget_with_label, 1, 3)
 
-        widget_with_label = self.create_widget_with_label(self.y_max, 40, "Y Max", 40)
+        widget_with_label = self.create_widget_with_label(self.y_max, 40, "Y Max", 40, Qt.AlignCenter)
         layout.addLayout(widget_with_label, 1, 4)
 
         self.pen_color.addItems(("Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White",
@@ -101,6 +103,10 @@ class ControlPanel:
         self.pen_color.setCurrentIndex(4)
         widget_with_label = self.create_widget_with_label(self.pen_color, 100, "Line Color", 65)
         layout.addLayout(widget_with_label, 1, 6)
+
+        widget_with_label = self.create_widget_with_label(self.coordinates, 415, "Coordinate", 70, Qt.AlignLeft)
+        widget_with_label.setAlignment(Qt.AlignLeft)
+        layout.addLayout(widget_with_label, 1, 8)
 
 
     def connect_ratio_button(self, index, func):
