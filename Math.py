@@ -1,7 +1,6 @@
-import math
+
 import sys
 
-from PySide6 import QtGui
 from numpy import arange
 
 from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QToolBar
@@ -16,14 +15,6 @@ from Controller import Controller
 from ControlPanel import ControlPanel
 from WindowAbout import WindowAbout
 from WindowSettings import WindowSettings
-
-import pyqtgraph as pg
-
-
-class Points:
-    def __init__(self, _x, _y):
-        self.x = _x
-        self.y = _y
 
 
 class MathExpression(QMainWindow):
@@ -46,10 +37,7 @@ class MathExpression(QMainWindow):
         self.MAX_POINTS = 100000
         self.ratio_buttons = None
         self.background = 'black'
-        self.picture = QtGui.QPicture()
-        self.cursor = None
-
-        self.points = []
+        self.coordinates = False
 
         self.create_gui()
 
@@ -57,7 +45,6 @@ class MathExpression(QMainWindow):
     @Slot()
     def draw(self):
         self.clear_plot_area()
-        self.points.clear()
         self.create_graph()
 
 
@@ -109,37 +96,12 @@ class MathExpression(QMainWindow):
 
 
     def mouse_moved(self, evt):
-        print(self.plot_widget.plotItem.vb.mapSceneToView(evt).x())
-        print(self.plot_widget.plotItem.vb.mapSceneToView(evt).y())
-
-        x_coordinate = self.plot_widget.plotItem.vb.mapSceneToView(evt).x()
-        y_coordinate = self.plot_widget.plotItem.vb.mapSceneToView(evt).y()
-
-        if self.cursor is not None:
-            self.plot_widget.removeItem(self.cursor)
-
-        is_cursor = False
-        for points in self.points:
-            index = -1
-            for i, x in enumerate(points.x):
-                if math.isclose(x, x_coordinate, rel_tol=0.1):
-                    index = i
-                    break
-            if index > -1 and math.isclose(points.y[index], y_coordinate, rel_tol=0.1):
-                is_cursor = True
-                break
-
-        if is_cursor is False:
-            return
-        self.cursor = pg.QtGui.QGraphicsEllipseItem(x_coordinate, y_coordinate, 10, 20)
-        self.cursor.setPen(pg.mkPen((0, 0, 0, 100)))
-        self.cursor.setBrush(pg.mkBrush((50, 50, 200)))
-        self.plot_widget.addItem(self.cursor)
+        x = self.plot_widget.plotItem.vb.mapSceneToView(evt).x()
+        y = self.plot_widget.plotItem.vb.mapSceneToView(evt).y()
+        self.panel.coordinates.setText(f"  X: {str(x)}  ;  Y: {str(y)} ")
 
 
     def create_graph(self):
-
-        self.plot_widget.scene().sigMouseMoved.connect(self.mouse_moved)
         self.x_min, self.x_max = self.calculate_range(self.panel.x_min, self.panel.x_max)
         if self.x_min == 0 and self.x_max == 0:
             return
@@ -162,9 +124,6 @@ class MathExpression(QMainWindow):
             return
 
         x = arange(self.x_min, self.x_max + self.precision, self.precision)
-
-        self.points.append(Points(x, y))
-
         line_width = float(self.panel.pen_width.currentText())
         line_color = self.panel.get_current_color()
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
@@ -253,12 +212,18 @@ class MathExpression(QMainWindow):
         main_widget.setContentsMargins(20, 0, 20, 0)
 
 
-    def apply_settings(self, x_grid, y_grid, precision, background):
+    def apply_settings(self, x_grid, y_grid, coordinates, precision, background):
         self.x_grid = x_grid
         self.y_grid = y_grid
         self.precision = precision
         self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
         self.background = background
+        if self.coordinates != coordinates and coordinates is True:
+            self.plot_widget.scene().sigMouseMoved.connect(self.mouse_moved)
+            self.coordinates = coordinates
+        elif self.coordinates != coordinates and coordinates is False:
+            self.plot_widget.scene().sigMouseMoved.disconnect(self.mouse_moved)
+            self.coordinates = coordinates
 
 
 if __name__ == "__main__":
