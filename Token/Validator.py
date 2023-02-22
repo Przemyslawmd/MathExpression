@@ -5,7 +5,7 @@ from Errors import ErrorType, ErrorMessage
 
 
 filter_positive = (TokenType.X, TokenType.NUMBER, TokenType.BRACKET_LEFT)
-filter_negative = (TokenUtils.basic_arithmetic + [TokenType.BRACKET_RIGHT])
+filter_negative = TokenUtils.basic_arithmetic + (TokenType.BRACKET_RIGHT,)
 
 
 def validate(tokens):
