@@ -4,25 +4,34 @@ from Errors import ErrorType, ErrorMessage
 from Token.TokenUtils import TokenUtils
 
 
-def add_multiplication_token(tokens):
-    indices = []
+left_multiplication_tokens = (
+    TokenType.BRACKET_RIGHT,
+    TokenType.NUMBER,
+    TokenType.X
+)
+
+
+right_multiplication_tokens = (
+    TokenType.BRACKET_LEFT,
+    TokenType.COSINE,
+    TokenType.COTANGENT,
+    TokenType.LOG,
+    TokenType.NUMBER,
+    TokenType.ROOT,
+    TokenType.SINE,
+    TokenType.TANGENT,
+    TokenType.X
+)
+
+
+def add_multiplication_tokens(tokens):
+    indices_to_add_multiplication = []
     for index, token in enumerate(tokens[:-1]):
-        if token.type in [TokenType.BRACKET_RIGHT, TokenType.X, TokenType.NUMBER]:
-            next_token = tokens[index + 1]
-            if next_token.type in [TokenType.SINE,
-                                   TokenType.COSINE,
-                                   TokenType.TANGENT,
-                                   TokenType.COTANGENT,
-                                   TokenType.X,
-                                   TokenType.NUMBER,
-                                   TokenType.BRACKET_LEFT,
-                                   TokenType.ROOT,
-                                   TokenType.LOG]:
-                if token.type is TokenType.NUMBER and next_token.type is TokenType.NUMBER:
-                    continue
-                indices.append(index + 1)
+        if token.type in left_multiplication_tokens:
+            if tokens[index + 1].type in right_multiplication_tokens:
+                indices_to_add_multiplication.append(index + 1)
     index_shift = 0
-    for index in indices:
+    for index in indices_to_add_multiplication:
         tokens.insert(index + index_shift, Token(TokenType.MULTIPLICATION))
         index_shift += 1
 
@@ -77,7 +86,7 @@ def remove_negative_tokens(tokens):
 
 def post_parse(tokens):
     remove_angle_brackets(tokens)
-    add_multiplication_token(tokens)
+    add_multiplication_tokens(tokens)
     if not remove_negative_tokens(tokens):
         raise Exception(ErrorMessage[ErrorType.PARSER_NEGATIVE_SYMBOL])
 
