@@ -50,9 +50,7 @@ def remove_angle_brackets(tokens):
         if tokens[index + 2].type is not TokenType.BRACKET_ANGLE_RIGHT:
             raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
         tokens[index - 1].data = tokens[index + 1].data
-        tokens_to_remove.append(index)
-        tokens_to_remove.append(index + 1)
-        tokens_to_remove.append(index + 2)
+        tokens_to_remove.extend([index, index + 1, index + 2])
 
     for i in range(len(tokens) - 1, -1, -1):
         if i in tokens_to_remove:

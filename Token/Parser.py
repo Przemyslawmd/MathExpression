@@ -1,7 +1,7 @@
 
 from Token.Token import Token, TokenType
 from Errors import ErrorType, ErrorMessage
-from Token.Validator import Validator
+from Token.Validator import validate
 from Token.PostParser import post_parse
 
 
@@ -146,7 +146,7 @@ class Parser:
 
         try:
             post_parse(self.tokens)
-            Validator().validate(self.tokens)
+            validate(self.tokens)
         except Exception as e:
             raise Exception(e)
 
