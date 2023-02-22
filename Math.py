@@ -96,8 +96,8 @@ class MathExpression(QMainWindow):
 
 
     def mouse_moved(self, evt):
-        x = self.plot_widget.plotItem.vb.mapSceneToView(evt).x()
-        y = self.plot_widget.plotItem.vb.mapSceneToView(evt).y()
+        x = round(self.plot_widget.plotItem.vb.mapSceneToView(evt).x(), 3)
+        y = round(self.plot_widget.plotItem.vb.mapSceneToView(evt).y(), 3)
         self.panel.coordinates.setText(f"  X: {str(x)}  ;  Y: {str(y)} ")
 
 
