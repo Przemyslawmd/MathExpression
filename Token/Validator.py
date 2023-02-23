@@ -8,7 +8,30 @@ filter_positive = (TokenType.X, TokenType.NUMBER, TokenType.BRACKET_LEFT)
 filter_negative = TokenUtils.basic_arithmetic + (TokenType.BRACKET_RIGHT,)
 
 
-def validate(tokens):
+def validate_brackets(tokens):
+    round_brackets_validator = 0
+    angle_brackets_validator = 0
+    for token in tokens:
+        if token.type is TokenType.BRACKET_LEFT:
+            round_brackets_validator += 1
+        elif token.type is TokenType.BRACKET_RIGHT:
+            if round_brackets_validator == 0:
+                raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET])
+            round_brackets_validator -= 1
+        elif token.type is TokenType.BRACKET_ANGLE_LEFT:
+            angle_brackets_validator += 1
+        elif token.type is TokenType.BRACKET_ANGLE_RIGHT:
+            if angle_brackets_validator == 0:
+                raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+            angle_brackets_validator -= 1
+
+    if round_brackets_validator != 0:
+        raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET])
+    if angle_brackets_validator != 0:
+        raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+
+
+def validate_final(tokens):
     last = len(tokens) - 1
     for index, token in enumerate(tokens):
         if token.type is TokenType.LOG:

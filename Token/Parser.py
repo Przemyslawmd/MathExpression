@@ -1,7 +1,7 @@
 
 from Token.Token import Token, TokenType
 from Errors import ErrorType, ErrorMessage
-from Token.Validator import validate
+from Token.Validator import validate_final, validate_brackets
 from Token.PostParser import post_parse
 
 
@@ -12,8 +12,6 @@ class Parser:
         self.chars.reverse()
         self.initial_len = len(self.chars)
         self.tokens = []
-        self.bracket_validator = 0
-        self.bracket_angle_validator = 0
 
         self.one_char_tokens = {
             '+': TokenType.PLUS,
@@ -21,7 +19,11 @@ class Parser:
             '*': TokenType.MULTIPLICATION,
             '/': TokenType.DIVISION,
             'x': TokenType.X,
-            '^': TokenType.POWER
+            '^': TokenType.POWER,
+            '(': TokenType.BRACKET_LEFT,
+            ')': TokenType.BRACKET_RIGHT,
+            '<': TokenType.BRACKET_ANGLE_LEFT,
+            '>': TokenType.BRACKET_ANGLE_RIGHT
         }
 
         self.cosine = ['s', 'o', 'c']
@@ -69,19 +71,6 @@ class Parser:
             return False
 
 
-    def process_brackets(self, current_char, validator, left, right):
-        if current_char == ')' or current_char == '>':
-            if validator == 0:
-                return 0
-            self.tokens.append(Token(right))
-            del self.chars[-1]
-            return -1
-        else:
-            self.tokens.append(Token(left))
-            del self.chars[-1]
-            return 1
-
-
     def check_negative(self):
         del self.chars[-1]
         if len(self.tokens) == 0 or self.tokens[-1].type in [TokenType.BRACKET_LEFT,
@@ -105,26 +94,6 @@ class Parser:
             if current_char.isdigit():
                 self.add_number()
                 continue
-            if current_char == '(' or current_char == ')':
-                result = self.process_brackets(current_char,
-                                               self.bracket_validator,
-                                               TokenType.BRACKET_LEFT,
-                                               TokenType.BRACKET_RIGHT)
-                if result == 0:
-                    position = self.initial_len - len(self.chars) + 1
-                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET] + f": position {position}")
-                self.bracket_validator += result
-                continue
-            if current_char == '<' or current_char == '>':
-                result = self.process_brackets(current_char,
-                                               self.bracket_angle_validator,
-                                               TokenType.BRACKET_ANGLE_LEFT,
-                                               TokenType.BRACKET_ANGLE_RIGHT)
-                if result == 0:
-                    position = self.initial_len - len(self.chars) + 1
-                    raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE] + f": position {position}")
-                self.bracket_angle_validator += result
-                continue
             if self.check_multi_char_token():
                 continue
             else:
@@ -139,14 +108,10 @@ class Parser:
                     self.tokens.append(Token(token_symbol))
                     del self.chars[-1]
 
-        if self.bracket_validator != 0:
-            raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET])
-        if self.bracket_angle_validator != 0:
-            raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
-
         try:
+            validate_brackets(self.tokens)
             post_parse(self.tokens)
-            validate(self.tokens)
+            validate_final(self.tokens)
         except Exception as e:
             raise Exception(e)
 
