@@ -6,27 +6,29 @@ from PySide6.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QVBoxLayout, QC
 
 class WindowSettings(QDialog):
 
-    def __init__(self, parent):
+    def __init__(self, parent, settings):
         super().__init__()
 
+        self.settings = settings
         self.parent = parent
         layout = QVBoxLayout()
         layout.setContentsMargins(30, 20, 30, 0)
 
         layout_grid = QGridLayout()
+
         layout_grid.addWidget(QLabel("X Grid"), 1, 1)
         self.check_x_grid = QCheckBox()
-        self.check_x_grid.setChecked(self.parent.x_grid)
+        self.check_x_grid.setChecked(settings.x_grid)
         layout_grid.addWidget(self.check_x_grid, 1, 2, alignment=QtCore.Qt.AlignRight)
 
         layout_grid.addWidget(QLabel("Y Grid"), 2, 1)
         self.check_y_grid = QCheckBox()
-        self.check_y_grid.setChecked(self.parent.y_grid)
+        self.check_y_grid.setChecked(settings.y_grid)
         layout_grid.addWidget(self.check_y_grid, 2, 2, alignment=QtCore.Qt.AlignRight)
 
         layout_grid.addWidget(QLabel("Display coordinates"), 3, 1)
         self.coordinates = QCheckBox()
-        self.coordinates.setChecked(self.parent.coordinates)
+        self.coordinates.setChecked(self.settings.coordinates)
         layout_grid.addWidget(self.coordinates, 3, 2, alignment=QtCore.Qt.AlignRight)
 
         layout_grid.addWidget(QLabel("Precision"), 4, 1)
@@ -34,7 +36,7 @@ class WindowSettings(QDialog):
         self.insert_precision.setMaximumWidth(100)
         for i, precision in enumerate((0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0)):
             self.insert_precision.addItem(str(precision))
-            if precision == self.parent.precision:
+            if precision == self.settings.precision:
                 self.insert_precision.setCurrentIndex(i)
         layout_grid.addWidget(self.insert_precision, 4, 2, alignment=QtCore.Qt.AlignRight)
 
@@ -44,7 +46,7 @@ class WindowSettings(QDialog):
         for i, color in enumerate(
                 ('black', 'blue', 'green', 'light blue', 'light green', 'orange', 'red', 'white', 'yellow')):
             self.background.addItem(color)
-            if color == self.parent.background:
+            if color == self.settings.background_color:
                 self.background.setCurrentIndex(i)
         layout_grid.addWidget(self.background, 5, 2, alignment=QtCore.Qt.AlignRight)
 
@@ -72,11 +74,14 @@ class WindowSettings(QDialog):
 
     @Slot()
     def accept(self):
-        self.parent.apply_settings(self.check_x_grid.isChecked(),
-                                   self.check_y_grid.isChecked(),
-                                   self.coordinates.isChecked(),
-                                   float(self.insert_precision.currentText()),
-                                   self.background.currentText())
+
+        self.settings.apply_settings(self.check_x_grid.isChecked(),
+                                     self.check_y_grid.isChecked(),
+                                     float(self.insert_precision.currentText()),
+                                     self.coordinates.isChecked(),
+                                     self.background.currentText())
+
+        self.parent.apply_settings()
         self.close()
 
 

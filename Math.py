@@ -13,6 +13,7 @@ from pyqtgraph import PlotWidget, mkPen
 from Errors import ErrorType, ErrorMessage
 from Controller import Controller
 from ControlPanel import ControlPanel
+from Settings import Settings
 from WindowAbout import WindowAbout
 from WindowSettings import WindowSettings
 
@@ -24,6 +25,7 @@ class MathExpression(QMainWindow):
 
         self.controller = Controller()
         self.panel = ControlPanel()
+        self.settings = Settings()
         self.plot_widget = PlotWidget()
         self.insert_expression = QLineEdit()
         self.area_messages = QTextEdit()
@@ -31,13 +33,8 @@ class MathExpression(QMainWindow):
 
         self.x_min = -360
         self.x_max = 360
-        self.x_grid = True
-        self.y_grid = True
-        self.precision = 0.1
         self.MAX_POINTS = 100000
         self.ratio_buttons = None
-        self.background = 'black'
-        self.coordinates = False
 
         self.create_gui()
 
@@ -67,7 +64,7 @@ class MathExpression(QMainWindow):
 
     @Slot()
     def widget_settings(self):
-        WindowSettings(self)
+        WindowSettings(self, self.settings)
 
 
     @Slot()
@@ -103,9 +100,10 @@ class MathExpression(QMainWindow):
 
     def create_graph(self):
         self.x_min, self.x_max = self.calculate_range(self.panel.x_min, self.panel.x_max)
+        precision = self.settings.precision
         if self.x_min == 0 and self.x_max == 0:
             return
-        if self.is_max_points_exceeded(self.x_min, self.x_max, self.precision):
+        if self.is_max_points_exceeded(self.x_min, self.x_max, precision):
             self.set_message(ErrorMessage[ErrorType.MAX_POINTS])
             return
         if self.panel.y_min.text() or self.panel.y_max.text():
@@ -118,18 +116,18 @@ class MathExpression(QMainWindow):
                 self.set_message("Range error: only one value for Y range")
                 return
         try:
-            y = self.controller.calculate_values(self.insert_expression.text(), self.x_min, self.x_max, self.precision)
+            y = self.controller.calculate_values(self.insert_expression.text(), self.x_min, self.x_max, precision)
         except Exception as e:
             self.set_message(str(e))
             return
 
-        x = arange(self.x_min, self.x_max + self.precision, self.precision)
+        x = arange(self.x_min, self.x_max + precision, precision)
         line_width = float(self.panel.pen_width.currentText())
         line_color = self.panel.get_current_color()
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
                                      symbolPen=None, symbolBrush=2.5, connect="finite")
 
-        self.plot_widget.setBackground(self.background)
+        self.plot_widget.setBackground(self.settings.background_color)
         self.plot_lines.append(plot)
         self.area_messages.clear()
 
@@ -196,7 +194,7 @@ class MathExpression(QMainWindow):
         lay_main.addWidget(buttons_widget)
         lay_main.addSpacing(15)
 
-        self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
+        self.plot_widget.showGrid(x=self.settings.x_grid, y=self.settings.y_grid)
         self.plot_widget.setStyleSheet("border: 1px solid black")
         lay_main.addWidget(self.plot_widget)
         lay_main.addSpacing(20)
@@ -212,18 +210,16 @@ class MathExpression(QMainWindow):
         main_widget.setContentsMargins(20, 0, 20, 0)
 
 
-    def apply_settings(self, x_grid, y_grid, coordinates, precision, background):
-        self.x_grid = x_grid
-        self.y_grid = y_grid
-        self.precision = precision
-        self.plot_widget.showGrid(x=self.x_grid, y=self.y_grid)
-        self.background = background
-        if self.coordinates != coordinates and coordinates is True:
+    def apply_settings(self):
+        if self.settings.grid_changed is True:
+            self.plot_widget.showGrid(x=self.settings.x_grid, y=self.settings.y_grid)
+        if self.settings.background_color_changed is True:
+            self.plot_widget.setBackground(self.settings.background_color)
+        if self.settings.coordinates_changed is True and self.settings.coordinates is True:
             self.plot_widget.scene().sigMouseMoved.connect(self.mouse_moved)
-            self.coordinates = coordinates
-        elif self.coordinates != coordinates and coordinates is False:
+        elif self.settings.coordinates_changed is True and self.settings.coordinates is False:
             self.plot_widget.scene().sigMouseMoved.disconnect(self.mouse_moved)
-            self.coordinates = coordinates
+            self.panel.coordinates.clear()
 
 
 if __name__ == "__main__":
