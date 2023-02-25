@@ -1,4 +1,6 @@
 
+from Color import Colors
+
 from PySide6 import QtCore
 from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QVBoxLayout, QCheckBox, QComboBox, QLabel, QPushButton
@@ -43,11 +45,9 @@ class WindowSettings(QDialog):
         layout_grid.addWidget(QLabel("Background color"), 5, 1)
         self.background = QComboBox()
         self.background.setMaximumWidth(120)
-        for i, color in enumerate(
-                ('black', 'blue', 'green', 'light blue', 'light green', 'orange', 'red', 'white', 'yellow')):
-            self.background.addItem(color)
-            if color == self.settings.background_color:
-                self.background.setCurrentIndex(i)
+
+        [self.background.addItem(value.text) for value in Colors.values()]
+        self.background.setCurrentText(Colors[self.settings.background].text)
         layout_grid.addWidget(self.background, 5, 2, alignment=QtCore.Qt.AlignRight)
 
         for row in range(1, layout_grid.rowCount()):

@@ -11,6 +11,7 @@ from PySide6.QtGui import QAction
 from pyqtgraph import PlotWidget, mkPen
 
 from Errors import ErrorType, ErrorMessage
+from Color import Colors
 from Controller import Controller
 from ControlPanel import ControlPanel
 from Settings import Settings
@@ -127,7 +128,7 @@ class MathExpression(QMainWindow):
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
                                      symbolPen=None, symbolBrush=2.5, connect="finite")
 
-        self.plot_widget.setBackground(self.settings.background_color)
+        self.plot_widget.setBackground(Colors[self.settings.background].text)
         self.plot_lines.append(plot)
         self.area_messages.clear()
 
@@ -213,8 +214,8 @@ class MathExpression(QMainWindow):
     def apply_settings(self):
         if self.settings.grid_changed is True:
             self.plot_widget.showGrid(x=self.settings.x_grid, y=self.settings.y_grid)
-        if self.settings.background_color_changed is True:
-            self.plot_widget.setBackground(self.settings.background_color)
+        if self.settings.background_changed is True:
+            self.plot_widget.setBackground(Colors[self.settings.background].text)
         if self.settings.coordinates_changed is True and self.settings.coordinates is True:
             self.plot_widget.scene().sigMouseMoved.connect(self.mouse_moved)
         elif self.settings.coordinates_changed is True and self.settings.coordinates is False:

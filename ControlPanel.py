@@ -50,9 +50,7 @@ class ControlPanel:
 
 
     def on_box_pen_colors_changed(self, color_text):
-        for color in Colors.values():
-            if color.text == color_text:
-                self.current_pen_color = color.rgb
+        self.current_pen_color = next((color.rgb for color in Colors.values() if color.text == color_text), None)
 
 
     def create_first_row(self, layout, func_draw, func_append, x_min, x_max):
