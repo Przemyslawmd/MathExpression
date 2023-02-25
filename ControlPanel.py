@@ -1,4 +1,6 @@
 
+from Color import Colors
+
 from PySide6.QtWidgets import QLabel, QComboBox
 from PySide6.QtWidgets import QHBoxLayout
 from PySide6.QtWidgets import QPushButton, QLineEdit
@@ -14,14 +16,10 @@ class ControlPanel:
         self.y_max = QLineEdit()
         self.coordinates = QLineEdit()
         self.pen_width = QComboBox()
-        self.pen_color = QComboBox()
+        self.box_pen_colors = QComboBox()
+        self.current_pen_color = (0, 255, 128)
         self.ratio_buttons = []
 
-        self.colors = {
-            "Black": (0, 0, 0), "Blue": (0, 0, 255), "Green": (0, 128, 0), "Light Blue": (0, 191, 255),
-            "Light Green": (0, 255, 128), "Orange": (255, 140, 0), "Red": (255, 0, 0),
-            "Yellow": (255, 255, 0), "White": (255, 255, 255)
-        }
 
     @staticmethod
     def create_button(label, width, func=None):
@@ -49,6 +47,12 @@ class ControlPanel:
         layout.addWidget(new_widget)
         layout.addSpacing(10)
         return layout
+
+
+    def on_box_pen_colors_changed(self, color_text):
+        for color in Colors.values():
+            if color.text == color_text:
+                self.current_pen_color = color.rgb
 
 
     def create_first_row(self, layout, func_draw, func_append, x_min, x_max):
@@ -98,10 +102,10 @@ class ControlPanel:
         widget_with_label = self.create_widget_with_label(self.y_max, 40, "Y Max", 40, Qt.AlignCenter)
         layout.addLayout(widget_with_label, 1, 4)
 
-        self.pen_color.addItems(("Black", "Blue", "Green", "Light Blue", "Light Green", "Orange", "Red", "White",
-                                 "Yellow"))
-        self.pen_color.setCurrentIndex(4)
-        widget_with_label = self.create_widget_with_label(self.pen_color, 100, "Line Color", 65)
+        [self.box_pen_colors.addItem(value.text) for value in Colors.values()]
+        self.box_pen_colors.setCurrentIndex(4)
+        self.box_pen_colors.currentTextChanged.connect(self.on_box_pen_colors_changed)
+        widget_with_label = self.create_widget_with_label(self.box_pen_colors, 100, "Line Color", 65)
         layout.addLayout(widget_with_label, 1, 6)
 
         widget_with_label = self.create_widget_with_label(self.coordinates, 415, "Coordinate", 70, Qt.AlignLeft)
@@ -111,9 +115,5 @@ class ControlPanel:
 
     def connect_ratio_button(self, index, func):
         self.ratio_buttons[index].clicked.connect(func)
-
-
-    def get_current_color(self):
-        return self.colors[self.pen_color.currentText()]
 
 
