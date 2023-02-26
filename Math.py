@@ -12,7 +12,7 @@ from pyqtgraph import PlotWidget, mkPen
 from Color import Colors
 from ControlPanel import ControlPanel
 from Controller import Controller
-from Errors import ErrorType, ErrorMessage
+from Errors import Error, ErrorMessage
 from Settings import Settings
 from WindowAbout import WindowAbout
 from WindowSettings import WindowSettings
@@ -104,7 +104,7 @@ class MathExpression(QMainWindow):
         if self.x_min == 0 and self.x_max == 0:
             return
         if self.is_max_points_exceeded(self.x_min, self.x_max, precision):
-            self.set_message(ErrorMessage[ErrorType.MAX_POINTS])
+            self.set_message(ErrorMessage[Error.MAX_POINTS])
             return
         if self.panel.y_min.text() or self.panel.y_max.text():
             if self.panel.y_min.text() and self.panel.y_max.text():

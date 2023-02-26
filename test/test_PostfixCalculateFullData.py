@@ -2,8 +2,8 @@
 import math
 from unittest import TestCase
 
-from postfix.Calculator import Calculator
-from postfix.Postfix import Postfix
+from postfix.calculator import Calculator
+from postfix.postfix import Postfix
 from tokens.parser import Parser
 
 

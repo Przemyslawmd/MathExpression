@@ -1,7 +1,7 @@
 
 from unittest import TestCase
 
-from postfix.Postfix import Postfix
+from postfix.postfix import Postfix
 from tokens.parser import Parser
 from tokens.token import TokenType
 

@@ -1,5 +1,5 @@
 
-from Errors import ErrorType, ErrorMessage
+from Errors import Error, ErrorMessage
 from tokens.token import Token, TokenType
 from tokens.utils import TokenUtils
 
@@ -41,13 +41,13 @@ def remove_angle_brackets(tokens):
         if token.type is not TokenType.BRACKET_ANGLE_LEFT:
             continue
         if index == 0:
-            raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+            raise Exception(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
         if tokens[index - 1].type not in [TokenType.ROOT, TokenType.LOG]:
-            raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+            raise Exception(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
         if tokens[index + 1].type is not TokenType.NUMBER:
-            raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+            raise Exception(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
         if tokens[index + 2].type is not TokenType.BRACKET_ANGLE_RIGHT:
-            raise Exception(ErrorMessage[ErrorType.PARSER_BRACKET_ANGLE])
+            raise Exception(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
         tokens[index - 1].data = tokens[index + 1].data
         tokens_to_remove.extend([index, index + 1, index + 2])
 
@@ -85,6 +85,6 @@ def post_parse(tokens):
     remove_angle_brackets(tokens)
     add_multiplication_tokens(tokens)
     if not remove_negative_tokens(tokens):
-        raise Exception(ErrorMessage[ErrorType.PARSER_NEGATIVE_SYMBOL])
+        raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
 
 

@@ -1,5 +1,5 @@
 
-from Errors import ErrorType, ErrorMessage
+from Errors import Error, ErrorMessage
 from tokens.postParser import post_parse
 from tokens.token import Token, TokenType
 from tokens.validator import validate_final, validate_brackets
@@ -99,11 +99,11 @@ class Parser:
             else:
                 token_symbol = self.one_char_tokens.get(current_char)
                 if token_symbol is None:
-                    raise Exception(ErrorMessage[ErrorType.PARSER_SYMBOL] + f": {current_char}")
+                    raise Exception(ErrorMessage[Error.PARSER_SYMBOL] + f": {current_char}")
                 elif token_symbol is TokenType.MINUS:
                     if not self.check_negative():
                         position = self.initial_len - len(self.chars)
-                        raise Exception(ErrorMessage[ErrorType.PARSER_NEGATIVE_SYMBOL] + f": position: {position}")
+                        raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL] + f": position: {position}")
                 else:
                     self.tokens.append(Token(token_symbol))
                     del self.chars[-1]
