@@ -12,10 +12,10 @@ from pyqtgraph import PlotWidget, mkPen
 from color import Colors
 from controlPanel import ControlPanel
 from controller import Controller
-from Errors import Error, ErrorMessage
-from Settings import Settings
-from WindowAbout import WindowAbout
-from WindowSettings import WindowSettings
+from errors import Error, ErrorMessage
+from settings import Settings
+from windowAbout import WindowAbout
+from windowSettings import WindowSettings
 
 
 class MathExpression(QMainWindow):

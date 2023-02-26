@@ -1,7 +1,7 @@
 
 from unittest import TestCase
 
-from Errors import Error, ErrorMessage
+from errors import Error, ErrorMessage
 from tokens.parser import Parser
 
 

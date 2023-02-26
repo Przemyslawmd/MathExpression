@@ -1,5 +1,5 @@
 
-from Errors import Error, ErrorMessage
+from errors import Error, ErrorMessage
 from tokens.token import TokenType
 from tokens.utils import TokenUtils
 

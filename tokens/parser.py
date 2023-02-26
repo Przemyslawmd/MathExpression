@@ -1,5 +1,5 @@
 
-from Errors import Error, ErrorMessage
+from errors import Error, ErrorMessage
 from tokens.postParser import post_parse
 from tokens.token import Token, TokenType
 from tokens.validator import validate_final, validate_brackets
