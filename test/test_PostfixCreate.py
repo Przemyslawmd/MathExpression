@@ -2,8 +2,8 @@
 from unittest import TestCase
 
 from postfix.Postfix import Postfix
-from tokens.Parser import Parser
-from tokens.Token import TokenType
+from tokens.parser import Parser
+from tokens.token import TokenType
 
 
 class TestPostfixCreate(TestCase):

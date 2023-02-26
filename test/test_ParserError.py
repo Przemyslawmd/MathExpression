@@ -2,7 +2,7 @@
 from unittest import TestCase
 
 from Errors import ErrorType, ErrorMessage
-from tokens.Parser import Parser
+from tokens.parser import Parser
 
 
 class TestParserError(TestCase):

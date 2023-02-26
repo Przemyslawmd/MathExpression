@@ -5,8 +5,8 @@ from enum import Enum
 import math
 from numpy import power, arange
 
-from tokens.Token import TokenType
-from tokens.TokenUtils import TokenUtils
+from tokens.token import TokenType
+from tokens.utils import TokenUtils
 
 
 class Direction(Enum):
