@@ -30,6 +30,7 @@ class MathExpression(QMainWindow):
         self.insert_expression = QLineEdit()
         self.area_messages = QTextEdit()
         self.plot_lines = []
+        self.setWindowTitle(' ')
 
         self.x_min = -360
         self.x_max = 360
