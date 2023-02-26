@@ -3,7 +3,7 @@ from PySide6 import QtCore
 from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QVBoxLayout, QCheckBox, QComboBox, QLabel, QPushButton
 
-from Color import Colors
+from color import Colors
 
 
 class WindowSettings(QDialog):

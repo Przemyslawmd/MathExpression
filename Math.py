@@ -9,9 +9,9 @@ from PySide6.QtWidgets import QVBoxLayout, QGridLayout
 from numpy import arange
 from pyqtgraph import PlotWidget, mkPen
 
-from Color import Colors
-from ControlPanel import ControlPanel
-from Controller import Controller
+from color import Colors
+from controlPanel import ControlPanel
+from controller import Controller
 from Errors import Error, ErrorMessage
 from Settings import Settings
 from WindowAbout import WindowAbout

@@ -1,5 +1,5 @@
 
-from Color import Color, Colors
+from color import Color, Colors
 
 
 class Settings:

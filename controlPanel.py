@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QHBoxLayout
 from PySide6.QtWidgets import QLabel, QComboBox
 from PySide6.QtWidgets import QPushButton, QLineEdit
 
-from Color import Colors
+from color import Colors
 
 
 class ControlPanel:
