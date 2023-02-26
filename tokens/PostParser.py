@@ -1,8 +1,7 @@
 
-from Token.Token import Token, TokenType
 from Errors import ErrorType, ErrorMessage
-from Token.TokenUtils import TokenUtils
-
+from tokens.Token import Token, TokenType
+from tokens.TokenUtils import TokenUtils
 
 left_multiplication_tokens = (
     TokenType.BRACKET_RIGHT,

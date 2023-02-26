@@ -1,19 +1,18 @@
 
 import sys
 
-from numpy import arange
-
-from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QToolBar
-from PySide6.QtWidgets import QVBoxLayout, QGridLayout
-from PySide6.QtWidgets import QLineEdit, QTextEdit
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
+from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QToolBar
+from PySide6.QtWidgets import QLineEdit, QTextEdit
+from PySide6.QtWidgets import QVBoxLayout, QGridLayout
+from numpy import arange
 from pyqtgraph import PlotWidget, mkPen
 
-from Errors import ErrorType, ErrorMessage
 from Color import Colors
-from Controller import Controller
 from ControlPanel import ControlPanel
+from Controller import Controller
+from Errors import ErrorType, ErrorMessage
 from Settings import Settings
 from WindowAbout import WindowAbout
 from WindowSettings import WindowSettings

@@ -1,8 +1,7 @@
 
-from Token.Token import TokenType
-from Token.TokenUtils import TokenUtils
 from Errors import ErrorType, ErrorMessage
-
+from tokens.Token import TokenType
+from tokens.TokenUtils import TokenUtils
 
 filter_positive = (TokenType.X, TokenType.NUMBER, TokenType.BRACKET_LEFT)
 filter_negative = TokenUtils.basic_arithmetic + (TokenType.BRACKET_RIGHT,)

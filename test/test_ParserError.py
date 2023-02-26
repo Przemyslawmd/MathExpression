@@ -1,6 +1,8 @@
+
 from unittest import TestCase
-from Token.Parser import Parser
+
 from Errors import ErrorType, ErrorMessage
+from tokens.Parser import Parser
 
 
 class TestParserError(TestCase):

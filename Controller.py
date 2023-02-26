@@ -1,7 +1,7 @@
 
-from Notations.Postfix import Postfix
-from Notations.Calculator import Calculator
-from Token.Parser import Parser
+from postfix.Calculator import Calculator
+from postfix.Postfix import Postfix
+from tokens.Parser import Parser
 
 
 class Controller:

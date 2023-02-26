@@ -1,8 +1,8 @@
 
-from Token.Token import Token, TokenType
 from Errors import ErrorType, ErrorMessage
-from Token.Validator import validate_final, validate_brackets
-from Token.PostParser import post_parse
+from tokens.PostParser import post_parse
+from tokens.Token import Token, TokenType
+from tokens.Validator import validate_final, validate_brackets
 
 
 class Parser:

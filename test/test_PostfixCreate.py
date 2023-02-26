@@ -1,8 +1,9 @@
 
 from unittest import TestCase
-from Notations.Postfix import Postfix
-from Token.Parser import Parser
-from Token.Token import TokenType
+
+from postfix.Postfix import Postfix
+from tokens.Parser import Parser
+from tokens.Token import TokenType
 
 
 class TestPostfixCreate(TestCase):

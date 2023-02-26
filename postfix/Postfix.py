@@ -1,7 +1,8 @@
 
-from Token.TokenUtils import TokenUtils
-from Token.Token import TokenType
 from collections import deque
+
+from tokens.Token import TokenType
+from tokens.TokenUtils import TokenUtils
 
 
 class Postfix:

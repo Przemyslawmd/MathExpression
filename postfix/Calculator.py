@@ -1,11 +1,12 @@
 
+from collections import deque
+from enum import Enum
+
 import math
 from numpy import power, arange
 
-from Token.TokenUtils import TokenUtils
-from Token.Token import TokenType
-from collections import deque
-from enum import Enum
+from tokens.Token import TokenType
+from tokens.TokenUtils import TokenUtils
 
 
 class Direction(Enum):

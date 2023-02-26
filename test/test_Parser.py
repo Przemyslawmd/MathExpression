@@ -1,7 +1,8 @@
 
 from unittest import TestCase
-from Token.Parser import Parser
-from Token.Token import TokenType
+
+from tokens.Parser import Parser
+from tokens.Token import TokenType
 
 
 class TestParser(TestCase):

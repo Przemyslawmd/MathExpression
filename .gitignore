@@ -1,5 +1,5 @@
 .idea/*
 venv/*
 __pycache__/
-Notations/__pycache__/
-Token/__pycache__/
+postfix/__pycache__/
+tokens/__pycache__/
