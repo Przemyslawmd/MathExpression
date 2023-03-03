@@ -136,18 +136,9 @@ class MathExpression(QMainWindow):
     def calculate_range(self, insert_min, insert_max):
         min_str = insert_min.text().lstrip()
         max_str = insert_max.text().lstrip()
-
-        min_negative = False
-        max_negative = False
-        if min_str[0] == '-':
-            min_negative = True
-            min_str = min_str[1:]
-        if max_str[0] == '-':
-            max_negative = True
-            max_str = max_str[1:]
         try:
-            min_value = float(min_str) if min_negative is False else float(min_str) * -1
-            max_value = float(max_str) if max_negative is False else float(max_str) * -1
+            min_value = float(min_str)
+            max_value = float(max_str)
         except Exception as e:
             self.set_message(f"Range error: {str(e)}")
             return 0, 0
