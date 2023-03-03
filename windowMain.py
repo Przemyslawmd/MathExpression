@@ -37,8 +37,6 @@ class MathExpression(QMainWindow):
         self.MAX_POINTS = 100000
         self.ratio_buttons = None
 
-        self.create_gui()
-
 
     @Slot()
     def draw(self):
@@ -218,6 +216,7 @@ class MathExpression(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = MathExpression()
+    widget.create_gui()
     widget.resize(1400, 900)
     widget.show()
     sys.exit(app.exec())
