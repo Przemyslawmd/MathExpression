@@ -85,12 +85,13 @@ class MathExpression(QMainWindow):
         self.area_messages.setText(message)
 
 
-    def is_max_points_exceeded(self, x_min, x_max, precision):
-        if x_min >= 0 and x_max >= 0:
-            return (x_max - x_min) / precision > self.MAX_POINTS
-        if x_min < 0 and x_max < 0:
-            return (x_min - x_max) * -1 / precision > self.MAX_POINTS
-        return (x_max + x_min * -1) / precision > self.MAX_POINTS
+    def is_max_points_exceeded(self):
+        precision = self.settings.precision
+        if self.x_min >= 0 and self.x_max >= 0:
+            return (self.x_max - self.x_min) / precision > self.MAX_POINTS
+        if self.x_min < 0 and self.x_max < 0:
+            return (self.x_min - self.x_max) * -1 / precision > self.MAX_POINTS
+        return (self.x_max + self.x_min * -1) / precision > self.MAX_POINTS
 
 
     def mouse_moved(self, evt):
@@ -104,7 +105,7 @@ class MathExpression(QMainWindow):
         precision = self.settings.precision
         if self.x_min == 0 and self.x_max == 0:
             return
-        if self.is_max_points_exceeded(self.x_min, self.x_max, precision):
+        if self.is_max_points_exceeded():
             self.set_message(ErrorMessage[Error.MAX_POINTS])
             return
         if self.panel.y_min.text() or self.panel.y_max.text():
