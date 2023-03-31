@@ -6,20 +6,11 @@ from unittest import TestCase
 from postfix.postfix import Postfix
 from tokens.parser import Parser
 from tokens.token import TokenType
+from testUtils import TokenTest, check_tokens
 
-
-TokenTest = namedtuple('TokenTest', 'type data', defaults=[0])
 
 
 class TestPostfixCreate(TestCase):
-
-
-    @staticmethod
-    def check_tokens(tokens, tokens_test):
-        assert len(tokens) == len(tokens_test)
-        for token, token_test in zip(tokens, tokens_test):
-            assert token.type == token_test.type
-            assert token.data == token_test.data
 
 
     def test_postfix_1(self):
@@ -32,7 +23,7 @@ class TestPostfixCreate(TestCase):
                        TokenTest(TokenType.PLUS),
                        TokenTest(TokenType.X),
                        TokenTest(TokenType.PLUS)]
-        self.check_tokens(tokens_postfix, tokens_test)
+        check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_2(self):
@@ -42,7 +33,7 @@ class TestPostfixCreate(TestCase):
                        TokenTest(TokenType.SINE),
                        TokenTest(TokenType.X),
                        TokenTest(TokenType.PLUS)]
-        self.check_tokens(tokens_postfix, tokens_test)
+        check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_3(self):
@@ -52,7 +43,7 @@ class TestPostfixCreate(TestCase):
                        TokenTest(TokenType.NUMBER, 10),
                        TokenTest(TokenType.COSINE),
                        TokenTest(TokenType.MULTIPLICATION)]
-        self.check_tokens(tokens_postfix, tokens_test)
+        check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_4(self):
@@ -61,7 +52,7 @@ class TestPostfixCreate(TestCase):
         tokens_test = [TokenTest(TokenType.X),
                        TokenTest(TokenType.NUMBER, 2),
                        TokenTest(TokenType.POWER)]
-        self.check_tokens(tokens_postfix, tokens_test)
+        check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_5(self):
@@ -72,7 +63,7 @@ class TestPostfixCreate(TestCase):
                        TokenTest(TokenType.NUMBER, 3),
                        TokenTest(TokenType.POWER),
                        TokenTest(TokenType.MULTIPLICATION)]
-        self.check_tokens(tokens_postfix, tokens_test)
+        check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_6(self):
@@ -87,7 +78,7 @@ class TestPostfixCreate(TestCase):
                        TokenTest(TokenType.COTANGENT),
                        TokenTest(TokenType.MULTIPLICATION),
                        TokenTest(TokenType.MINUS)]
-        self.check_tokens(tokens_postfix, tokens_test)
+        check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_7(self):
@@ -102,7 +93,7 @@ class TestPostfixCreate(TestCase):
                        TokenTest(TokenType.X),
                        TokenTest(TokenType.MULTIPLICATION),
                        TokenTest(TokenType.PLUS)]
-        self.check_tokens(tokens_postfix, tokens_test)
+        check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_8(self):
@@ -115,7 +106,7 @@ class TestPostfixCreate(TestCase):
                        TokenTest(TokenType.X),
                        TokenTest(TokenType.PLUS),
                        TokenTest(TokenType.MULTIPLICATION)]
-        self.check_tokens(tokens_postfix, tokens_test)
+        check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_9(self):
@@ -133,7 +124,7 @@ class TestPostfixCreate(TestCase):
                        TokenTest(TokenType.X),
                        TokenTest(TokenType.COSINE),
                        TokenTest(TokenType.DIVISION)]
-        self.check_tokens(tokens_postfix, tokens_test)
+        check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_10(self):
@@ -151,6 +142,6 @@ class TestPostfixCreate(TestCase):
                        TokenTest(TokenType.DIVISION),
                        TokenTest(TokenType.PLUS),
                        TokenTest(TokenType.MULTIPLICATION)]
-        self.check_tokens(tokens_postfix, tokens_test)
+        check_tokens(tokens_postfix, tokens_test)
 
 

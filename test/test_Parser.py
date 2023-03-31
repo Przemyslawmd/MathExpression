@@ -5,19 +5,10 @@ from unittest import TestCase
 
 from tokens.parser import Parser
 from tokens.token import TokenType
-
-
-TokenTest = namedtuple('TokenTest', 'type data', defaults=[0])
+from testUtils import TokenTest, check_tokens
 
 
 class TestParser(TestCase):
-
-    @staticmethod
-    def check_tokens(tokens, tokens_test):
-        assert len(tokens) == len(tokens_test)
-        for token, token_test in zip(tokens, tokens_test):
-            assert token.type == token_test.type
-            assert token.data == token_test.data
 
 
     def test_basic_1(self):
@@ -27,7 +18,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.X),
                        TokenTest(TokenType.PLUS),
                        TokenTest(TokenType.NUMBER, 3)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_basic_2(self):
@@ -42,7 +33,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.COSINE),
                        TokenTest(TokenType.NUMBER, 30),
                        TokenTest(TokenType.BRACKET_RIGHT)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_basic_3(self):
@@ -59,7 +50,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.COSINE),
                        TokenTest(TokenType.NUMBER, 30),
                        TokenTest(TokenType.BRACKET_RIGHT)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_basic_4(self):
@@ -72,7 +63,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.MULTIPLICATION),
                        TokenTest(TokenType.SINE),
                        TokenTest(TokenType.X)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_basic_5(self):
@@ -81,7 +72,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.MULTIPLICATION),
                        TokenTest(TokenType.TANGENT),
                        TokenTest(TokenType.NUMBER, 12)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_basic_6(self):
@@ -94,7 +85,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.PLUS),
                        TokenTest(TokenType.LOG, 10),
                        TokenTest(TokenType.NUMBER, 10)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_basic_7(self):
@@ -112,7 +103,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.POWER),
                        TokenTest(TokenType.NUMBER, 2),
                        TokenTest(TokenType.BRACKET_RIGHT)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_basic_8(self):
@@ -138,7 +129,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.NUMBER, 6),
                        TokenTest(TokenType.BRACKET_RIGHT),
                        TokenTest(TokenType.BRACKET_RIGHT)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_basic_9(self):
@@ -158,7 +149,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.PLUS),
                        TokenTest(TokenType.NUMBER, 1),
                        TokenTest(TokenType.BRACKET_RIGHT)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_basic_10(self):
@@ -182,7 +173,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.NUMBER, 4),
                        TokenTest(TokenType.MULTIPLICATION),
                        TokenTest(TokenType.X)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_basic_11(self):
@@ -192,7 +183,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.PLUS),
                        TokenTest(TokenType.ROOT, 2),
                        TokenTest(TokenType.NUMBER, 12)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_basic_12(self):
@@ -209,7 +200,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.SINE),
                        TokenTest(TokenType.X),
                        TokenTest(TokenType.BRACKET_RIGHT)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_negative_1(self):
@@ -221,7 +212,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.BRACKET_RIGHT),
                        TokenTest(TokenType.MULTIPLICATION),
                        TokenTest(TokenType.NUMBER, 4)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_negative_2(self):
@@ -235,7 +226,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.BRACKET_LEFT),
                        TokenTest(TokenType.NUMBER, -5),
                        TokenTest(TokenType.BRACKET_RIGHT)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_negative_3(self):
@@ -247,7 +238,7 @@ class TestParser(TestCase):
                        TokenTest(TokenType.BRACKET_LEFT),
                        TokenTest(TokenType.NUMBER, -7),
                        TokenTest(TokenType.BRACKET_RIGHT)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_negative_4(self):
@@ -259,13 +250,13 @@ class TestParser(TestCase):
                        TokenTest(TokenType.POWER),
                        TokenTest(TokenType.NUMBER, 2),
                        TokenTest(TokenType.BRACKET_RIGHT)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
     def test_angle_brackets_1(self):
         tokens = Parser("sqrt<2>16").parse()
         tokens_test = [TokenTest(TokenType.ROOT, 2),
                        TokenTest(TokenType.NUMBER, 16)]
-        self.check_tokens(tokens, tokens_test)
+        check_tokens(tokens, tokens_test)
 
 
