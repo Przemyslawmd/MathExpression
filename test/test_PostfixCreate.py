@@ -1,4 +1,6 @@
 
+from collections import namedtuple
+
 from unittest import TestCase
 
 from postfix.postfix import Postfix
@@ -6,137 +8,149 @@ from tokens.parser import Parser
 from tokens.token import TokenType
 
 
+TokenTest = namedtuple('TokenTest', 'type data', defaults=[0])
+
+
 class TestPostfixCreate(TestCase):
+
+
+    @staticmethod
+    def check_tokens(tokens, tokens_test):
+        assert len(tokens) == len(tokens_test)
+        for token, token_test in zip(tokens, tokens_test):
+            assert token.type == token_test.type
+            assert token.data == token_test.data
+
 
     def test_postfix_1(self):
         tokens = Parser("3 + x * 10 + x").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
-        assert len(tokens_postfix) == 7
-        assert tokens_postfix[0].data == 3
-        assert tokens_postfix[1].type is TokenType.X
-        assert tokens_postfix[2].data == 10
-        assert tokens_postfix[3].type is TokenType.MULTIPLICATION
-        assert tokens_postfix[4].type is TokenType.PLUS
-        assert tokens_postfix[5].type is TokenType.X
-        assert tokens_postfix[6].type is TokenType.PLUS
+        tokens_test = [TokenTest(TokenType.NUMBER, 3),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.NUMBER, 10),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.PLUS),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.PLUS)]
+        self.check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_2(self):
         tokens = Parser("sinx + x").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
-        assert len(tokens_postfix) == 4
-        assert tokens_postfix[0].type is TokenType.X
-        assert tokens_postfix[1].type is TokenType.SINE
-        assert tokens_postfix[2].type is TokenType.X
-        assert tokens_postfix[3].type is TokenType.PLUS
+        tokens_test = [TokenTest(TokenType.X),
+                       TokenTest(TokenType.SINE),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.PLUS)]
+        self.check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_3(self):
         tokens = Parser("xcos10").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
-        assert len(tokens_postfix) == 4
-        assert tokens_postfix[0].type == TokenType.X
-        assert tokens_postfix[1].data == 10
-        assert tokens_postfix[2].type == TokenType.COSINE
-        assert tokens_postfix[3].type is TokenType.MULTIPLICATION
+        tokens_test = [TokenTest(TokenType.X),
+                       TokenTest(TokenType.NUMBER, 10),
+                       TokenTest(TokenType.COSINE),
+                       TokenTest(TokenType.MULTIPLICATION)]
+        self.check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_4(self):
         tokens = Parser("x^2").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
-        assert len(tokens_postfix) == 3
-        assert tokens_postfix[0].type == TokenType.X
-        assert tokens_postfix[1].type is TokenType.NUMBER and tokens_postfix[1].data == 2
-        assert tokens_postfix[2].type == TokenType.POWER
+        tokens_test = [TokenTest(TokenType.X),
+                       TokenTest(TokenType.NUMBER, 2),
+                       TokenTest(TokenType.POWER)]
+        self.check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_5(self):
         tokens = Parser("2x^3").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
-        assert len(tokens_postfix) == 5
-        assert tokens_postfix[0].type is TokenType.NUMBER and tokens_postfix[0].data == 2
-        assert tokens_postfix[1].type == TokenType.X
-        assert tokens_postfix[2].type is TokenType.NUMBER and tokens_postfix[2].data == 3
-        assert tokens_postfix[3].type == TokenType.POWER
-        assert tokens_postfix[4].type is TokenType.MULTIPLICATION
+        tokens_test = [TokenTest(TokenType.NUMBER, 2),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.NUMBER, 3),
+                       TokenTest(TokenType.POWER),
+                       TokenTest(TokenType.MULTIPLICATION)]
+        self.check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_6(self):
         tokens = Parser("10tgx - xctgx").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
-        assert len(tokens_postfix) == 9
-        assert tokens_postfix[0].data == 10
-        assert tokens_postfix[1].type is TokenType.X
-        assert tokens_postfix[2].type is TokenType.TANGENT
-        assert tokens_postfix[3].type is TokenType.MULTIPLICATION
-        assert tokens_postfix[4].type is TokenType.X
-        assert tokens_postfix[5].type is TokenType.X
-        assert tokens_postfix[6].type is TokenType.COTANGENT
-        assert tokens_postfix[7].type is TokenType.MULTIPLICATION
-        assert tokens_postfix[8].type is TokenType.MINUS
+        tokens_test = [TokenTest(TokenType.NUMBER, 10),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.TANGENT),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.COTANGENT),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.MINUS)]
+        self.check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_7(self):
         tokens = Parser("cosx * log10 + 12x").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
-        assert len(tokens_postfix) == 9
-        assert tokens_postfix[0].type is TokenType.X
-        assert tokens_postfix[1].type is TokenType.COSINE
-        assert tokens_postfix[2].type is TokenType.NUMBER and tokens_postfix[2].data == 10
-        assert tokens_postfix[3].type is TokenType.LOG
-        assert tokens_postfix[4].type is TokenType.MULTIPLICATION
-        assert tokens_postfix[5].type is TokenType.NUMBER and tokens_postfix[5].data == 12
-        assert tokens_postfix[6].type is TokenType.X
-        assert tokens_postfix[7].type is TokenType.MULTIPLICATION
-        assert tokens_postfix[8].type is TokenType.PLUS
+        tokens_test = [TokenTest(TokenType.X),
+                       TokenTest(TokenType.COSINE),
+                       TokenTest(TokenType.NUMBER, 10),
+                       TokenTest(TokenType.LOG, 10),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.NUMBER, 12),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.PLUS)]
+        self.check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_8(self):
         tokens = Parser("(3 + x) * (10 + x)").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
-        assert len(tokens_postfix) == 7
-        assert tokens_postfix[0].data == 3
-        assert tokens_postfix[1].type is TokenType.X
-        assert tokens_postfix[2].type is TokenType.PLUS
-        assert tokens_postfix[3].data == 10
-        assert tokens_postfix[4].type is TokenType.X
-        assert tokens_postfix[5].type is TokenType.PLUS
-        assert tokens_postfix[6].type is TokenType.MULTIPLICATION
+        tokens_test = [TokenTest(TokenType.NUMBER, 3),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.PLUS),
+                       TokenTest(TokenType.NUMBER, 10),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.PLUS),
+                       TokenTest(TokenType.MULTIPLICATION)]
+        self.check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_9(self):
         tokens = Parser("cosx  (10x + logx) / cosx").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
-        assert len(tokens_postfix) == 12
-        assert tokens_postfix[0].type is TokenType.X
-        assert tokens_postfix[1].type is TokenType.COSINE
-        assert tokens_postfix[2].type is TokenType.NUMBER and tokens_postfix[2].data == 10
-        assert tokens_postfix[3].type is TokenType.X
-        assert tokens_postfix[4].type is TokenType.MULTIPLICATION
-        assert tokens_postfix[5].type is TokenType.X
-        assert tokens_postfix[6].type is TokenType.LOG
-        assert tokens_postfix[7].type is TokenType.PLUS
-        assert tokens_postfix[8].type is TokenType.MULTIPLICATION
-        assert tokens_postfix[9].type is TokenType.X
-        assert tokens_postfix[10].type is TokenType.COSINE
-        assert tokens_postfix[11].type is TokenType.DIVISION
+        tokens_test = [TokenTest(TokenType.X),
+                       TokenTest(TokenType.COSINE),
+                       TokenTest(TokenType.NUMBER, 10),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.LOG, 10),
+                       TokenTest(TokenType.PLUS),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.COSINE),
+                       TokenTest(TokenType.DIVISION)]
+        self.check_tokens(tokens_postfix, tokens_test)
 
 
     def test_postfix_10(self):
         tokens = Parser("tgx * (ctgx + 12x / ctgx)").parse()
         tokens_postfix = Postfix().create_postfix(tokens)
-        assert len(tokens_postfix) == 12
-        assert tokens_postfix[0].type is TokenType.X
-        assert tokens_postfix[1].type is TokenType.TANGENT
-        assert tokens_postfix[2].type is TokenType.X
-        assert tokens_postfix[3].type is TokenType.COTANGENT
-        assert tokens_postfix[4].data == 12
-        assert tokens_postfix[5].type is TokenType.X
-        assert tokens_postfix[6].type is TokenType.MULTIPLICATION
-        assert tokens_postfix[7].type is TokenType.X
-        assert tokens_postfix[8].type is TokenType.COTANGENT
-        assert tokens_postfix[9].type is TokenType.DIVISION
-        assert tokens_postfix[10].type is TokenType.PLUS
-        assert tokens_postfix[11].type is TokenType.MULTIPLICATION
+        tokens_test = [TokenTest(TokenType.X),
+                       TokenTest(TokenType.TANGENT),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.COTANGENT),
+                       TokenTest(TokenType.NUMBER, 12),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.COTANGENT),
+                       TokenTest(TokenType.DIVISION),
+                       TokenTest(TokenType.PLUS),
+                       TokenTest(TokenType.MULTIPLICATION)]
+        self.check_tokens(tokens_postfix, tokens_test)
 
 
