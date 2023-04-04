@@ -15,6 +15,7 @@ from controlPanel import ControlPanel
 from controller import Controller
 from errors import Error, ErrorMessage
 from settings import Settings
+from utils import is_max_points_exceeded
 from windowAbout import WindowAbout
 from windowSettings import WindowSettings
 
@@ -40,7 +41,6 @@ class MathExpression(QMainWindow):
 
         self.x_min = -360
         self.x_max = 360
-        self.MAX_POINTS = 100000
         self.ratio_buttons = None
 
 
@@ -91,15 +91,6 @@ class MathExpression(QMainWindow):
         self.area_messages.setText(message)
 
 
-    def is_max_points_exceeded(self):
-        precision = self.settings.precision
-        if self.x_min >= 0 and self.x_max >= 0:
-            return (self.x_max - self.x_min) / precision > self.MAX_POINTS
-        if self.x_min < 0 and self.x_max < 0:
-            return (self.x_min - self.x_max) * -1 / precision > self.MAX_POINTS
-        return (self.x_max + self.x_min * -1) / precision > self.MAX_POINTS
-
-
     def mouse_moved(self, evt):
         x = round(self.plot_widget.plotItem.vb.mapSceneToView(evt).x(), 3)
         y = round(self.plot_widget.plotItem.vb.mapSceneToView(evt).y(), 3)
@@ -108,10 +99,10 @@ class MathExpression(QMainWindow):
 
     def create_graph(self):
         self.x_min, self.x_max = self.calculate_range(self.panel.x_min, self.panel.x_max)
-        precision = self.settings.precision
         if self.x_min == 0 and self.x_max == 0:
             return
-        if self.is_max_points_exceeded():
+        precision = self.settings.precision
+        if is_max_points_exceeded(precision, self.x_min, self.x_max):
             self.set_message(ErrorMessage[Error.MAX_POINTS])
             return
         if self.panel.y_min.text() or self.panel.y_max.text():
