@@ -129,9 +129,6 @@ class MathExpression(QMainWindow):
         line_color = self.panel.current_pen_color
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
                                      symbolPen=None, symbolBrush=2.5, connect="finite")
-
-        self.plot_widget.setBackground(Colors[self.settings.background].text)
-
         line = Line(plot, self.insert_expression.text())
         self.plot_lines.append(line)
 
