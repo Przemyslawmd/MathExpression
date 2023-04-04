@@ -11,11 +11,9 @@ class WindowSettings(QDialog):
     def __init__(self, parent, settings):
         super().__init__()
 
-        self.settings = settings
         self.parent = parent
         layout = QVBoxLayout()
         layout.setContentsMargins(30, 20, 30, 0)
-
         layout_grid = QGridLayout()
 
         row = 1
@@ -32,33 +30,33 @@ class WindowSettings(QDialog):
 
         row += 1
         layout_grid.addWidget(QLabel("Display Coordinates"), row, 1)
-        self.coordinates = QCheckBox()
-        self.coordinates.setChecked(self.settings.coordinates)
-        layout_grid.addWidget(self.coordinates, row, 2, alignment=QtCore.Qt.AlignRight)
+        self.check_coordinates = QCheckBox()
+        self.check_coordinates.setChecked(settings.coordinates)
+        layout_grid.addWidget(self.check_coordinates, row, 2, alignment=QtCore.Qt.AlignRight)
 
         row += 1
         layout_grid.addWidget(QLabel("Graph Label"), row, 1)
-        self.coordinates = QCheckBox()
-        self.coordinates.setChecked(self.settings.coordinates)
-        layout_grid.addWidget(self.coordinates, row, 2, alignment=QtCore.Qt.AlignRight)
+        self.check_label = QCheckBox()
+        self.check_label.setChecked(False)
+        layout_grid.addWidget(self.check_label, row, 2, alignment=QtCore.Qt.AlignRight)
 
         row += 1
         layout_grid.addWidget(QLabel("Precision"), row, 1)
-        self.insert_precision = QComboBox()
-        self.insert_precision.setMaximumWidth(100)
+        self.combo_precision = QComboBox()
+        self.combo_precision.setMaximumWidth(100)
         for i, precision in enumerate((0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0)):
-            self.insert_precision.addItem(str(precision))
-            if precision == self.settings.precision:
-                self.insert_precision.setCurrentIndex(i)
-        layout_grid.addWidget(self.insert_precision, row, 2, alignment=QtCore.Qt.AlignRight)
+            self.combo_precision.addItem(str(precision))
+            if precision == settings.precision:
+                self.combo_precision.setCurrentIndex(i)
+        layout_grid.addWidget(self.combo_precision, row, 2, alignment=QtCore.Qt.AlignRight)
 
         row += 1
         layout_grid.addWidget(QLabel("Background Color"), row, 1)
-        self.background = QComboBox()
-        self.background.setMaximumWidth(120)
-        [self.background.addItem(value.text) for value in Colors.values()]
-        self.background.setCurrentText(Colors[self.settings.background].text)
-        layout_grid.addWidget(self.background, row, 2, alignment=QtCore.Qt.AlignRight)
+        self.combo_background = QComboBox()
+        self.combo_background.setMaximumWidth(120)
+        [self.combo_background.addItem(value.text) for value in Colors.values()]
+        self.combo_background.setCurrentText(Colors[settings.background].text)
+        layout_grid.addWidget(self.combo_background, row, 2, alignment=QtCore.Qt.AlignRight)
 
         for row in range(1, layout_grid.rowCount()):
             layout_grid.setRowMinimumHeight(row, 30)
@@ -68,7 +66,7 @@ class WindowSettings(QDialog):
         layout_button = QHBoxLayout()
         layout_button.addStretch()
         button = QPushButton("Accept")
-        button.clicked.connect(lambda: self.accept())
+        button.clicked.connect(lambda: self.accept(settings))
         layout_button.addWidget(button)
         layout_button.addStretch()
 
@@ -83,14 +81,13 @@ class WindowSettings(QDialog):
 
 
     @Slot()
-    def accept(self):
+    def accept(self, settings):
 
-        self.settings.apply_settings(self.check_x_grid.isChecked(),
-                                     self.check_y_grid.isChecked(),
-                                     float(self.insert_precision.currentText()),
-                                     self.coordinates.isChecked(),
-                                     self.background.currentText())
-
+        settings.apply_settings(self.check_x_grid.isChecked(),
+                                self.check_y_grid.isChecked(),
+                                float(self.combo_precision.currentText()),
+                                self.check_coordinates.isChecked(),
+                                self.combo_background.currentText())
         self.parent.apply_settings()
         self.close()
 
