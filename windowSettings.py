@@ -37,7 +37,7 @@ class WindowSettings(QDialog):
         row += 1
         layout_grid.addWidget(QLabel("Graph Label"), row, 1)
         self.check_label = QCheckBox()
-        self.check_label.setChecked(False)
+        self.check_label.setChecked(settings.graph_label)
         layout_grid.addWidget(self.check_label, row, 2, alignment=QtCore.Qt.AlignRight)
 
         row += 1
@@ -87,7 +87,8 @@ class WindowSettings(QDialog):
                                 self.check_y_grid.isChecked(),
                                 float(self.combo_precision.currentText()),
                                 self.check_coordinates.isChecked(),
-                                self.combo_background.currentText())
+                                self.combo_background.currentText(),
+                                self.check_label.isChecked())
         self.parent.apply_settings()
         self.close()
 
