@@ -15,7 +15,6 @@ class Settings:
         self.coordinates_changed = False
         self.grid_changed = False
         self.background_changed = False
-        self.graph_label_changed = False
 
 
     def apply_settings(self, x_grid, y_grid, precision, coordinates, background, graph_label):
@@ -32,7 +31,6 @@ class Settings:
         self.coordinates_changed = self.coordinates != coordinates
         self.coordinates = coordinates
 
-        self.graph_label_changed = self.graph_label != graph_label
         self.graph_label = graph_label
 
 
