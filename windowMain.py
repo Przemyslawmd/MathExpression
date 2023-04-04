@@ -15,7 +15,7 @@ from controlPanel import ControlPanel
 from controller import Controller
 from errors import Error, ErrorMessage
 from settings import Settings
-from utils import is_max_points_exceeded
+from utils import is_max_points_exceeded, calculate_range, RangeType
 from windowAbout import WindowAbout
 from windowSettings import WindowSettings
 
@@ -37,7 +37,6 @@ class MathExpression(QMainWindow):
         self.plot_lines = []
         self.setWindowTitle(' ')
         self.legend = pg.LegendItem((50, 100), offset=(50, 20))
-
 
         self.x_min = -360
         self.x_max = 360
@@ -98,29 +97,34 @@ class MathExpression(QMainWindow):
 
 
     def create_graph(self):
-        self.x_min, self.x_max = self.calculate_range(self.panel.x_min, self.panel.x_max)
-        if self.x_min == 0 and self.x_max == 0:
+        min_str = self.panel.x_min.text().lstrip()
+        max_str = self.panel.x_max.text().lstrip()
+        try:
+            x_min, x_max = calculate_range(min_str, max_str, RangeType.X)
+        except Exception as e:
+            self.set_message(str(e))
             return
         precision = self.settings.precision
-        if is_max_points_exceeded(precision, self.x_min, self.x_max):
+        if is_max_points_exceeded(precision, x_min, x_max):
             self.set_message(ErrorMessage[Error.MAX_POINTS])
             return
-        if self.panel.y_min.text() or self.panel.y_max.text():
-            if self.panel.y_min.text() and self.panel.y_max.text():
-                y_min, y_max = self.calculate_range(self.panel.y_min, self.panel.y_max)
-                if y_min == 0 and y_max == 0:
-                    return
-                self.plot_widget.setYRange(y_min, y_max, padding=0)
-            else:
-                self.set_message("Range error: only one value for Y range")
-                return
+        min_str = self.panel.y_min.text().lstrip()
+        max_str = self.panel.y_max.text().lstrip()
         try:
-            y = self.controller.calculate_values(self.insert_expression.text(), self.x_min, self.x_max, precision)
+            y_min, y_max = calculate_range(min_str, max_str, RangeType.Y)
+        except Exception as e:
+            self.set_message(str(e))
+            return
+        if y_min != 0 and y_max != 0:
+            self.plot_widget.setYRange(y_min, y_max, padding=0)
+
+        try:
+            y = self.controller.calculate_values(self.insert_expression.text(), x_min, x_max, precision)
         except Exception as e:
             self.set_message(str(e))
             return
 
-        x = arange(self.x_min, self.x_max + precision, precision)
+        x = arange(x_min, x_max + precision, precision)
         line_width = float(self.panel.pen_width.currentText())
         line_color = self.panel.current_pen_color
         plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
@@ -136,21 +140,6 @@ class MathExpression(QMainWindow):
             self.legend.setParentItem(self.plot_widget.plotItem)
             [self.legend.addItem(plot.data, plot.expression) for plot in self.plot_lines]
         self.area_messages.clear()
-
-
-    def calculate_range(self, insert_min, insert_max):
-        min_str = insert_min.text().lstrip()
-        max_str = insert_max.text().lstrip()
-        try:
-            min_value = float(min_str)
-            max_value = float(max_str)
-        except Exception as e:
-            self.set_message(f"Range error: {str(e)}")
-            return 0, 0
-        if min_value > max_value:
-            self.set_message("Range error: minimum higher than maximum")
-            return 0, 0
-        return min_value, max_value
 
 
     def create_gui(self):
