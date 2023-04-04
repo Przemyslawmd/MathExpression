@@ -1,6 +1,6 @@
 
 import sys
-
+from collections import namedtuple
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QToolBar
@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QLineEdit, QTextEdit
 from PySide6.QtWidgets import QVBoxLayout, QGridLayout
 from numpy import arange
 from pyqtgraph import PlotWidget, mkPen
+import pyqtgraph as pg
 
 from color import Colors
 from controlPanel import ControlPanel
@@ -16,6 +17,9 @@ from errors import Error, ErrorMessage
 from settings import Settings
 from windowAbout import WindowAbout
 from windowSettings import WindowSettings
+
+
+Line = namedtuple("PlotLine", "data expression")
 
 
 class MathExpression(QMainWindow):
@@ -31,6 +35,8 @@ class MathExpression(QMainWindow):
         self.area_messages = QTextEdit()
         self.plot_lines = []
         self.setWindowTitle(' ')
+        self.legend = pg.LegendItem((50, 100), offset=(50, 20))
+
 
         self.x_min = -360
         self.x_max = 360
@@ -57,8 +63,10 @@ class MathExpression(QMainWindow):
     @Slot()
     def clear_plot_area(self):
         for line in self.plot_lines:
-            self.plot_widget.removeItem(line)
+            self.plot_widget.removeItem(line.data)
         self.plot_lines.clear()
+        if self.settings.graph_label:
+            self.legend.clear()
 
 
     @Slot()
@@ -128,7 +136,14 @@ class MathExpression(QMainWindow):
                                      symbolPen=None, symbolBrush=2.5, connect="finite")
 
         self.plot_widget.setBackground(Colors[self.settings.background].text)
-        self.plot_lines.append(plot)
+
+        line = Line(plot, self.insert_expression.text())
+        self.plot_lines.append(line)
+
+        if self.settings.graph_label:
+            self.legend.clear()
+            self.legend.setParentItem(self.plot_widget.plotItem)
+            [self.legend.addItem(plot.data, plot.expression) for plot in self.plot_lines]
         self.area_messages.clear()
 
 
