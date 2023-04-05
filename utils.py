@@ -18,17 +18,17 @@ class RangeType(Enum):
 
 def calculate_range(min_str, max_str, range_type):
     if range_type is RangeType.X and (not min_str or not max_str):
-        raise Exception("Range error: X min and X max can not be empty")
+        raise Exception("Range error: minimum and maximum for X can not be empty")
     elif range_type is RangeType.Y:
         if not min_str and not max_str:
             return 0, 0
         if not min_str or not max_str:
-            raise Exception("Range error: only one value for Y range")
+            raise Exception("Range error: only one value for Y range provided")
     try:
         min_value = float(min_str)
         max_value = float(max_str)
     except Exception as e:
-        raise f"Range error: {str(e)}"
+        raise Exception(f"Range error: {str(e)}")
     if min_value > max_value:
         raise Exception("Range error: minimum higher than maximum")
     return min_value, max_value
