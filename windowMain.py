@@ -51,6 +51,9 @@ class MathExpression(QMainWindow):
 
     @Slot()
     def append(self):
+        if len(self.plot_lines) == 10:
+            self.set_message("Only ten graphs allowed")
+            return
         self.create_graph()
 
 
