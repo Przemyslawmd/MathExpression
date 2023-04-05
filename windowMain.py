@@ -15,7 +15,7 @@ from controlPanel import ControlPanel
 from controller import Controller
 from errors import Error, ErrorMessage
 from settings import Settings
-from utils import is_max_points_exceeded, calculate_range, RangeType
+from utils import is_max_points_exceeded, range_x, range_y
 from windowAbout import WindowAbout
 from windowSettings import WindowSettings
 
@@ -103,7 +103,7 @@ class MathExpression(QMainWindow):
         min_str = self.panel.x_min.text().lstrip()
         max_str = self.panel.x_max.text().lstrip()
         try:
-            x_min, x_max = calculate_range(min_str, max_str, RangeType.X)
+            x_min, x_max = range_x(min_str, max_str)
         except Exception as e:
             self.set_message(str(e))
             return
@@ -114,7 +114,7 @@ class MathExpression(QMainWindow):
         min_str = self.panel.y_min.text().lstrip()
         max_str = self.panel.y_max.text().lstrip()
         try:
-            y_min, y_max = calculate_range(min_str, max_str, RangeType.Y)
+            y_min, y_max = range_y(min_str, max_str)
         except Exception as e:
             self.set_message(str(e))
             return
