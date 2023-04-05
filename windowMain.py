@@ -1,9 +1,9 @@
 
-import sys
+
 from collections import namedtuple
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QToolBar
+from PySide6.QtWidgets import QWidget, QMainWindow, QToolBar
 from PySide6.QtWidgets import QLineEdit, QTextEdit
 from PySide6.QtWidgets import QVBoxLayout, QGridLayout
 from numpy import arange
@@ -206,14 +206,5 @@ class MathExpression(QMainWindow):
         elif self.settings.coordinates_changed is True and self.settings.coordinates is False:
             self.plot_widget.scene().sigMouseMoved.disconnect(self.mouse_moved)
             self.panel.coordinates.clear()
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    widget = MathExpression()
-    widget.create_gui()
-    widget.resize(1400, 900)
-    widget.show()
-    sys.exit(app.exec())
 
 
