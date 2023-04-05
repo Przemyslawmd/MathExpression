@@ -1,9 +1,9 @@
 
-import sys
+
 from collections import namedtuple
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QToolBar
+from PySide6.QtWidgets import QWidget, QMainWindow, QToolBar
 from PySide6.QtWidgets import QLineEdit, QTextEdit
 from PySide6.QtWidgets import QVBoxLayout, QGridLayout
 from numpy import arange
@@ -11,13 +11,13 @@ from pyqtgraph import PlotWidget, mkPen
 import pyqtgraph as pg
 
 from color import Colors
-from controlPanel import ControlPanel
 from controller import Controller
 from errors import Error, ErrorMessage
 from settings import Settings
-from utils import is_max_points_exceeded, calculate_range, RangeType
-from windowAbout import WindowAbout
-from windowSettings import WindowSettings
+from gui.controlPanel import ControlPanel
+from gui.utils import is_max_points_exceeded, range_x, range_y
+from gui.windowAbout import WindowAbout
+from gui.windowSettings import WindowSettings
 
 
 Line = namedtuple("PlotLine", "data expression")
@@ -51,6 +51,9 @@ class MathExpression(QMainWindow):
 
     @Slot()
     def append(self):
+        if len(self.plot_lines) == 10:
+            self.set_message("Only ten graphs allowed")
+            return
         self.create_graph()
 
 
@@ -100,7 +103,7 @@ class MathExpression(QMainWindow):
         min_str = self.panel.x_min.text().lstrip()
         max_str = self.panel.x_max.text().lstrip()
         try:
-            x_min, x_max = calculate_range(min_str, max_str, RangeType.X)
+            x_min, x_max = range_x(min_str, max_str)
         except Exception as e:
             self.set_message(str(e))
             return
@@ -111,7 +114,7 @@ class MathExpression(QMainWindow):
         min_str = self.panel.y_min.text().lstrip()
         max_str = self.panel.y_max.text().lstrip()
         try:
-            y_min, y_max = calculate_range(min_str, max_str, RangeType.Y)
+            y_min, y_max = range_y(min_str, max_str)
         except Exception as e:
             self.set_message(str(e))
             return
@@ -203,14 +206,5 @@ class MathExpression(QMainWindow):
         elif self.settings.coordinates_changed is True and self.settings.coordinates is False:
             self.plot_widget.scene().sigMouseMoved.disconnect(self.mouse_moved)
             self.panel.coordinates.clear()
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    widget = MathExpression()
-    widget.create_gui()
-    widget.resize(1400, 900)
-    widget.show()
-    sys.exit(app.exec())
 
 
