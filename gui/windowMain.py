@@ -11,13 +11,13 @@ from pyqtgraph import PlotWidget, mkPen
 import pyqtgraph as pg
 
 from color import Colors
-from controlPanel import ControlPanel
 from controller import Controller
 from errors import Error, ErrorMessage
 from settings import Settings
-from utils import is_max_points_exceeded, range_x, range_y
-from windowAbout import WindowAbout
-from windowSettings import WindowSettings
+from gui.controlPanel import ControlPanel
+from gui.utils import is_max_points_exceeded, range_x, range_y
+from gui.windowAbout import WindowAbout
+from gui.windowSettings import WindowSettings
 
 
 Line = namedtuple("PlotLine", "data expression")

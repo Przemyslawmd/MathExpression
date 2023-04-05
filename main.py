@@ -1,9 +1,8 @@
 
 import sys
-
 from PySide6.QtWidgets import QApplication
 
-from windowMain import MathExpression
+from gui.windowMain import MathExpression
 
 
 if __name__ == "__main__":
