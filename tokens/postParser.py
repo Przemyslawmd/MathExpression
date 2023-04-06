@@ -1,7 +1,7 @@
 
 from errors import Error, ErrorMessage
 from tokens.token import Token, TokenType
-from tokens.utils import TokenUtils
+from tokens.tokenGroup import TokenGroup
 
 left_multiplication_tokens = (
     TokenType.BRACKET_RIGHT,
@@ -68,7 +68,7 @@ def remove_negative_tokens(tokens):
                 tokens[index] = Token(TokenType.NUMBER, number * -1)
             elif token.type is TokenType.X:
                 tokens[index] = Token(TokenType.X_NEGATIVE)
-            elif token.type in [TokenType.BRACKET_LEFT, TokenType.ROOT, TokenType.LOG, TokenUtils.trigonometry]:
+            elif token.type in [TokenType.BRACKET_LEFT, TokenType.ROOT, TokenType.LOG, TokenGroup.trigonometry]:
                 tokens.insert(index, Token(TokenType.MULTIPLICATION))
                 tokens.insert(index, Token(TokenType.NUMBER, -1))
             else:

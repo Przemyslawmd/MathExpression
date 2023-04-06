@@ -1,7 +1,7 @@
 
 from errors import Error, ErrorMessage
 from tokens.token import TokenType
-from tokens.utils import TokenUtils
+from tokens.tokenGroup import TokenGroup
 
 
 def validate_brackets(tokens):
@@ -30,7 +30,7 @@ def validate_brackets(tokens):
 def validate_final(tokens):
     last_index = len(tokens) - 1
     tokens_allowed = (TokenType.X, TokenType.NUMBER, TokenType.BRACKET_LEFT)
-    tokens_forbidden = TokenUtils.basic_arithmetic + (TokenType.BRACKET_RIGHT,)
+    tokens_forbidden = TokenGroup.basic_arithmetic + (TokenType.BRACKET_RIGHT,)
     for index, token in enumerate(tokens):
         if token.type is TokenType.LOG:
             if index == last_index or tokens[index + 1].type not in tokens_allowed:
@@ -41,10 +41,10 @@ def validate_final(tokens):
         if token.type is TokenType.ROOT:
             if index == last_index or tokens[index + 1].type not in tokens_allowed:
                 raise Exception(ErrorMessage[Error.VALIDATOR_ROOT])
-        if token.type in TokenUtils.trigonometry:
+        if token.type in TokenGroup.trigonometry:
             if index == last_index or tokens[index + 1].type not in tokens_allowed:
                 raise Exception(ErrorMessage[Error.VALIDATOR_TRIGONOMETRY])
-        if token.type in TokenUtils.basic_arithmetic:
+        if token.type in TokenGroup.basic_arithmetic:
             if index == last_index or tokens[index + 1].type in tokens_forbidden:
                 raise Exception(ErrorMessage[Error.VALIDATOR_BASIC_ARITHMETIC])
         if token.type is TokenType.NUMBER:
