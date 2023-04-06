@@ -39,7 +39,6 @@ class MathExpression(QMainWindow):
 
         self.x_min = -360
         self.x_max = 360
-        self.ratio_buttons = None
 
 
     @Slot()
