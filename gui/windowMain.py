@@ -11,7 +11,7 @@ from pyqtgraph import PlotWidget, mkPen
 import pyqtgraph as pg
 
 from color import Colors
-from controller import Controller
+from controller import calculate_values
 from errors import Error, ErrorMessage
 from settings import Settings
 from gui.controlPanel import ControlPanel
@@ -28,7 +28,6 @@ class MathExpression(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
 
-        self.controller = Controller()
         self.panel = ControlPanel()
         self.settings = Settings()
         self.plot_widget = PlotWidget()
@@ -122,7 +121,7 @@ class MathExpression(QMainWindow):
             self.plot_widget.setYRange(y_min, y_max, padding=0)
 
         try:
-            y = self.controller.calculate_values(self.insert_expression.text(), x_min, x_max, precision)
+            y = calculate_values(self.insert_expression.text(), x_min, x_max, precision)
         except Exception as e:
             self.set_message(str(e))
             return
