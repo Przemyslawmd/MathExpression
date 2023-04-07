@@ -2,7 +2,7 @@
 from collections import deque
 
 from tokens.token import TokenType
-from tokens.utils import TokenUtils
+from tokens.tokenGroup import TokenGroup
 
 
 class Postfix:
@@ -13,7 +13,7 @@ class Postfix:
 
     def create_postfix(self, tokens):
         for token in tokens:
-            if token.type in TokenUtils.operators:
+            if token.type in TokenGroup.operators:
                 self.process_operator(token)
             elif token.type is TokenType.BRACKET_LEFT:
                 self.stack.append(token)
@@ -33,12 +33,12 @@ class Postfix:
             return
 
         if token.type in (TokenType.PLUS, TokenType.MINUS):
-            self.process_stack_operator(token, TokenUtils.operators)
+            self.process_stack_operator(token, TokenGroup.operators)
         elif token.type in (TokenType.MULTIPLICATION, TokenType.DIVISION):
-            tokens_to_move = [token for token in TokenUtils.operators if (token not in [TokenType.PLUS, TokenType.MINUS])]
+            tokens_to_move = [token for token in TokenGroup.operators if (token not in [TokenType.PLUS, TokenType.MINUS])]
             self.process_stack_operator(token, tokens_to_move)
-        elif token.type in TokenUtils.trigonometry or token.type is TokenType.LOG or token.type is TokenType.ROOT:
-            tokens_to_move = [token for token in TokenUtils.operators if (token not in TokenUtils.basic_arithmetic)]
+        elif token.type in TokenGroup.trigonometry or token.type is TokenType.LOG or token.type is TokenType.ROOT:
+            tokens_to_move = [token for token in TokenGroup.operators if (token not in TokenGroup.basic_arithmetic)]
             self.process_stack_operator(token, tokens_to_move)
         else:
             self.process_stack_operator(token, [TokenType.POWER])

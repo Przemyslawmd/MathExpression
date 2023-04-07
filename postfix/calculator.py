@@ -6,7 +6,7 @@ import math
 from numpy import power, arange
 
 from tokens.token import TokenType
-from tokens.utils import TokenUtils
+from tokens.tokenGroup import TokenGroup
 
 
 class Direction(Enum):
@@ -97,12 +97,12 @@ class Calculator:
                 for calculation in calculation_stack:
                     calculation.append(round(number, 4))
                     number -= x_precision
-            elif token.type in TokenUtils.basic_arithmetic or token.type is TokenType.POWER:
+            elif token.type in TokenGroup.basic_arithmetic or token.type is TokenType.POWER:
                 for calculation in calculation_stack:
                     num_1 = calculation.pop()
                     num_2 = calculation.pop()
                     calculation.append(self.actions[token.type](num_1, num_2))
-            elif token.type in TokenUtils.trigonometry:
+            elif token.type in TokenGroup.trigonometry:
                 for calculation in calculation_stack:
                     num = calculation.pop()
                     radian = math.radians(num)

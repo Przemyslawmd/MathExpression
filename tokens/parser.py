@@ -5,6 +5,28 @@ from tokens.token import Token, TokenType
 from tokens.validator import validate_final, validate_brackets
 
 
+one_char_tokens = {
+    '+': TokenType.PLUS,
+    '-': TokenType.MINUS,
+    '*': TokenType.MULTIPLICATION,
+    '/': TokenType.DIVISION,
+    'x': TokenType.X,
+    '^': TokenType.POWER,
+    '(': TokenType.BRACKET_LEFT,
+    ')': TokenType.BRACKET_RIGHT,
+    '<': TokenType.BRACKET_ANGLE_LEFT,
+    '>': TokenType.BRACKET_ANGLE_RIGHT
+}
+
+
+cosine = ['s', 'o', 'c']
+cotangent = ['g', 't', 'c']
+logarithm = ['g', 'o', 'l']
+root = ['t', 'r', 'q', 's']
+sine = ['n', 'i', 's']
+tangent = ['g', 't']
+
+
 class Parser:
 
     def __init__(self, expression):
@@ -12,26 +34,6 @@ class Parser:
         self.chars.reverse()
         self.initial_len = len(self.chars)
         self.tokens = []
-
-        self.one_char_tokens = {
-            '+': TokenType.PLUS,
-            '-': TokenType.MINUS,
-            '*': TokenType.MULTIPLICATION,
-            '/': TokenType.DIVISION,
-            'x': TokenType.X,
-            '^': TokenType.POWER,
-            '(': TokenType.BRACKET_LEFT,
-            ')': TokenType.BRACKET_RIGHT,
-            '<': TokenType.BRACKET_ANGLE_LEFT,
-            '>': TokenType.BRACKET_ANGLE_RIGHT
-        }
-
-        self.cosine = ['s', 'o', 'c']
-        self.cotangent = ['g', 't', 'c']
-        self.logarithm = ['g', 'o', 'l']
-        self.root = ['t', 'r', 'q', 's']
-        self.sine = ['n', 'i', 's']
-        self.tangent = ['g', 't']
 
 
     def add_number(self):
@@ -42,28 +44,28 @@ class Parser:
 
 
     def check_multi_char_token(self):
-        if len(self.chars) >= 2 and self.chars[-2:] == self.tangent:
+        if len(self.chars) >= 2 and self.chars[-2:] == tangent:
             self.tokens.append(Token(TokenType.TANGENT))
             del self.chars[-2:]
             return True
         if len(self.chars) >= 3:
-            if self.chars[-3:] == self.cosine:
+            if self.chars[-3:] == cosine:
                 self.tokens.append(Token(TokenType.COSINE))
                 del self.chars[-3:]
                 return True
-            if self.chars[-3:] == self.cotangent:
+            if self.chars[-3:] == cotangent:
                 self.tokens.append(Token(TokenType.COTANGENT))
                 del self.chars[-3:]
                 return True
-            if self.chars[-3:] == self.sine:
+            if self.chars[-3:] == sine:
                 self.tokens.append(Token(TokenType.SINE))
                 del self.chars[-3:]
                 return True
-            if self.chars[-3:] == self.logarithm:
+            if self.chars[-3:] == logarithm:
                 self.tokens.append(Token(TokenType.LOG, 10))
                 del self.chars[-3:]
                 return True
-        if len(self.chars) >= 4 and self.chars[-4:] == self.root:
+        if len(self.chars) >= 4 and self.chars[-4:] == root:
             self.tokens.append(Token(TokenType.ROOT, 2))
             del self.chars[-4:]
             return True
@@ -97,7 +99,7 @@ class Parser:
             if self.check_multi_char_token():
                 continue
             else:
-                token_symbol = self.one_char_tokens.get(current_char)
+                token_symbol = one_char_tokens.get(current_char)
                 if token_symbol is None:
                     raise Exception(ErrorMessage[Error.PARSER_SYMBOL] + f": {current_char}")
                 elif token_symbol is TokenType.MINUS:

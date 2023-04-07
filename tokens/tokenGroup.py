@@ -2,7 +2,7 @@
 from tokens.token import TokenType
 
 
-class TokenUtils:
+class TokenGroup:
 
     bracket = (TokenType.BRACKET_LEFT, TokenType.BRACKET_RIGHT)
 
