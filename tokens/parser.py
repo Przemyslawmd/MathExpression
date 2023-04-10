@@ -1,9 +1,11 @@
 
+from collections import deque
+
 from errors import Error, ErrorMessage
 from tokens.postParser import post_parse
 from tokens.token import Token, TokenType
 from tokens.validator import validate_final, validate_brackets
-from collections import deque
+
 
 one_char_tokens = {
     '+': TokenType.PLUS,
@@ -23,7 +25,6 @@ class Parser:
 
     def __init__(self, expression):
         self.char_stack = deque(char for char in reversed(expression))
-        self.initial_len = len(self.char_stack)
         self.tokens = []
 
 
@@ -32,9 +33,9 @@ class Parser:
             self.char_stack.pop()
 
 
-    def check_stack(self, *chars):
+    def check_stack(self, *chars_to_check):
         shift = -1
-        for char in chars:
+        for char in chars_to_check:
             if self.char_stack[shift] != char:
                 return False
             shift -= 1
@@ -49,7 +50,7 @@ class Parser:
 
 
     def check_multi_char_token(self, current_char):
-        if len(self.char_stack) >= 1 and self.check_stack('g'):
+        if len(self.char_stack) >= 1 and current_char == 't' and self.check_stack('g'):
             self.tokens.append(Token(TokenType.TANGENT))
             self.char_stack.pop()
             return True
@@ -106,8 +107,7 @@ class Parser:
                     raise Exception(ErrorMessage[Error.PARSER_SYMBOL] + f": {current_char}")
                 elif token_symbol is TokenType.MINUS:
                     if not self.check_negative():
-                        position = self.initial_len - len(self.char_stack)
-                        raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL] + f": position: {position}")
+                        raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
                 else:
                     self.tokens.append(Token(token_symbol))
         try:

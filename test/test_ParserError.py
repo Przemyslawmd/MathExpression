@@ -46,20 +46,20 @@ class TestParserError(TestCase):
         with self.assertRaises(Exception) as exc:
             Parser("5x * x-").parse()
         error = exc.exception
-        self.assertEqual(str(error), ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL] + ": position: 7")
+        self.assertEqual(str(error), ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
 
     def test_negative_3(self):
         with self.assertRaises(Exception) as exc:
             Parser("(5x + x)(5 + 3-)").parse()
         error = exc.exception
-        self.assertEqual(str(error), ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL] + ": position: 15")
+        self.assertEqual(str(error), ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
 
 
     def test_negative_4(self):
         with self.assertRaises(Exception) as exc:
             Parser("(5x + x)(5 + 3>-)").parse()
         error = exc.exception
-        self.assertEqual(str(error), ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL] + ": position: 16")
+        self.assertEqual(str(error), ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
 
 
     def test_angle_bracket_1(self):
