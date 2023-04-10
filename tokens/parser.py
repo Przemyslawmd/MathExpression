@@ -25,7 +25,7 @@ class Parser:
 
     def __init__(self, expression):
         self.char_stack = deque(char for char in reversed(expression))
-        self.tokens = []
+        self.tokens_stack = deque()
 
 
     def pop_elements(self, number):
@@ -46,33 +46,33 @@ class Parser:
         number = int(char, 16)
         while bool(self.char_stack) and self.char_stack[-1].isdigit():
             number = number * 10 + int(self.char_stack.pop(), 16)
-        self.tokens.append(Token(TokenType.NUMBER, number))
+        self.tokens_stack.append(Token(TokenType.NUMBER, number))
 
 
     def check_multi_char_token(self, current_char):
         if len(self.char_stack) >= 1 and current_char == 't' and self.check_stack('g'):
-            self.tokens.append(Token(TokenType.TANGENT))
+            self.tokens_stack.append(Token(TokenType.TANGENT))
             self.char_stack.pop()
             return True
         if len(self.char_stack) >= 2:
             if current_char == 'c' and self.check_stack('o', 's'):
-                self.tokens.append(Token(TokenType.COSINE))
+                self.tokens_stack.append(Token(TokenType.COSINE))
                 self.pop_elements(2)
                 return True
             if current_char == 'c' and self.check_stack('t', 'g'):
-                self.tokens.append(Token(TokenType.COTANGENT))
+                self.tokens_stack.append(Token(TokenType.COTANGENT))
                 self.pop_elements(2)
                 return True
             if current_char == 's' and self.check_stack('i', 'n'):
-                self.tokens.append(Token(TokenType.SINE))
+                self.tokens_stack.append(Token(TokenType.SINE))
                 self.pop_elements(2)
                 return True
             if current_char == 'l' and self.check_stack('o', 'g'):
-                self.tokens.append(Token(TokenType.LOG, 10))
+                self.tokens_stack.append(Token(TokenType.LOG, 10))
                 self.pop_elements(2)
                 return True
         if len(self.char_stack) >= 3 and current_char == 's' and self.check_stack('q', 'r', 't'):
-            self.tokens.append(Token(TokenType.ROOT, 2))
+            self.tokens_stack.append(Token(TokenType.ROOT, 2))
             self.pop_elements(3)
             return True
         else:
@@ -80,14 +80,14 @@ class Parser:
 
 
     def check_negative(self):
-        if len(self.tokens) == 0 or self.tokens[-1].type in [TokenType.BRACKET_LEFT,
-                                                             TokenType.MULTIPLICATION,
-                                                             TokenType.DIVISION,
-                                                             TokenType.PLUS]:
-            self.tokens.append(Token(TokenType.NEGATIVE))
+        if len(self.tokens_stack) == 0 or self.tokens_stack[-1].type in [TokenType.BRACKET_LEFT,
+                                                                         TokenType.MULTIPLICATION,
+                                                                         TokenType.DIVISION,
+                                                                         TokenType.PLUS]:
+            self.tokens_stack.append(Token(TokenType.NEGATIVE))
             return True
         elif bool(self.char_stack) and self.char_stack[-1] not in [')', '*', '/']:
-            self.tokens.append(Token(TokenType.MINUS))
+            self.tokens_stack.append(Token(TokenType.MINUS))
             return True
         return False
 
@@ -109,14 +109,15 @@ class Parser:
                     if not self.check_negative():
                         raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
                 else:
-                    self.tokens.append(Token(token_symbol))
+                    self.tokens_stack.append(Token(token_symbol))
+
+        tokens_list = list(self.tokens_stack)
         try:
-            validate_brackets(self.tokens)
-            post_parse(self.tokens)
-            validate_final(self.tokens)
+            validate_brackets(tokens_list)
+            post_parse(tokens_list)
+            validate_final(tokens_list)
         except Exception as e:
             raise Exception(e)
-
-        return self.tokens
+        return tokens_list
 
 
