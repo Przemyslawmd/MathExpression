@@ -1,4 +1,6 @@
 
+from collections import deque
+
 from errors import Error, ErrorMessage
 from tokens.postParser import post_parse
 from tokens.token import Token, TokenType
@@ -19,84 +21,85 @@ one_char_tokens = {
 }
 
 
-cosine = ['s', 'o', 'c']
-cotangent = ['g', 't', 'c']
-logarithm = ['g', 'o', 'l']
-root = ['t', 'r', 'q', 's']
-sine = ['n', 'i', 's']
-tangent = ['g', 't']
-
-
 class Parser:
 
     def __init__(self, expression):
-        self.chars = [char for char in expression]
-        self.chars.reverse()
-        self.initial_len = len(self.chars)
+        self.char_stack = deque(char for char in reversed(expression))
         self.tokens = []
 
 
-    def add_number(self):
-        number = int(self.chars.pop(), 16)
-        while self.chars and self.chars[-1].isdigit():
-            number = number * 10 + int(self.chars.pop(), 16)
+    def pop_elements(self, number):
+        for _ in range(number):
+            self.char_stack.pop()
+
+
+    def check_stack(self, *chars_to_check):
+        shift = -1
+        for char in chars_to_check:
+            if self.char_stack[shift] != char:
+                return False
+            shift -= 1
+        return True
+
+
+    def add_number(self, char):
+        number = int(char, 16)
+        while bool(self.char_stack) and self.char_stack[-1].isdigit():
+            number = number * 10 + int(self.char_stack.pop(), 16)
         self.tokens.append(Token(TokenType.NUMBER, number))
 
 
-    def check_multi_char_token(self):
-        if len(self.chars) >= 2 and self.chars[-2:] == tangent:
+    def check_multi_char_token(self, current_char):
+        if len(self.char_stack) >= 1 and current_char == 't' and self.check_stack('g'):
             self.tokens.append(Token(TokenType.TANGENT))
-            del self.chars[-2:]
+            self.char_stack.pop()
             return True
-        if len(self.chars) >= 3:
-            if self.chars[-3:] == cosine:
+        if len(self.char_stack) >= 2:
+            if current_char == 'c' and self.check_stack('o', 's'):
                 self.tokens.append(Token(TokenType.COSINE))
-                del self.chars[-3:]
+                self.pop_elements(2)
                 return True
-            if self.chars[-3:] == cotangent:
+            if current_char == 'c' and self.check_stack('t', 'g'):
                 self.tokens.append(Token(TokenType.COTANGENT))
-                del self.chars[-3:]
+                self.pop_elements(2)
                 return True
-            if self.chars[-3:] == sine:
+            if current_char == 's' and self.check_stack('i', 'n'):
                 self.tokens.append(Token(TokenType.SINE))
-                del self.chars[-3:]
+                self.pop_elements(2)
                 return True
-            if self.chars[-3:] == logarithm:
+            if current_char == 'l' and self.check_stack('o', 'g'):
                 self.tokens.append(Token(TokenType.LOG, 10))
-                del self.chars[-3:]
+                self.pop_elements(2)
                 return True
-        if len(self.chars) >= 4 and self.chars[-4:] == root:
+        if len(self.char_stack) >= 3 and current_char == 's' and self.check_stack('q', 'r', 't'):
             self.tokens.append(Token(TokenType.ROOT, 2))
-            del self.chars[-4:]
+            self.pop_elements(3)
             return True
         else:
             return False
 
 
     def check_negative(self):
-        del self.chars[-1]
         if len(self.tokens) == 0 or self.tokens[-1].type in [TokenType.BRACKET_LEFT,
                                                              TokenType.MULTIPLICATION,
                                                              TokenType.DIVISION,
                                                              TokenType.PLUS]:
             self.tokens.append(Token(TokenType.NEGATIVE))
-        elif not self.chars or self.chars[-1] in [')', '*', '/']:
-            return False
-        else:
+            return True
+        elif bool(self.char_stack) and self.char_stack[-1] not in [')', '*', '/']:
             self.tokens.append(Token(TokenType.MINUS))
-        return True
+            return True
+        return False
 
 
     def parse(self):
-        while self.chars:
-            current_char = self.chars[-1]
+        while bool(self.char_stack):
+            current_char = self.char_stack.pop()
             if current_char == ' ':
-                del self.chars[-1]
                 continue
-            if current_char.isdigit():
-                self.add_number()
-                continue
-            if self.check_multi_char_token():
+            elif current_char.isdigit():
+                self.add_number(current_char)
+            elif self.check_multi_char_token(current_char):
                 continue
             else:
                 token_symbol = one_char_tokens.get(current_char)
@@ -104,12 +107,9 @@ class Parser:
                     raise Exception(ErrorMessage[Error.PARSER_SYMBOL] + f": {current_char}")
                 elif token_symbol is TokenType.MINUS:
                     if not self.check_negative():
-                        position = self.initial_len - len(self.chars)
-                        raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL] + f": position: {position}")
+                        raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
                 else:
                     self.tokens.append(Token(token_symbol))
-                    del self.chars[-1]
-
         try:
             validate_brackets(self.tokens)
             post_parse(self.tokens)
