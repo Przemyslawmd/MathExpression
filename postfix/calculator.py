@@ -10,33 +10,30 @@ from tokens.tokenGroup import TokenGroup
 
 
 class Direction(Enum):
-
     CONST = 0
     DOWN = 1
     UP = 2
     NONE = 3
 
 
+actions = {
+    TokenType.DIVISION: lambda a, b: math.nan if round(a, 4) == 0.00 else b / a,
+    TokenType.MINUS: lambda a, b: b - a,
+    TokenType.MULTIPLICATION: lambda a, b: a * b,
+    TokenType.PLUS: lambda a, b: a + b,
+
+    TokenType.LOG: lambda a, b: math.log(a, b) if a > 0 else math.nan,
+    TokenType.POWER: lambda a, b: math.nan if (float(a).is_integer() is False and b < 0) else power(b, a),
+    TokenType.ROOT: lambda a, b: math.nan if a < 0 else (math.sqrt(a) if b == 2 else power(a, 1 / b)),
+
+    TokenType.COSINE: lambda a: math.cos(a),
+    TokenType.COTANGENT: lambda a: math.nan if round(math.sin(a), 4) == 0.00 else math.cos(a) / math.sin(a),
+    TokenType.SINE: lambda a: math.sin(a),
+    TokenType.TANGENT: lambda a: math.tan(a),
+}
+
+
 class Calculator:
-
-    def __init__(self):
-
-        self.actions = {
-            TokenType.DIVISION: lambda a, b: math.nan if round(a, 4) == 0.00 else b / a,
-            TokenType.MINUS: lambda a, b: b - a,
-            TokenType.MULTIPLICATION: lambda a, b: a * b,
-            TokenType.PLUS: lambda a, b: a + b,
-
-            TokenType.LOG: lambda a, b: math.log(a, b) if a > 0 else math.nan,
-            TokenType.POWER: lambda a, b: math.nan if (float(a).is_integer() is False and b < 0) else power(b, a),
-            TokenType.ROOT: lambda a, b: math.nan if a < 0 else (math.sqrt(a) if b == 2 else power(a, 1 / b)),
-
-            TokenType.COSINE: lambda a: math.cos(a),
-            TokenType.COTANGENT: lambda a: math.nan if round(math.sin(a), 4) == 0.00 else math.cos(a) / math.sin(a),
-            TokenType.SINE: lambda a: math.sin(a),
-            TokenType.TANGENT: lambda a: math.tan(a),
-        }
-
 
     @staticmethod
     def check_directions(numbers):
@@ -101,16 +98,16 @@ class Calculator:
                 for calculation in calculation_stack:
                     num_1 = calculation.pop()
                     num_2 = calculation.pop()
-                    calculation.append(self.actions[token.type](num_1, num_2))
+                    calculation.append(actions[token.type](num_1, num_2))
             elif token.type in TokenGroup.trigonometry:
                 for calculation in calculation_stack:
                     num = calculation.pop()
                     radian = math.radians(num)
-                    calculation.append(self.actions[token.type](radian))
+                    calculation.append(actions[token.type](radian))
             elif token.type is TokenType.LOG or TokenType.ROOT:
                 for calculation in calculation_stack:
                     num = calculation.pop()
-                    calculation.append(self.actions[token.type](num, token.data))
+                    calculation.append(actions[token.type](num, token.data))
 
         results = [round(x[0], 4) for x in calculation_stack]
 

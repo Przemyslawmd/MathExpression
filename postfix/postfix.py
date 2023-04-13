@@ -22,13 +22,13 @@ class Postfix:
             else:
                 self.postfix.append(token)
 
-        while len(self.stack) > 0:
+        while self.stack:
             self.postfix.append(self.stack.pop())
         return self.postfix
 
 
     def process_operator(self, token):
-        if len(self.stack) == 0:
+        if not self.stack:
             self.stack.append(token)
             return
 
@@ -45,11 +45,11 @@ class Postfix:
 
 
     def process_stack_operator(self, token, token_values):
-        current_stack = None if len(self.stack) == 0 else self.stack.pop()
-        while current_stack is not None and current_stack.type in token_values:
+        current_stack = None if not self.stack else self.stack.pop()
+        while current_stack and current_stack.type in token_values:
             self.postfix.append(current_stack)
-            current_stack = None if len(self.stack) == 0 else self.stack.pop()
-        if current_stack is not None:
+            current_stack = None if not self.stack else self.stack.pop()
+        if current_stack:
             self.stack.append(current_stack)
         self.stack.append(token)
 
