@@ -75,41 +75,32 @@ class Calculator:
         return discontinuity_points
 
 
-    def calculate(self, postfix_tokens, min_x, max_x, x_precision=1.0):
-        calculation_stack = deque()
-        for _ in arange(min_x, max_x + x_precision, x_precision):
-            calculation_stack.append(deque())
+    def calculate(self, postfix_tokens, min, max, precision=1.0):
+        data_stack = deque()
+        for _ in arange(min, max + precision, precision):
+            data_stack.append(deque())
 
         for token in postfix_tokens:
             if token.type is TokenType.NUMBER:
-                for calculation in calculation_stack:
-                    calculation.append(token.data)
-            elif token.type == TokenType.X:
-                number = min_x
-                for values in calculation_stack:
-                    values.append(round(number, 4))
-                    number += x_precision
+                [data.append(token.data) for data in data_stack]
+            elif token.type is TokenType.X:
+                [data.append(round(x, 4)) for data, x in zip(data_stack, arange(min, max + precision, precision))]
             elif token.type is TokenType.X_NEGATIVE:
-                number = min_x * -1.0
-                for calculation in calculation_stack:
-                    calculation.append(round(number, 4))
-                    number -= x_precision
-            elif token.type in TokenGroup.basic_arithmetic or token.type is TokenType.POWER:
-                for calculation in calculation_stack:
-                    num_1 = calculation.pop()
-                    num_2 = calculation.pop()
-                    calculation.append(actions[token.type](num_1, num_2))
+                [data.append(round(x * -1, 4)) for data, x in zip(data_stack, arange(min, max + precision, precision))]
+            elif token.type in TokenGroup.two_operands:
+                for data in data_stack:
+                    num_1 = data.pop()
+                    num_2 = data.pop()
+                    data.append(actions[token.type](num_1, num_2))
             elif token.type in TokenGroup.trigonometry:
-                for calculation in calculation_stack:
-                    num = calculation.pop()
-                    radian = math.radians(num)
-                    calculation.append(actions[token.type](radian))
+                for data in data_stack:
+                    radian = math.radians(data.pop())
+                    data.append(actions[token.type](radian))
             elif token.type is TokenType.LOG or TokenType.ROOT:
-                for calculation in calculation_stack:
-                    num = calculation.pop()
-                    calculation.append(actions[token.type](num, token.data))
-
-        results = [round(x[0], 4) for x in calculation_stack]
+                for data in data_stack:
+                    num = data.pop()
+                    data.append(actions[token.type](num, token.data))
+        results = [round(x[0], 4) for x in data_stack]
 
         for token in postfix_tokens:
             discontinuity_points = []
