@@ -17,8 +17,13 @@ class TestPerformance(TestCase):
     def test_performance(self):
         self.performance_1(5)
         self.performance_2(5)
-        [print(f"{r.expression}; action: {r.action}; range: {r.min}:{r.max}; precision: {r.precision}; time: {r.time}")
-         for r in self.results]
+        self.performance_3(5)
+        self.performance_4(5)
+        [print(f"{r.expression:<64} "
+               f"action: {r.action:<14} "
+               f"range: {r.min}:{r.max:<5} "
+               f"precision: {r.precision:<7} "
+               f"time: {r.time}") for r in self.results]
 
 
     def performance_1(self, count):
@@ -41,5 +46,27 @@ class TestPerformance(TestCase):
             calculate(postfix, -500, 500, 0.05)
             end = default_timer()
             self.results.append(Result(expression, "calculation", -500, 500, 0.05, end - start))
+
+
+    def performance_3(self, count):
+        expression = "x^4 + 2x^2 + (x + 3)^3"
+        tokens = Parser(expression).parse()
+        postfix = Postfix().create_postfix(tokens)
+        for _ in range(count):
+            start = default_timer()
+            calculate(postfix, -500, 500, 0.01)
+            end = default_timer()
+            self.results.append(Result(expression, "calculation", -500, 500, 0.01, end - start))
+
+
+    def performance_4(self, count):
+        expression = "(x + sinx)^2 + (cosx - 100)(sinx + 200) + (sinx + cosx) / 100"
+        tokens = Parser(expression).parse()
+        postfix = Postfix().create_postfix(tokens)
+        for _ in range(count):
+            start = default_timer()
+            calculate(postfix, -500, 500, 0.01)
+            end = default_timer()
+            self.results.append(Result(expression, "calculation", -500, 500, 0.01, end - start))
 
 
