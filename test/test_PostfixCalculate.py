@@ -1,7 +1,7 @@
 
 from unittest import TestCase
 
-from postfix.calculator import Calculator
+from postfix.calculator import calculate
 from postfix.postfix import Postfix
 from tokens.parser import Parser
 
@@ -11,7 +11,7 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_1(self):
         tokens = Parser("3 + x * 10 + x").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 2, 3)
+        result = calculate(postfix, 2, 3)
         assert result[0] == 25
         assert result[1] == 36
 
@@ -19,7 +19,7 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_2(self):
         tokens = Parser("(3 + x) * (10 + x)").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 5, 6)
+        result = calculate(postfix, 5, 6)
         assert result[0] == 120
         assert result[1] == 144
 
@@ -27,7 +27,7 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_3(self):
         tokens = Parser("2 * (3 + x) * 4").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 2, 5)
+        result = calculate(postfix, 2, 5)
         assert result[0] == 40
         assert result[1] == 48
         assert result[2] == 56
@@ -37,7 +37,7 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_4(self):
         tokens = Parser("(4x + x3)2x").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 0, 5)
+        result = calculate(postfix, 0, 5)
         assert result[0] == 0
         assert result[1] == 14
         assert result[2] == 56
@@ -49,7 +49,7 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_5(self):
         tokens = Parser("(2 - x3)4").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 10, 12)
+        result = calculate(postfix, 10, 12)
         assert result[0] == -112
         assert result[1] == -124
         assert result[2] == -136
@@ -58,7 +58,7 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_6(self):
         tokens = Parser("(-x - 3)4").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 5, 7)
+        result = calculate(postfix, 5, 7)
         assert result[0] == -32
         assert result[1] == -36
         assert result[2] == -40
@@ -67,7 +67,7 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_7(self):
         tokens = Parser("(x +3)(-5)").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 100, 103)
+        result = calculate(postfix, 100, 103)
         assert result[0] == -515
         assert result[1] == -520
         assert result[2] == -525
@@ -77,7 +77,7 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_8(self):
         tokens = Parser("(-x -2)(-7)").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, -2, 2)
+        result = calculate(postfix, -2, 2)
         assert result[0] == 0
         assert result[1] == 7
         assert result[2] == 14
@@ -88,14 +88,14 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_9(self):
         tokens = Parser("sinx + x").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 30, 30)
+        result = calculate(postfix, 30, 30)
         assert result[0] == 30.5
 
 
     def test_postfix_calculate_10(self):
         tokens = Parser("xcos10").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 10, 14)
+        result = calculate(postfix, 10, 14)
         assert result[0] == 9.8481
         assert result[1] == 10.8329
         assert result[2] == 11.8177
@@ -106,7 +106,7 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_11(self):
         tokens = Parser("10tgx - xctgx").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 100, 104)
+        result = calculate(postfix, 100, 104)
         assert result[0] == -39.0801
         assert result[1] == -31.8131
         assert result[2] == -25.3655
@@ -117,7 +117,7 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_12(self):
         tokens = Parser("sqrtx + 10").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 16, 20)
+        result = calculate(postfix, 16, 20)
         assert result[0] == 14.0
         assert result[1] == 14.1231
         assert result[2] == 14.2426
@@ -128,7 +128,7 @@ class TestPostfixCalculate(TestCase):
     def test_postfix_calculate_13(self):
         tokens = Parser("x + 2sqrt4").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = Calculator().calculate(postfix, 10, 15)
+        result = calculate(postfix, 10, 15)
         assert result[0] == 14
         assert result[1] == 15
         assert result[2] == 16
