@@ -75,9 +75,9 @@ class Calculator:
         return discontinuity_points
 
 
-    def calculate(self, postfix_tokens, min_x, max_x, x_precision=1.0):
+    def calculate(self, postfix_tokens, min, max, precision=1.0):
         calculation_stack = deque()
-        for _ in arange(min_x, max_x + x_precision, x_precision):
+        for _ in arange(min, max + precision, precision):
             calculation_stack.append(deque())
 
         for token in postfix_tokens:
@@ -85,15 +85,15 @@ class Calculator:
                 for calculation in calculation_stack:
                     calculation.append(token.data)
             elif token.type == TokenType.X:
-                number = min_x
-                for values in calculation_stack:
-                    values.append(round(number, 4))
-                    number += x_precision
-            elif token.type is TokenType.X_NEGATIVE:
-                number = min_x * -1.0
+                number = min
                 for calculation in calculation_stack:
-                    calculation.append(round(number, 4))
-                    number -= x_precision
+                    calculation.append(number)
+                    number += precision
+            elif token.type is TokenType.X_NEGATIVE:
+                number = min * -1.0
+                for calculation in calculation_stack:
+                    calculation.append(number)
+                    number -= precision
             elif token.type in TokenGroup.basic_arithmetic or token.type is TokenType.POWER:
                 for calculation in calculation_stack:
                     num_1 = calculation.pop()
