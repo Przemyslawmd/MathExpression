@@ -15,10 +15,14 @@ class TestPerformance(TestCase):
     results = []
 
     def test_performance(self):
-        self.performance_1(5)
-        self.performance_2(5)
-        self.performance_3(5)
-        self.performance_4(5)
+        self.calculation_1(1)
+        self.calculation_2(1)
+        self.calculation_3(1)
+        self.calculation_4(1)
+        self.postfix_parser_1(5)
+        self.postfix_parser_2(5)
+        self.postfix_parser_3(5)
+        self.postfix_parser_4(5)
         [print(f"{r.expression:<64} "
                f"action: {r.action:<14} "
                f"range: {r.min}:{r.max:<5} "
@@ -26,7 +30,7 @@ class TestPerformance(TestCase):
                f"time: {r.time}") for r in self.results]
 
 
-    def performance_1(self, count):
+    def calculation_1(self, count):
         expression = "x^2 + 2(sinx + cosx)"
         tokens = Parser(expression).parse()
         postfix = Postfix().create_postfix(tokens)
@@ -37,7 +41,7 @@ class TestPerformance(TestCase):
             self.results.append(Result(expression, "calculation", -360, 360, 0.01, end - start))
 
 
-    def performance_2(self, count):
+    def calculation_2(self, count):
         expression = "sqrtx + logx - 2(sinx + 3)^2"
         tokens = Parser(expression).parse()
         postfix = Postfix().create_postfix(tokens)
@@ -48,7 +52,7 @@ class TestPerformance(TestCase):
             self.results.append(Result(expression, "calculation", -500, 500, 0.05, end - start))
 
 
-    def performance_3(self, count):
+    def calculation_3(self, count):
         expression = "x^4 + 2x^2 + (x + 3)^3"
         tokens = Parser(expression).parse()
         postfix = Postfix().create_postfix(tokens)
@@ -59,7 +63,7 @@ class TestPerformance(TestCase):
             self.results.append(Result(expression, "calculation", -500, 500, 0.01, end - start))
 
 
-    def performance_4(self, count):
+    def calculation_4(self, count):
         expression = "(x + sinx)^2 + (cosx - 100)(sinx + 200) + (sinx + cosx) / 100"
         tokens = Parser(expression).parse()
         postfix = Postfix().create_postfix(tokens)
@@ -68,5 +72,41 @@ class TestPerformance(TestCase):
             calculate(postfix, -500, 500, 0.01)
             end = default_timer()
             self.results.append(Result(expression, "calculation", -500, 500, 0.01, end - start))
+
+
+    def postfix_parser_1(self, count):
+        for _ in range(count):
+            expression = "x^2 + 2(sinx + cosx)"
+            start = default_timer()
+            Parser(expression).parse()
+            end = default_timer()
+            self.results.append(Result(expression, "parser", 0, 0, 0, end - start))
+
+
+    def postfix_parser_2(self, count):
+        for _ in range(count):
+            expression = "sqrtx + logx - 2(sinx + 3)^2"
+            start = default_timer()
+            Parser(expression).parse()
+            end = default_timer()
+            self.results.append(Result(expression, "parser", 0, 0, 0, end - start))
+
+
+    def postfix_parser_3(self, count):
+        for _ in range(count):
+            expression = "x^4 + 2x^2 + (x + 3)^3"
+            start = default_timer()
+            Parser(expression).parse()
+            end = default_timer()
+            self.results.append(Result(expression, "parser", 0, 0, 0, end - start))
+
+
+    def postfix_parser_4(self, count):
+        for _ in range(count):
+            expression = "(x + sinx)^2 + (cosx - 100)(sinx + 200) + (sinx + cosx) / 100"
+            start = default_timer()
+            Parser(expression).parse()
+            end = default_timer()
+            self.results.append(Result(expression, "parser", 0, 0, 0, end - start))
 
 

@@ -62,9 +62,7 @@ def is_discontinuity(directions, numbers, index):
 def check_continuity(numbers):
     discontinuity_points = []
     directions = check_directions(numbers)
-    for index, direction in enumerate(directions):
-        if index == 0:
-            continue
+    for index, direction in enumerate(directions[1:]):
         if direction != directions[index - 1]:
             if is_discontinuity(directions, numbers, index):
                 discontinuity_points.append(index)
@@ -100,13 +98,10 @@ def calculate(tokens, min_x, max_x, precision=1.0):
 
     results = [round(x[0], 4) for x in calculation_stacks]
 
-    for token in tokens:
-        discontinuity_points = []
-        if token.type is TokenType.DIVISION:
-            discontinuity_points = check_continuity(results)
-            break
-    for point in discontinuity_points:
-        results[point] = nan
+    if [token for token in tokens if token.type in (TokenType.DIVISION, TokenType.TANGENT)]:
+        discontinuity_points = check_continuity(results)
+        for point in discontinuity_points:
+            results[point] = nan
 
     return results
 
