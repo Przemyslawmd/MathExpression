@@ -38,8 +38,6 @@ def check_directions(numbers):
     for index, number in enumerate(numbers):
         if index == 0:
             continue
-        if isnan(number):
-            directions[index] = Direction.NONE
         elif number > numbers[index - 1]:
             directions[index] = Direction.UP
         elif number < numbers[index - 1]:
@@ -50,19 +48,21 @@ def check_directions(numbers):
 
 
 def is_discontinuity(directions, numbers, index):
-    if directions[index - 1] == Direction.DOWN and directions[index] == Direction.UP:
-        if directions[index + 1] == Direction.DOWN and numbers[index + 1] > numbers[index - 1]:
-            return True
-    if directions[index - 1] == Direction.UP and directions[index] == Direction.DOWN:
-        if directions[index + 1] == Direction.UP and numbers[index + 1] < numbers[index - 1]:
-            return True
+    direction_prev = directions[index - 1]
+    direction_curr = directions[index]
+    number_prev = numbers[index - 1]
+    number_curr = numbers[index]
+    if all((direction_prev == Direction.UP, direction_curr == Direction.DOWN, number_prev > 0, number_curr < 0)):
+        return True
+    if all((direction_prev == Direction.DOWN, direction_curr == Direction.UP, number_prev < 0, number_curr > 0)):
+        return True
     return False
 
 
 def check_continuity(numbers):
     discontinuity_points = []
     directions = check_directions(numbers)
-    for index, direction in enumerate(directions[1:]):
+    for index, direction in enumerate(directions):
         if direction != directions[index - 1]:
             if is_discontinuity(directions, numbers, index):
                 discontinuity_points.append(index)
