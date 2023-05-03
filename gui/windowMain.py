@@ -84,6 +84,7 @@ class MathExpression(QMainWindow):
         slider_value = self.panel.ratio_slider.value()
         ratio = slider_value / 10 if slider_value <= 10 else slider_value - 10
         self.plot_widget.setXRange(self.x_min * ratio, self.x_max * ratio)
+        self.panel.ratio_label.setText("1" if ratio == 1.0 else str(ratio))
 
 
     def set_message(self, message):

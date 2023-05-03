@@ -1,8 +1,6 @@
 
 from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QHBoxLayout
-from PySide6.QtWidgets import QLabel, QComboBox
-from PySide6.QtWidgets import QPushButton, QLineEdit, QSlider
+from PySide6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QSlider
 
 from color import Colors
 
@@ -45,6 +43,7 @@ class ControlPanel:
         self.box_pen_colors = QComboBox()
         self.current_pen_color = (0, 255, 128)
         self.ratio_slider = QSlider()
+        self.ratio_label = QLabel()
 
 
     def on_box_pen_colors_changed(self, color_text):
@@ -71,16 +70,23 @@ class ControlPanel:
 
         layout_ratio = QHBoxLayout()
         layout_ratio.setSpacing(8)
-        label = QLabel("X : Y Ratio")
+        label = QLabel("Y - X Ratio")
         label.setFixedSize(60, 10)
-        layout_ratio.addWidget(label)
 
-        self.ratio_slider.setMinimum(0)
+        self.ratio_slider.setMinimum(1)
         self.ratio_slider.setSingleStep(1)
-        self.ratio_slider.setMaximum(21)
+        self.ratio_slider.setMaximum(20)
         self.ratio_slider.setOrientation(Qt.Horizontal)
         self.ratio_slider.setValue(10)
+
+        self.ratio_label.setText("1")
+
+        button = create_button("Default", 100, lambda: self.ratio_slider.setValue(10))
+
+        layout_ratio.addWidget(label)
         layout_ratio.addWidget(self.ratio_slider)
+        layout_ratio.addWidget(self.ratio_label)
+        layout_ratio.addWidget(button)
 
         layout.addLayout(layout_ratio, 0, 8)
 
@@ -101,12 +107,12 @@ class ControlPanel:
         widget_with_label = create_layout_for_widget_and_label(self.box_pen_colors, 100, "Line Color", 65)
         layout.addLayout(widget_with_label, 1, 6)
 
-        widget_with_label = create_layout_for_widget_and_label(self.coordinates, 415, "Coordinate", 70, Qt.AlignLeft)
+        widget_with_label = create_layout_for_widget_and_label(self.coordinates, 420, "Coordinate", 70, Qt.AlignLeft)
         widget_with_label.setAlignment(Qt.AlignLeft)
         layout.addLayout(widget_with_label, 1, 8)
 
 
     def connect_slider(self, func):
-        self.ratio_slider.sliderMoved.connect(func)
+        self.ratio_slider.valueChanged.connect(func)
 
 
