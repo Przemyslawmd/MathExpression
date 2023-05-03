@@ -27,7 +27,6 @@ def create_layout_for_widget_and_label(widget, width, text, text_width, alignmen
     layout.addWidget(label)
     layout.setSpacing(5)
     layout.addWidget(widget)
-    layout.addSpacing(10)
     return layout
 
 
@@ -44,6 +43,9 @@ class ControlPanel:
         self.current_pen_color = (0, 255, 128)
         self.ratio_slider = QSlider()
         self.ratio_label = QLabel()
+        self.ratio_values = (
+            0.1, 0.11, 0.125, 0.15, 0.2, 0.25, 0.33, 0.5, 0.65, 0.75, 0.85, 1, 1.15, 1.33, 1.5, 2, 3, 4, 5, 7, 8, 9, 10
+        )
 
 
     def on_box_pen_colors_changed(self, color_text):
@@ -70,18 +72,18 @@ class ControlPanel:
 
         layout_ratio = QHBoxLayout()
         layout_ratio.setSpacing(8)
-        label = QLabel("Y - X Ratio")
+        label = QLabel("Y : X Ratio")
         label.setFixedSize(60, 10)
 
-        self.ratio_slider.setMinimum(1)
+        self.ratio_slider.setMinimum(0)
+        self.ratio_slider.setMaximum(22)
         self.ratio_slider.setSingleStep(1)
-        self.ratio_slider.setMaximum(20)
         self.ratio_slider.setOrientation(Qt.Horizontal)
-        self.ratio_slider.setValue(10)
+        self.ratio_slider.setValue(11)
+        ratio = self.ratio_values[self.ratio_slider.value()]
+        self.ratio_label.setText(str(ratio))
 
-        self.ratio_label.setText("1")
-
-        button = create_button("Default", 100, lambda: self.ratio_slider.setValue(10))
+        button = create_button("Default", 80, lambda: self.ratio_slider.setValue(11))
 
         layout_ratio.addWidget(label)
         layout_ratio.addWidget(self.ratio_slider)
@@ -107,7 +109,7 @@ class ControlPanel:
         widget_with_label = create_layout_for_widget_and_label(self.box_pen_colors, 100, "Line Color", 65)
         layout.addLayout(widget_with_label, 1, 6)
 
-        widget_with_label = create_layout_for_widget_and_label(self.coordinates, 420, "Coordinate", 70, Qt.AlignLeft)
+        widget_with_label = create_layout_for_widget_and_label(self.coordinates, 420, "Coordinate", 70, Qt.AlignRight)
         widget_with_label.setAlignment(Qt.AlignLeft)
         layout.addLayout(widget_with_label, 1, 8)
 

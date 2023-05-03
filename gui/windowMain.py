@@ -81,10 +81,10 @@ class MathExpression(QMainWindow):
 
     @Slot()
     def change_ratio(self):
-        slider_value = self.panel.ratio_slider.value()
-        ratio = slider_value / 10 if slider_value <= 10 else slider_value - 10
+        slider_index = self.panel.ratio_slider.value()
+        ratio = self.panel.ratio_values[slider_index]
         self.plot_widget.setXRange(self.x_min * ratio, self.x_max * ratio)
-        self.panel.ratio_label.setText("1" if ratio == 1.0 else str(ratio))
+        self.panel.ratio_label.setText(str(ratio))
 
 
     def set_message(self, message):
@@ -158,8 +158,8 @@ class MathExpression(QMainWindow):
 
         lay_grid = QGridLayout()
         self.panel.create_first_row(lay_grid, lambda: self.draw(), lambda: self.append(), self.x_min, self.x_max)
-
         self.panel.create_second_row(lay_grid, lambda: self.clear_insert_area(), lambda: self.clear_plot_area())
+
         self.panel.connect_slider(self.change_ratio)
 
         lay_grid.setRowMinimumHeight(0, 40)
