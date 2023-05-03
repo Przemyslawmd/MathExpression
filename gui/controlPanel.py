@@ -2,7 +2,7 @@
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QHBoxLayout
 from PySide6.QtWidgets import QLabel, QComboBox
-from PySide6.QtWidgets import QPushButton, QLineEdit
+from PySide6.QtWidgets import QPushButton, QLineEdit, QSlider
 
 from color import Colors
 
@@ -44,7 +44,7 @@ class ControlPanel:
         self.pen_width = QComboBox()
         self.box_pen_colors = QComboBox()
         self.current_pen_color = (0, 255, 128)
-        self.ratio_buttons = []
+        self.ratio_slider = QSlider()
 
 
     def on_box_pen_colors_changed(self, color_text):
@@ -74,15 +74,14 @@ class ControlPanel:
         label = QLabel("X : Y Ratio")
         label.setFixedSize(60, 10)
         layout_ratio.addWidget(label)
-        self.ratio_buttons = (create_button("8/1", 50),
-                              create_button("4/1", 50),
-                              create_button("2/1", 50),
-                              create_button("1/1", 50),
-                              create_button("1/2", 50),
-                              create_button("1/4", 50),
-                              create_button("1/8", 50))
-        [layout_ratio.addWidget(button) for button in self.ratio_buttons]
-        self.ratio_buttons[3].setStyleSheet("background-color : #b3b3b3")
+
+        self.ratio_slider.setMinimum(0)
+        self.ratio_slider.setSingleStep(1)
+        self.ratio_slider.setMaximum(21)
+        self.ratio_slider.setOrientation(Qt.Horizontal)
+        self.ratio_slider.setValue(10)
+        layout_ratio.addWidget(self.ratio_slider)
+
         layout.addLayout(layout_ratio, 0, 8)
 
 
@@ -107,7 +106,7 @@ class ControlPanel:
         layout.addLayout(widget_with_label, 1, 8)
 
 
-    def connect_ratio_button(self, index, func):
-        self.ratio_buttons[index].clicked.connect(func)
+    def connect_slider(self, func):
+        self.ratio_slider.sliderMoved.connect(func)
 
 

@@ -80,10 +80,10 @@ class MathExpression(QMainWindow):
 
 
     @Slot()
-    def change_ratio(self, ratio, index):
+    def change_ratio(self):
+        slider_value = self.panel.ratio_slider.value()
+        ratio = slider_value / 10 if slider_value <= 10 else slider_value - 10
         self.plot_widget.setXRange(self.x_min * ratio, self.x_max * ratio)
-        [x.setStyleSheet("") for x in self.panel.ratio_buttons]
-        self.panel.ratio_buttons[index].setStyleSheet("background-color : #b3b3b3")
 
 
     def set_message(self, message):
@@ -157,15 +157,10 @@ class MathExpression(QMainWindow):
 
         lay_grid = QGridLayout()
         self.panel.create_first_row(lay_grid, lambda: self.draw(), lambda: self.append(), self.x_min, self.x_max)
-        self.panel.connect_ratio_button(0, lambda: self.change_ratio(0.125, 0))
-        self.panel.connect_ratio_button(1, lambda: self.change_ratio(0.25, 1))
-        self.panel.connect_ratio_button(2, lambda: self.change_ratio(0.5, 2))
-        self.panel.connect_ratio_button(3, lambda: self.change_ratio(1, 3))
-        self.panel.connect_ratio_button(4, lambda: self.change_ratio(2, 4))
-        self.panel.connect_ratio_button(5, lambda: self.change_ratio(4, 5))
-        self.panel.connect_ratio_button(6, lambda: self.change_ratio(8, 6))
 
         self.panel.create_second_row(lay_grid, lambda: self.clear_insert_area(), lambda: self.clear_plot_area())
+        self.panel.connect_slider(self.change_ratio)
+
         lay_grid.setRowMinimumHeight(0, 40)
         lay_grid.setRowMinimumHeight(1, 40)
         lay_grid.setColumnStretch(2, 25)
