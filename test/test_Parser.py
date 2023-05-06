@@ -1,6 +1,4 @@
 
-from collections import namedtuple
-
 from unittest import TestCase
 
 from tokens.parser import Parser

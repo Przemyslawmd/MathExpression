@@ -1,11 +1,8 @@
 
-
 from collections import namedtuple
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QWidget, QMainWindow, QToolBar
-from PySide6.QtWidgets import QLineEdit, QTextEdit
-from PySide6.QtWidgets import QVBoxLayout, QGridLayout
+from PySide6.QtWidgets import QGridLayout, QMainWindow, QLineEdit, QTextEdit, QToolBar, QVBoxLayout, QWidget
 from numpy import arange
 from pyqtgraph import PlotWidget, mkPen
 import pyqtgraph as pg
@@ -36,7 +33,6 @@ class MathExpression(QMainWindow):
         self.plot_lines = []
         self.setWindowTitle(' ')
         self.legend = pg.LegendItem((50, 100), offset=(50, 20))
-
         self.x_min = -360
         self.x_max = 360
 
@@ -87,7 +83,7 @@ class MathExpression(QMainWindow):
         self.panel.ratio_label.setText(str(ratio))
 
 
-    def set_message(self, message):
+    def set_message(self, message: str):
         self.area_messages.clear()
         self.area_messages.setText(message)
 
@@ -96,6 +92,14 @@ class MathExpression(QMainWindow):
         x = round(self.plot_widget.plotItem.vb.mapSceneToView(evt).x(), 3)
         y = round(self.plot_widget.plotItem.vb.mapSceneToView(evt).y(), 3)
         self.panel.coordinates.setText(f"  X: {str(x)}  ;  Y: {str(y)} ")
+
+
+    def add_graph_label(self):
+        if self.settings.graph_label is False:
+            return
+        self.legend.clear()
+        self.legend.setParentItem(self.plot_widget.plotItem)
+        [self.legend.addItem(plot.data, plot.expression) for plot in self.plot_lines]
 
 
     def create_graph(self):
@@ -129,15 +133,11 @@ class MathExpression(QMainWindow):
         x = arange(x_min, x_max + precision, precision)
         line_width = float(self.panel.pen_width.currentText())
         line_color = self.panel.current_pen_color
-        plot = self.plot_widget.plot(x, y, pen=mkPen(line_color, width=line_width), symbol='x',
-                                     symbolPen=None, symbolBrush=2.5, connect="finite")
+        plot_pen = mkPen(line_color, width=line_width)
+        plot = self.plot_widget.plot(x, y, pen=plot_pen, symbol='x', symbolPen=None, symbolBrush=2.5, connect="finite")
         line = Line(plot, self.insert_expression.text())
         self.plot_lines.append(line)
-
-        if self.settings.graph_label:
-            self.legend.clear()
-            self.legend.setParentItem(self.plot_widget.plotItem)
-            [self.legend.addItem(plot.data, plot.expression) for plot in self.plot_lines]
+        self.add_graph_label()
         self.area_messages.clear()
 
 
