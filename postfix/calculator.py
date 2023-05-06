@@ -72,15 +72,19 @@ def check_continuity(numbers):
 def calculate(tokens, min_x, max_x, precision=1.0):
     calculation_stacks = []
     x_values = arange(min_x, max_x + precision, precision)
-    [calculation_stacks.append(deque()) for _ in x_values]
+    for _ in x_values:
+        calculation_stacks.append(deque())
 
     for token in tokens:
         if token.type is TokenType.NUMBER:
-            [calc.append(token.data) for calc in calculation_stacks]
+            for calc in calculation_stacks:
+                calc.append(token.data)
         elif token.type is TokenType.X:
-            [calculation_stacks[i].append(x) for i, x in enumerate(x_values)]
+            for calc, x in zip(calculation_stacks, x_values):
+                calc.append(x)
         elif token.type is TokenType.X_NEGATIVE:
-            [calculation_stacks[i].append(x * -1.0) for i, x in enumerate(x_values)]
+            for calc, x in zip(calculation_stacks, x_values):
+                calc.append(x * -1.0)
         elif token.type in TokenGroup.basic_arithmetic or token.type is TokenType.POWER:
             for calc in calculation_stacks:
                 num_1 = calc.pop()
