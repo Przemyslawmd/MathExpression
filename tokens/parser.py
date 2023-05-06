@@ -86,7 +86,7 @@ class Parser:
                                                                          TokenType.PLUS]:
             self.tokens_stack.append(Token(TokenType.NEGATIVE))
             return True
-        elif bool(self.char_stack) and self.char_stack[-1] not in [')', '*', '/']:
+        if bool(self.char_stack) and self.char_stack[-1] not in [')', '*', '/']:
             self.tokens_stack.append(Token(TokenType.MINUS))
             return True
         return False
@@ -105,7 +105,7 @@ class Parser:
                 token_symbol = one_char_tokens.get(current_char)
                 if token_symbol is None:
                     raise Exception(ErrorMessage[Error.PARSER_SYMBOL] + f": {current_char}")
-                elif token_symbol is TokenType.MINUS:
+                if token_symbol is TokenType.MINUS:
                     if not self.check_negative():
                         raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
                 else:
