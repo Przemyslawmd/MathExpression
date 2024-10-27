@@ -76,11 +76,10 @@ class Parser:
             self.tokens_stack.append(Token(TokenType.ROOT, 2))
             self.pop_elements(3)
             return True
-        else:
-            return False
+        return False
 
 
-    def check_negative(self):
+    def check_minus(self):
         if len(self.tokens_stack) == 0 or self.tokens_stack[-1].type in [TokenType.BRACKET_LEFT,
                                                                          TokenType.MULTIPLICATION,
                                                                          TokenType.DIVISION,
@@ -108,7 +107,7 @@ class Parser:
                     ErrorStorage.putError(ErrorMessage[Error.PARSER_SYMBOL] + f": {current_char}")
                     return None
                 if token_symbol is TokenType.MINUS:
-                    if not self.check_negative():
+                    if not self.check_minus():
                         ErrorStorage.putError(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
                         return None
                 else:

@@ -23,13 +23,12 @@ right_multiplication = (
 
 
 def add_multiplication_tokens(tokens):
-    indices_to_add_multiplication = []
+    indices = []
     for index, token in enumerate(tokens[:-1]):
-        if token.type in left_multiplication:
-            if tokens[index + 1].type in right_multiplication:
-                indices_to_add_multiplication.append(index + 1)
+        if token.type in left_multiplication and tokens[index + 1].type in right_multiplication:
+            indices.append(index + 1)
     index_shift = 0
-    for index in indices_to_add_multiplication:
+    for index in indices:
         tokens.insert(index + index_shift, Token(TokenType.MULTIPLICATION))
         index_shift += 1
 
@@ -56,16 +55,15 @@ def remove_angle_brackets(tokens) -> bool:
     return True
 
 
-def remove_negative_tokens(tokens):
-    is_token_negative = False
+def remove_negative_tokens(tokens) -> bool:
+    is_negative = False
     for index, token in enumerate(tokens):
         if token.type is TokenType.NEGATIVE:
-            is_token_negative = True
+            is_negative = True
             continue
-        if is_token_negative:
+        if is_negative:
             if token.type is TokenType.NUMBER:
-                number = token.data
-                tokens[index] = Token(TokenType.NUMBER, number * -1)
+                tokens[index].data *= -1
             elif token.type is TokenType.X:
                 tokens[index] = Token(TokenType.X_NEGATIVE)
             elif token.type in [TokenType.BRACKET_LEFT, TokenType.ROOT, TokenType.LOG, TokenGroup.trigonometry]:
@@ -73,7 +71,7 @@ def remove_negative_tokens(tokens):
                 tokens.insert(index, Token(TokenType.NUMBER, -1))
             else:
                 return False
-            is_token_negative = False
+            is_negative = False
 
     for i in range(len(tokens) - 1, -1, -1):
         if tokens[i].type is TokenType.NEGATIVE:
