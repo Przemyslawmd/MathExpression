@@ -110,6 +110,7 @@ class MathExpression(QMainWindow):
 
 
     def create_graph(self):
+        ErrorStorage.clear()
         min_str = self.panel.x_min.text().lstrip()
         max_str = self.panel.x_max.text().lstrip()
 

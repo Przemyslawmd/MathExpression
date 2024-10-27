@@ -94,7 +94,6 @@ class Parser:
 
 
     def parse(self) -> list:
-        ErrorStorage.clear()
         while bool(self.char_stack):
             current_char = self.char_stack.pop()
             if current_char == ' ':
