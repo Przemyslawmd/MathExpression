@@ -5,10 +5,9 @@ from tokens.parser import Parser
 
 
 def calculate_values(expression, x_min, x_max, x_precision):
-    try:
-        tokens = Parser(expression).parse()
-    except Exception as e:
-        raise Exception(e)
+    tokens = Parser(expression).parse()
+    if tokens is None:
+        raise Exception("Parser")
 
     postfix = Postfix().create_postfix(tokens)
     try:

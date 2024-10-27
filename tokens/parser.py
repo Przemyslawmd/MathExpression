@@ -93,7 +93,7 @@ class Parser:
         return False
 
 
-    def parse(self):
+    def parse(self) -> list:
         ErrorStorage.clear()
         while bool(self.char_stack):
             current_char = self.char_stack.pop()
@@ -106,31 +106,31 @@ class Parser:
             else:
                 token_symbol = one_char_tokens.get(current_char)
                 if token_symbol is None:
-                    raise Exception(ErrorMessage[Error.PARSER_SYMBOL] + f": {current_char}")
+                    ErrorStorage.putError(ErrorMessage[Error.PARSER_SYMBOL] + f": {current_char}")
+                    return None
                 if token_symbol is TokenType.MINUS:
                     if not self.check_negative():
-                        raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
+                        ErrorStorage.putError(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
+                        return None
                 else:
                     self.tokens_stack.append(Token(token_symbol))
 
         tokens_list = list(self.tokens_stack)
-        try:
-            error = validate_brackets(tokens_list)
-            if error != Error.NO_ERROR:
-                ErrorStorage.putError(ErrorMessage[error])
-                raise Exception("Validator")
-            if not remove_angle_brackets(tokens_list):
-                ErrorStorage.putError(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
-                raise Exception("Angle brackets")
-            add_multiplication_tokens(tokens_list)
-            if not remove_negative_tokens(tokens_list):
-                raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
-            error = validate_final(tokens_list)
-            if error != Error.NO_ERROR:
-                ErrorStorage.putError(ErrorMessage[error])
-                raise Exception("Validate")
-        except Exception as e:
-            raise Exception(e)
+        error = validate_brackets(tokens_list)
+        if error != Error.NO_ERROR:
+            ErrorStorage.putError(ErrorMessage[error])
+            return None
+        if not remove_angle_brackets(tokens_list):
+            ErrorStorage.putError(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
+            return None
+        add_multiplication_tokens(tokens_list)
+        if not remove_negative_tokens(tokens_list):
+            ErrorStorage.putError(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
+            return None
+        error = validate_final(tokens_list)
+        if error != Error.NO_ERROR:
+            ErrorStorage.putError(ErrorMessage[error])
+            return None
         return tokens_list
 
 
