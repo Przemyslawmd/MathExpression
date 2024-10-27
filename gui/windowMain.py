@@ -10,6 +10,7 @@ import pyqtgraph as pg
 from color import Colors
 from controller import calculate_values
 from errors import Error, ErrorMessage
+from errorStorage import ErrorStorage
 from settings import Settings
 from gui.controlPanel import ControlPanel
 from gui.utils import is_max_points_exceeded, range_x, range_y
@@ -124,17 +125,17 @@ class MathExpression(QMainWindow):
         if y_min != 0 and y_max != 0:
             self.plot_widget.setYRange(y_min, y_max, padding=0)
 
-        try:
-            y = calculate_values(self.insert_expression.text(), x_min, x_max, precision)
-        except Exception as e:
-            self.set_message(str(e))
+        y_values = calculate_values(self.insert_expression.text(), x_min, x_max, precision)
+        if y_values is None:
+            for error in ErrorStorage.getErrors():
+                self.set_message(str(error))
             return
 
         x = arange(x_min, x_max + precision, precision)
         line_width = float(self.panel.pen_width.currentText())
         line_color = self.panel.current_pen_color
         plot_pen = mkPen(line_color, width=line_width)
-        plot = self.plot_widget.plot(x, y, pen=plot_pen, symbol='x', symbolPen=None, symbolBrush=2.5, connect="finite")
+        plot = self.plot_widget.plot(x, y_values, pen=plot_pen, symbol='x', symbolPen=None, symbolBrush=2.5, connect="finite")
         line = Line(plot, self.insert_expression.text())
         self.plot_lines.append(line)
         self.add_graph_label()

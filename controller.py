@@ -4,16 +4,13 @@ from postfix.postfix import Postfix
 from tokens.parser import Parser
 
 
-def calculate_values(expression, x_min, x_max, x_precision):
+def calculate_values(expression, x_min, x_max, x_precision) -> list:
     tokens = Parser(expression).parse()
     if tokens is None:
-        raise Exception("Parser")
+        return None
 
     postfix = Postfix().create_postfix(tokens)
-    try:
-        result = calculate(postfix, x_min, x_max, x_precision)
-    except Exception as e:
-        raise Exception(e)
+    result = calculate(postfix, x_min, x_max, x_precision)
     return result
 
 
