@@ -125,7 +125,10 @@ class Parser:
             add_multiplication_tokens(tokens_list)
             if not remove_negative_tokens(tokens_list):
                 raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
-            validate_final(tokens_list)
+            error = validate_final(tokens_list)
+            if error != Error.NO_ERROR:
+                ErrorStorage.putError(ErrorMessage[error])
+                raise Exception("Validate")
         except Exception as e:
             raise Exception(e)
         return tokens_list

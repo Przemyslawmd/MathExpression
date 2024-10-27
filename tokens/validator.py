@@ -1,5 +1,5 @@
 
-from errors import Error, ErrorMessage
+from errors import Error
 from tokens.token import TokenType
 from tokens.tokenGroup import TokenGroup
 
@@ -28,28 +28,28 @@ def validate_brackets(tokens) -> Error:
     return Error.NO_ERROR
 
 
-def validate_final(tokens):
+def validate_final(tokens) -> Error:
     last_index = len(tokens) - 1
     tokens_allowed = (TokenType.X, TokenType.NUMBER, TokenType.BRACKET_LEFT)
     tokens_forbidden = TokenGroup.basic_arithmetic + (TokenType.BRACKET_RIGHT,)
     for index, token in enumerate(tokens):
         if token.type is TokenType.LOG:
             if index == last_index or tokens[index + 1].type not in tokens_allowed:
-                raise Exception(ErrorMessage[Error.VALIDATOR_LOGARITHM])
+                return Error.VALIDATOR_LOGARITHM
         if token.type is TokenType.POWER:
             if index == last_index or tokens[index + 1].type not in tokens_allowed:
-                raise Exception(ErrorMessage[Error.VALIDATOR_POWER])
+                return Error.VALIDATOR_POWER
         if token.type is TokenType.ROOT:
             if index == last_index or tokens[index + 1].type not in tokens_allowed:
-                raise Exception(ErrorMessage[Error.VALIDATOR_ROOT])
+                return Error.VALIDATOR_ROOT
         if token.type in TokenGroup.trigonometry:
             if index == last_index or tokens[index + 1].type not in tokens_allowed:
-                raise Exception(ErrorMessage[Error.VALIDATOR_TRIGONOMETRY])
+                return Error.VALIDATOR_TRIGONOMETRY
         if token.type in TokenGroup.basic_arithmetic:
             if index == last_index or tokens[index + 1].type in tokens_forbidden:
-                raise Exception(ErrorMessage[Error.VALIDATOR_BASIC_ARITHMETIC])
+                return Error.VALIDATOR_BASIC_ARITHMETIC
         if token.type is TokenType.NUMBER:
             if index != last_index and tokens[index + 1].type is TokenType.NUMBER:
-                raise Exception(ErrorMessage[Error.VALIDATOR_NUMBER])
-
+                return Error.VALIDATOR_NUMBER
+        return Error.NO_ERROR
 
