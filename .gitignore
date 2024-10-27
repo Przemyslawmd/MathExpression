@@ -3,3 +3,4 @@ venv/*
 __pycache__/
 postfix/__pycache__/
 tokens/__pycache__/
+test/performanceResults.txt
