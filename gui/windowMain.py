@@ -84,9 +84,15 @@ class MathExpression(QMainWindow):
         self.panel.ratio_label.setText(str(ratio))
 
 
-    def set_message(self, message: str):
+    def print_message(self, message: str):
         self.area_messages.clear()
         self.area_messages.setText(message)
+
+
+    def print_message_from_storage(self):
+        self.area_messages.clear()
+        for error in ErrorStorage.getErrors():
+            self.area_messages.setText(error)
 
 
     def mouse_moved(self, evt):
@@ -106,36 +112,34 @@ class MathExpression(QMainWindow):
     def create_graph(self):
         min_str = self.panel.x_min.text().lstrip()
         max_str = self.panel.x_max.text().lstrip()
-        try:
-            x_min, x_max = range_x(min_str, max_str)
-        except Exception as e:
-            self.set_message(str(e))
+
+        x_min, x_max = range_x(min_str, max_str)
+        if x_min is None:
+            self.print_message_from_storage()
             return
         precision = self.settings.precision
         if is_max_points_exceeded(precision, x_min, x_max):
-            self.set_message(ErrorMessage[Error.MAX_POINTS])
+            self.print_message(ErrorMessage[Error.MAX_POINTS])
             return
         min_str = self.panel.y_min.text().lstrip()
         max_str = self.panel.y_max.text().lstrip()
-        try:
-            y_min, y_max = range_y(min_str, max_str)
-        except Exception as e:
-            self.set_message(str(e))
+        y_min, y_max = range_y(min_str, max_str)
+        if y_min is None:
+            self.print_message_from_storage()
             return
         if y_min != 0 and y_max != 0:
             self.plot_widget.setYRange(y_min, y_max, padding=0)
 
         y_values = calculate_values(self.insert_expression.text(), x_min, x_max, precision)
         if y_values is None:
-            for error in ErrorStorage.getErrors():
-                self.set_message(str(error))
+            self.print_message_from_storage()
             return
 
-        x = arange(x_min, x_max + precision, precision)
+        x_values = arange(x_min, x_max + precision, precision)
         line_width = float(self.panel.pen_width.currentText())
         line_color = self.panel.current_pen_color
         plot_pen = mkPen(line_color, width=line_width)
-        plot = self.plot_widget.plot(x, y_values, pen=plot_pen, symbol='x', symbolPen=None, symbolBrush=2.5, connect="finite")
+        plot = self.plot_widget.plot(x_values, y_values, pen=plot_pen, symbol='x', symbolPen=None, symbolBrush=2.5, connect="finite")
         line = Line(plot, self.insert_expression.text())
         self.plot_lines.append(line)
         self.add_graph_label()
