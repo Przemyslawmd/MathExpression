@@ -31,6 +31,13 @@ class TestPerformance(TestCase):
                     f"precision: {r.precision:<7} "
                     f"time: {r.time}\n") for r in self.results]
         file.write("\n\n")
+        file.close()
+
+        [print(f"{r.expression:<64} "
+               f"action: {r.action:<14} "
+               f"range: {r.min}:{r.max:<5} "
+               f"precision: {r.precision:<7} "
+               f"time: {r.time}") for r in self.results]
 
     def calculation_1(self, count):
         expression = "x^2 + 2(sinx + cosx)"

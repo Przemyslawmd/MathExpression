@@ -2,7 +2,8 @@
 from collections import deque
 
 from errors import Error, ErrorMessage
-from tokens.postParser import post_parse
+from errorStorage import ErrorStorage
+from tokens.postParser import add_multiplication_tokens, remove_angle_brackets, remove_negative_tokens
 from tokens.token import Token, TokenType
 from tokens.validator import validate_final, validate_brackets
 
@@ -93,6 +94,7 @@ class Parser:
 
 
     def parse(self):
+        ErrorStorage.clear()
         while bool(self.char_stack):
             current_char = self.char_stack.pop()
             if current_char == ' ':
@@ -113,8 +115,16 @@ class Parser:
 
         tokens_list = list(self.tokens_stack)
         try:
-            validate_brackets(tokens_list)
-            post_parse(tokens_list)
+            error = validate_brackets(tokens_list)
+            if error != Error.NO_ERROR:
+                ErrorStorage.putError(ErrorMessage[error])
+                raise Exception("Validator")
+            if not remove_angle_brackets(tokens_list):
+                ErrorStorage.putError(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
+                raise Exception("Angle brackets")
+            add_multiplication_tokens(tokens_list)
+            if not remove_negative_tokens(tokens_list):
+                raise Exception(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
             validate_final(tokens_list)
         except Exception as e:
             raise Exception(e)

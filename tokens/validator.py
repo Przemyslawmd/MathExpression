@@ -4,27 +4,28 @@ from tokens.token import TokenType
 from tokens.tokenGroup import TokenGroup
 
 
-def validate_brackets(tokens):
-    round_validator = 0
-    angle_validator = 0
+def validate_brackets(tokens) -> Error:
+    round_counter = 0
+    angle_counter = 0
     for token in tokens:
         if token.type is TokenType.BRACKET_LEFT:
-            round_validator += 1
-        elif token.type is TokenType.BRACKET_RIGHT:
-            if round_validator == 0:
-                raise Exception(ErrorMessage[Error.PARSER_BRACKET])
-            round_validator -= 1
+            round_counter += 1
         elif token.type is TokenType.BRACKET_ANGLE_LEFT:
-            angle_validator += 1
+            angle_counter += 1
+        elif token.type is TokenType.BRACKET_RIGHT:
+            round_counter -= 1
+            if round_counter < 0:
+                return Error.PARSER_BRACKET
         elif token.type is TokenType.BRACKET_ANGLE_RIGHT:
-            if angle_validator == 0:
-                raise Exception(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
-            angle_validator -= 1
+            angle_counter -= 1
+            if angle_counter < 0:
+                return Error.PARSER_BRACKET_ANGLE
 
-    if round_validator != 0:
-        raise Exception(ErrorMessage[Error.PARSER_BRACKET])
-    if angle_validator != 0:
-        raise Exception(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
+    if round_counter != 0:
+        return Error.PARSER_BRACKET
+    if angle_counter != 0:
+        return Error.PARSER_BRACKET_ANGLE
+    return Error.NO_ERROR
 
 
 def validate_final(tokens):

@@ -2,6 +2,7 @@
 from unittest import TestCase
 
 from errors import Error, ErrorMessage
+from errorStorage import ErrorStorage
 from tokens.parser import Parser
 
 
@@ -10,7 +11,7 @@ class TestParserError(TestCase):
     def test_basic_1(self):
         with self.assertRaises(Exception) as exc:
             Parser("(2x + 3) / ((3x + 4)").parse()
-        error = exc.exception
+        error = ErrorStorage.getErrors()[0]
         self.assertEqual(str(error), ErrorMessage[Error.PARSER_BRACKET])
 
 
@@ -31,7 +32,7 @@ class TestParserError(TestCase):
     def test_basic_4(self):
         with self.assertRaises(Exception) as exc:
             Parser(")4x(2x +1)").parse()
-        error = exc.exception
+        error = ErrorStorage.getErrors()[0]
         self.assertEqual(str(error), ErrorMessage[Error.PARSER_BRACKET])
 
 
@@ -65,42 +66,42 @@ class TestParserError(TestCase):
     def test_angle_bracket_1(self):
         with self.assertRaises(Exception) as exc:
             Parser("(5x + x)(<5> + <3)").parse()
-        error = exc.exception
+        error = ErrorStorage.getErrors()[0]
         self.assertEqual(str(error), ErrorMessage[Error.PARSER_BRACKET_ANGLE])
 
 
     def test_angle_bracket_2(self):
         with self.assertRaises(Exception) as exc:
             Parser("<(5x + x)(5 + 3)>>").parse()
-        error = exc.exception
+        error = ErrorStorage.getErrors()[0]
         self.assertEqual(str(error), ErrorMessage[Error.PARSER_BRACKET_ANGLE])
 
 
     def test_angle_bracket_3(self):
         with self.assertRaises(Exception) as exc:
             Parser("<(5x + x)(5 + 3)>").parse()
-        error = exc.exception
+        error = ErrorStorage.getErrors()[0]
         self.assertEqual(str(error), ErrorMessage[Error.PARSER_BRACKET_ANGLE])
 
 
     def test_angle_bracket_4(self):
         with self.assertRaises(Exception) as exc:
             Parser("(5x + sqrt<>x)(5 + 3)").parse()
-        error = exc.exception
+        error = ErrorStorage.getErrors()[0]
         self.assertEqual(str(error), ErrorMessage[Error.PARSER_BRACKET_ANGLE])
 
 
     def test_angle_bracket_5(self):
         with self.assertRaises(Exception) as exc:
             Parser("<>(5x)").parse()
-        error = exc.exception
+        error = ErrorStorage.getErrors()[0]
         self.assertEqual(str(error), ErrorMessage[Error.PARSER_BRACKET_ANGLE])
 
 
     def test_angle_bracket_6(self):
         with self.assertRaises(Exception) as exc:
             Parser("5x + sin<4>x").parse()
-        error = exc.exception
+        error = ErrorStorage.getErrors()[0]
         self.assertEqual(str(error), ErrorMessage[Error.PARSER_BRACKET_ANGLE])
 
 
