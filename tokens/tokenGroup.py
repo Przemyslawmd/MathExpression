@@ -6,7 +6,7 @@ class TokenGroup:
 
     bracket = (TokenType.BRACKET_LEFT, TokenType.BRACKET_RIGHT)
 
-    basic_arithmetic = (TokenType.DIVISION, TokenType.MINUS, TokenType.MULTIPLICATION, TokenType.PLUS)
+    arithmetic = (TokenType.DIVISION, TokenType.MINUS, TokenType.MULTIPLICATION, TokenType.PLUS)
 
     trigonometry = (TokenType.COSINE, TokenType.COTANGENT, TokenType.SINE, TokenType.TANGENT)
 

@@ -38,7 +38,7 @@ class Postfix:
             tokens_to_move = [token for token in TokenGroup.operators if (token not in [TokenType.PLUS, TokenType.MINUS])]
             self.process_stack_operator(token, tokens_to_move)
         elif token.type in TokenGroup.trigonometry or token.type is TokenType.LOG or token.type is TokenType.ROOT:
-            tokens_to_move = [token for token in TokenGroup.operators if (token not in TokenGroup.basic_arithmetic)]
+            tokens_to_move = [token for token in TokenGroup.operators if (token not in TokenGroup.arithmetic)]
             self.process_stack_operator(token, tokens_to_move)
         else:
             self.process_stack_operator(token, [TokenType.POWER])

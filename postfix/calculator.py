@@ -81,7 +81,7 @@ def calculate(tokens, min_x, max_x, precision=1.0):
             [calculation_stacks[i].append(x) for i, x in enumerate(x_values)]
         elif token.type is TokenType.X_NEGATIVE:
             [calculation_stacks[i].append(x * -1.0) for i, x in enumerate(x_values)]
-        elif token.type in TokenGroup.basic_arithmetic or token.type is TokenType.POWER:
+        elif token.type in TokenGroup.arithmetic or token.type is TokenType.POWER:
             for calc in calculation_stacks:
                 num_1 = calc.pop()
                 num_2 = calc.pop()
