@@ -67,30 +67,30 @@ def validate_final(tokens) -> Error:
             break
 
         next_type = tokens[index + 1].type
-
-        if token.type is TokenType.BRACKET_LEFT:
-            if next_type in forbidden[TokenType.BRACKET_LEFT]:
-                return Error.VALIDATOR_BRACKET_LEFT
-        elif token.type is TokenType.BRACKET_RIGHT:
-            if next_type not in allowed[TokenType.BRACKET_RIGHT]:
-                return Error.VALIDATOR_BRACKET_RIGHT
-        elif token.type is TokenType.LOG:
-            if next_type not in allowed[TokenType.LOG]:
-                return Error.VALIDATOR_LOGARITHM
-        elif token.type is TokenType.POWER:
-            if next_type not in allowed[TokenType.POWER]:
-                return Error.VALIDATOR_POWER
-        elif token.type is TokenType.ROOT:
-            if next_type not in allowed[TokenType.ROOT]:
-                return Error.VALIDATOR_ROOT
-        elif token.type in TokenGroup.trigonometry:
-            if next_type not in allowed[TokenGroup.trigonometry]:
-                return Error.VALIDATOR_TRIGONOMETRY
-        elif token.type in TokenGroup.arithmetic:
-            if next_type in forbidden[TokenGroup.arithmetic]:
-                return Error.VALIDATOR_BASIC_ARITHMETIC
-        elif token.type is TokenType.NUMBER:
-            if next_type not in allowed[TokenType.NUMBER]:
-                return Error.VALIDATOR_NUMBER
+        match token.type:
+            case TokenType.BRACKET_LEFT:
+                if next_type in forbidden[TokenType.BRACKET_LEFT]:
+                    return Error.VALIDATOR_BRACKET_LEFT
+            case TokenType.BRACKET_RIGHT:
+                if next_type not in allowed[TokenType.BRACKET_RIGHT]:
+                    return Error.VALIDATOR_BRACKET_RIGHT
+            case TokenType.LOG:
+                if next_type not in allowed[TokenType.LOG]:
+                    return Error.VALIDATOR_LOGARITHM
+            case TokenType.POWER:
+                if next_type not in allowed[TokenType.POWER]:
+                    return Error.VALIDATOR_POWER
+            case TokenType.ROOT:
+                if next_type not in allowed[TokenType.ROOT]:
+                    return Error.VALIDATOR_ROOT
+            case TokenGroup.trigonometry:
+                if next_type not in allowed[TokenGroup.trigonometry]:
+                    return Error.VALIDATOR_TRIGONOMETRY
+            case TokenGroup.arithmetic:
+                if next_type in forbidden[TokenGroup.arithmetic]:
+                    return Error.VALIDATOR_BASIC_ARITHMETIC
+            case TokenType.NUMBER:
+                if next_type not in allowed[TokenType.NUMBER]:
+                    return Error.VALIDATOR_NUMBER
     return Error.NO_ERROR
 
