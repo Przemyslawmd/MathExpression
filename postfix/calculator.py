@@ -33,7 +33,7 @@ actions = {
 }
 
 
-def check_directions(numbers):
+def check_directions(numbers) -> list:
     directions = [Direction.NONE] * len(numbers)
     for index, number in enumerate(numbers):
         if index == 0:
@@ -42,34 +42,30 @@ def check_directions(numbers):
             directions[index] = Direction.UP
         elif number < numbers[index - 1]:
             directions[index] = Direction.DOWN
-        elif number == numbers[index - 1]:
+        else:
             directions[index] = Direction.CONST
     return directions
 
 
-def is_discontinuity(directions, numbers, index):
-    direction_prev = directions[index - 1]
-    direction_curr = directions[index]
-    number_prev = numbers[index - 1]
-    number_curr = numbers[index]
-    if all((direction_prev == Direction.UP, direction_curr == Direction.DOWN, number_prev > 0, number_curr < 0)):
+def is_discontinuity(direction_prev, direction_curr, number_prev, number_curr) -> bool:
+    if all((direction_prev is Direction.UP, direction_curr is Direction.DOWN, number_prev > 0, number_curr < 0)):
         return True
-    if all((direction_prev == Direction.DOWN, direction_curr == Direction.UP, number_prev < 0, number_curr > 0)):
+    if all((direction_prev is Direction.DOWN, direction_curr is Direction.UP, number_prev < 0, number_curr > 0)):
         return True
     return False
 
 
-def check_continuity(numbers):
-    discontinuity_points = []
+def check_continuity(numbers) -> list:
     directions = check_directions(numbers)
+    discontinuity_points = []
     for index, direction in enumerate(directions):
         if direction != directions[index - 1]:
-            if is_discontinuity(directions, numbers, index):
+            if is_discontinuity(directions[index - 1], direction, numbers[index - 1], numbers[index]):
                 discontinuity_points.append(index)
     return discontinuity_points
 
 
-def calculate(tokens, min_x, max_x, precision=1.0):
+def calculate(tokens, min_x, max_x, precision=1.0) -> list:
     calc_stacks = []
     x_values = arange(min_x, max_x + precision, precision)
     for _ in x_values:
@@ -104,8 +100,8 @@ def calculate(tokens, min_x, max_x, precision=1.0):
 
     if [token for token in tokens if token.type in (TokenType.DIVISION, TokenType.TANGENT)]:
         discontinuity_points = check_continuity(results)
-        for point in discontinuity_points:
-            results[point] = nan
+        for index in discontinuity_points:
+            results[index] = nan
 
     return results
 
