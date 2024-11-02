@@ -70,33 +70,37 @@ def check_continuity(numbers):
 
 
 def calculate(tokens, min_x, max_x, precision=1.0):
-    calculation_stacks = []
+    calc_stacks = []
     x_values = arange(min_x, max_x + precision, precision)
-    [calculation_stacks.append(deque()) for _ in x_values]
+    for _ in x_values:
+        calc_stacks.append(deque())
 
     for token in tokens:
         if token.type is TokenType.NUMBER:
-            [calc.append(token.data) for calc in calculation_stacks]
+            for calc in calc_stacks:
+                calc.append(token.data)
         elif token.type is TokenType.X:
-            [calculation_stacks[i].append(x) for i, x in enumerate(x_values)]
+            for calc, x in zip(calc_stacks, x_values):
+                calc.append(x)
         elif token.type is TokenType.X_NEGATIVE:
-            [calculation_stacks[i].append(x * -1.0) for i, x in enumerate(x_values)]
+            for calc, x in zip(calc_stacks, x_values):
+                calc.append(x * -1.0)
         elif token.type in TokenGroup.arithmetic or token.type is TokenType.POWER:
-            for calc in calculation_stacks:
+            for calc in calc_stacks:
                 num_1 = calc.pop()
                 num_2 = calc.pop()
                 calc.append(actions[token.type](num_1, num_2))
         elif token.type in TokenGroup.trigonometry:
-            for calc in calculation_stacks:
+            for calc in calc_stacks:
                 num = calc.pop()
                 radian = radians(num)
                 calc.append(actions[token.type](radian))
         elif token.type is TokenType.LOG or TokenType.ROOT:
-            for calc in calculation_stacks:
+            for calc in calc_stacks:
                 num = calc.pop()
                 calc.append(actions[token.type](num, token.data))
 
-    results = [round(x[0], 4) for x in calculation_stacks]
+    results = [round(x[0], 4) for x in calc_stacks]
 
     if [token for token in tokens if token.type in (TokenType.DIVISION, TokenType.TANGENT)]:
         discontinuity_points = check_continuity(results)
