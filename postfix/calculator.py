@@ -31,10 +31,10 @@ actions = {
     TokenType.POWER: lambda a, b: nan if (float(a).is_integer() is False and b < 0) else power(b, a),
     TokenType.ROOT: lambda a, b: nan if a < 0 else (sqrt(a) if b == 2 else power(a, 1 / b)),
 
-    TokenType.COSINE: lambda a: cos(a),
-    TokenType.COTANGENT: lambda a: nan if round(sin(a), 4) == 0.00 else cos(a) / sin(a),
-    TokenType.SINE: lambda a: sin(a),
-    TokenType.TANGENT: lambda a: tan(a),
+    TokenType.COSINE: lambda a: cos(radians(a)),
+    TokenType.COTANGENT: lambda a: nan if round(sin(radians(a)), 4) == 0.00 else cos(radians(a)) / sin(radians(a)),
+    TokenType.SINE: lambda a: sin(radians(a)),
+    TokenType.TANGENT: lambda a: tan(radians(a)),
 }
 
 
@@ -125,18 +125,30 @@ def calculate_2(tokens, min_x, max_x, precision=1.0) -> list:
             arg_1 = tokens_stack.pop() if len(tokens_stack) > 0 else None
             arg_2 = tokens_stack.pop() if len(tokens_stack) > 0 else None
             functions.append(Action(actions[token.type], 2, arg_1, arg_2))
+        elif token.type in TokenGroup.trigonometry:
+            arg_1 = tokens_stack.pop() if len(tokens_stack) > 0 else None
+            functions.append(Action(actions[token.type], 1, arg_1, None))
+
 
     x_values = arange(min_x, max_x + precision, precision)
     data_stack = deque()
     results = deque()
     for x in x_values:
         for func in functions:
+
             arg_1 = func.arg_1 if func.arg_1 is not None else data_stack.pop()
             if arg_1 == 'x':
                 arg_1 = x
+
+            if func.num_of_args == 1:
+                result = func.function(arg_1)
+                data_stack.append(result)
+                continue
+
             arg_2 = func.arg_2 if func.arg_2 is not None else data_stack.pop()
             if arg_2 == 'x':
                 arg_2 = x
+
             result = func.function(arg_1, arg_2)
             data_stack.append(result)
 
