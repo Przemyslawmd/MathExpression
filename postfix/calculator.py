@@ -18,6 +18,9 @@ class Direction(Enum):
     NONE = 3
 
 
+Action = namedtuple('Action', ('function', 'num_of_args', 'arg_1', 'arg_2'))
+
+
 actions = {
     TokenType.DIVISION: lambda a, b: nan if round(a, 4) == 0.00 else b / a,
     TokenType.MINUS: lambda a, b: b - a,
@@ -108,36 +111,37 @@ def calculate(tokens, min_x, max_x, precision=1.0) -> list:
     return results
 
 
-Action = namedtuple('Action', ('func', 'numOfArgs', 'arg_1', 'arg_2'))
-
-
 def calculate_2(tokens, min_x, max_x, precision=1.0) -> list:
 
-    funcs = deque()
-    data = deque()
+    functions = deque()
+    tokens_stack = deque()
 
     for token in tokens:
         if token.type is TokenType.NUMBER:
-            data.append(token.data)
+            tokens_stack.append(token.data)
         elif token.type is TokenType.X:
-            data.append('x')
+            tokens_stack.append('x')
         elif token.type in TokenGroup.arithmetic or token.type is TokenType.POWER:
-            arg_1 = data.pop() if len(data) > 0 else None
-            arg_2 = data.pop() if len(data) > 0 else None
-            funcs.append(Action(actions[token.type], 2, arg_1, arg_2))
+            arg_1 = tokens_stack.pop() if len(tokens_stack) > 0 else None
+            arg_2 = tokens_stack.pop() if len(tokens_stack) > 0 else None
+            functions.append(Action(actions[token.type], 2, arg_1, arg_2))
 
     x_values = arange(min_x, max_x + precision, precision)
-    result = 0
+    data_stack = deque()
     results = deque()
     for x in x_values:
-        for i, func in enumerate(funcs):
-            arg_1 = x if func.arg_1 == 'x' else func.arg_1
-            if i == 0:
-                arg_2 = x if func.arg_2 == 'x' else func.arg_2
-            else:
-                arg_2 = result
-            result = func.func(arg_1, arg_2)
-        results.append(result)
+        for func in functions:
+            arg_1 = func.arg_1 if func.arg_1 is not None else data_stack.pop()
+            if arg_1 == 'x':
+                arg_1 = x
+            arg_2 = func.arg_2 if func.arg_2 is not None else data_stack.pop()
+            if arg_2 == 'x':
+                arg_2 = x
+            result = func.function(arg_1, arg_2)
+            data_stack.append(result)
+
+        results.append(data_stack[0])
+        data_stack.clear()
 
     results = [round(x, 4) for x in results]
 
