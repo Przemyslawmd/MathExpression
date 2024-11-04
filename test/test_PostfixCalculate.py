@@ -1,7 +1,7 @@
 
 from unittest import TestCase
 
-from postfix.calculator import calculate
+from postfix.calculator import calculate, calculate_2
 from postfix.postfix import Postfix
 from tokens.parser import Parser
 
@@ -15,11 +15,26 @@ class TestPostfixCalculate(TestCase):
         assert result[0] == 25
         assert result[1] == 36
 
+    def test_postfix_calculate_xxx(self):
+        tokens = Parser("2(x + 5)").parse()
+        postfix = Postfix().create_postfix(tokens)
+        result = calculate_2(postfix, 2, 3)
+        assert result[0] == 14
+        assert result[1] == 16
+
 
     def test_postfix_calculate_2(self):
         tokens = Parser("(3 + x) * (10 + x)").parse()
         postfix = Postfix().create_postfix(tokens)
         result = calculate(postfix, 5, 6)
+        assert result[0] == 120
+        assert result[1] == 144
+
+
+    def test_postfix_calculate_2_new(self):
+        tokens = Parser("(3 + x) * (10 + x)").parse()
+        postfix = Postfix().create_postfix(tokens)
+        result = calculate_2(postfix, 5, 6)
         assert result[0] == 120
         assert result[1] == 144
 

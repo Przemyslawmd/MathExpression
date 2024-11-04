@@ -3,7 +3,7 @@ from collections import namedtuple
 from datetime import datetime
 from unittest import TestCase
 
-from postfix.calculator import calculate
+from postfix.calculator import calculate, calculate_2
 from postfix.postfix import Postfix
 from tokens.parser import Parser
 
@@ -14,6 +14,8 @@ class TestPerformance(TestCase):
     results = []
 
     def test_performance(self):
+        self.calculation_xxx(5)
+        self.calculation_yyy(5)
         self.calculation_1(5)
         self.calculation_2(5)
         self.calculation_3(5)
@@ -38,6 +40,28 @@ class TestPerformance(TestCase):
                f"range: {r.min}:{r.max:<5} "
                f"precision: {r.precision:<7} "
                f"time: {r.time}") for r in self.results]
+
+
+    def calculation_xxx(self, count):
+        expression = "2(x + 5)"
+        tokens = Parser(expression).parse()
+        postfix = Postfix().create_postfix(tokens)
+        for _ in range(count):
+            start = default_timer()
+            calculate(postfix, -360, 360, 0.01)
+            end = default_timer()
+            self.results.append(Result(expression, "calculation", -360, 360, 0.01, end - start))
+
+
+    def calculation_yyy(self, count):
+        expression = "2(x + 5)"
+        tokens = Parser(expression).parse()
+        postfix = Postfix().create_postfix(tokens)
+        for _ in range(count):
+            start = default_timer()
+            calculate_2(postfix, -360, 360, 0.01)
+            end = default_timer()
+            self.results.append(Result(expression, "calculation_2", -360, 360, 0.01, end - start))
 
 
     def calculation_1(self, count):

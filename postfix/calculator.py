@@ -8,6 +8,8 @@ from numpy import power, arange
 from tokens.token import TokenType
 from tokens.tokenGroup import TokenGroup
 
+from collections import namedtuple
+
 
 class Direction(Enum):
     CONST = 0
@@ -97,6 +99,47 @@ def calculate(tokens, min_x, max_x, precision=1.0) -> list:
                 calc.append(actions[token.type](num, token.data))
 
     results = [round(x[0], 4) for x in calc_stacks]
+
+    if [token for token in tokens if token.type in (TokenType.DIVISION, TokenType.TANGENT)]:
+        discontinuity_points = check_continuity(results)
+        for index in discontinuity_points:
+            results[index] = nan
+
+    return results
+
+
+Action = namedtuple('Action', ('func', 'numOfArgs', 'arg_1', 'arg_2'))
+
+
+def calculate_2(tokens, min_x, max_x, precision=1.0) -> list:
+
+    funcs = deque()
+    data = deque()
+
+    for token in tokens:
+        if token.type is TokenType.NUMBER:
+            data.append(token.data)
+        elif token.type is TokenType.X:
+            data.append('x')
+        elif token.type in TokenGroup.arithmetic or token.type is TokenType.POWER:
+            arg_1 = data.pop() if len(data) > 0 else None
+            arg_2 = data.pop() if len(data) > 0 else None
+            funcs.append(Action(actions[token.type], 2, arg_1, arg_2))
+
+    x_values = arange(min_x, max_x + precision, precision)
+    result = 0
+    results = deque()
+    for x in x_values:
+        for i, func in enumerate(funcs):
+            arg_1 = x if func.arg_1 == 'x' else func.arg_1
+            if i == 0:
+                arg_2 = x if func.arg_2 == 'x' else func.arg_2
+            else:
+                arg_2 = result
+            result = func.func(arg_1, arg_2)
+        results.append(result)
+
+    results = [round(x, 4) for x in results]
 
     if [token for token in tokens if token.type in (TokenType.DIVISION, TokenType.TANGENT)]:
         discontinuity_points = check_continuity(results)
