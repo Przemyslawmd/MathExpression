@@ -18,9 +18,6 @@ class Direction(Enum):
     NONE = 3
 
 
-FunctionArg = {'X': 0, 'X_NEGATIVE': 1, 'RESULT': 2}
-
-
 Action = namedtuple('Action', ('function', 'num_of_args', 'arg_1', 'arg_2'))
 
 
@@ -96,16 +93,16 @@ def calculate(tokens, min_x, max_x, precision=1.0) -> list:
         elif token.type is TokenType.X_NEGATIVE:
             tokens_stack.append('X_NEGATIVE')
         elif token.type in TokenGroup.arithmetic or token.type is TokenType.POWER:
-            arg_1 = tokens_stack.pop() if len(tokens_stack) > 0 else None
-            arg_2 = tokens_stack.pop() if len(tokens_stack) > 0 else None
+            arg_1 = tokens_stack.pop()
+            arg_2 = tokens_stack.pop()
             functions.append(Action(actions[token.type], 2, arg_1, arg_2))
             tokens_stack.append('RESULT')
         elif token.type in TokenGroup.trigonometry:
-            arg_1 = tokens_stack.pop() if len(tokens_stack) > 0 else None
+            arg_1 = tokens_stack.pop()
             functions.append(Action(actions[token.type], 1, arg_1, None))
             tokens_stack.append('RESULT')
         elif token.type is TokenType.LOG or TokenType.ROOT:
-            arg_1 = tokens_stack.pop() if len(tokens_stack) > 0 else None
+            arg_1 = tokens_stack.pop()
             functions.append(Action(actions[token.type], 2, arg_1, token.data))
             tokens_stack.append('RESULT')
 
