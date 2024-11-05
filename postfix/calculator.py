@@ -18,6 +18,9 @@ class Direction(Enum):
     NONE = 3
 
 
+FunctionArg = {'X': 0, 'X_NEGATIVE': 1, 'RESULT': 2}
+
+
 Action = namedtuple('Action', ('function', 'num_of_args', 'arg_1', 'arg_2'))
 
 
@@ -70,48 +73,17 @@ def check_continuity(numbers) -> list:
     return discontinuity_points
 
 
+def check_function_argument(arg, data_stack, x):
+    if arg == 'X':
+        return x
+    if arg == 'X_NEGATIVE':
+        return x * -1
+    if arg == 'RESULT':
+        return data_stack.pop()
+    return arg
+
+
 def calculate(tokens, min_x, max_x, precision=1.0) -> list:
-    calc_stacks = []
-    x_values = arange(min_x, max_x + precision, precision)
-    for _ in x_values:
-        calc_stacks.append(deque())
-
-    for token in tokens:
-        if token.type is TokenType.NUMBER:
-            for calc in calc_stacks:
-                calc.append(token.data)
-        elif token.type is TokenType.X:
-            for calc, x in zip(calc_stacks, x_values):
-                calc.append(x)
-        elif token.type is TokenType.X_NEGATIVE:
-            for calc, x in zip(calc_stacks, x_values):
-                calc.append(x * -1.0)
-        elif token.type in TokenGroup.arithmetic or token.type is TokenType.POWER:
-            for calc in calc_stacks:
-                num_1 = calc.pop()
-                num_2 = calc.pop()
-                calc.append(actions[token.type](num_1, num_2))
-        elif token.type in TokenGroup.trigonometry:
-            for calc in calc_stacks:
-                num = calc.pop()
-                radian = radians(num)
-                calc.append(actions[token.type](radian))
-        elif token.type is TokenType.LOG or TokenType.ROOT:
-            for calc in calc_stacks:
-                num = calc.pop()
-                calc.append(actions[token.type](num, token.data))
-
-    results = [round(x[0], 4) for x in calc_stacks]
-
-    if [token for token in tokens if token.type in (TokenType.DIVISION, TokenType.TANGENT)]:
-        discontinuity_points = check_continuity(results)
-        for index in discontinuity_points:
-            results[index] = nan
-
-    return results
-
-
-def calculate_2(tokens, min_x, max_x, precision=1.0) -> list:
 
     functions = deque()
     tokens_stack = deque()
@@ -120,15 +92,22 @@ def calculate_2(tokens, min_x, max_x, precision=1.0) -> list:
         if token.type is TokenType.NUMBER:
             tokens_stack.append(token.data)
         elif token.type is TokenType.X:
-            tokens_stack.append('x')
+            tokens_stack.append('X')
+        elif token.type is TokenType.X_NEGATIVE:
+            tokens_stack.append('X_NEGATIVE')
         elif token.type in TokenGroup.arithmetic or token.type is TokenType.POWER:
             arg_1 = tokens_stack.pop() if len(tokens_stack) > 0 else None
             arg_2 = tokens_stack.pop() if len(tokens_stack) > 0 else None
             functions.append(Action(actions[token.type], 2, arg_1, arg_2))
+            tokens_stack.append('RESULT')
         elif token.type in TokenGroup.trigonometry:
             arg_1 = tokens_stack.pop() if len(tokens_stack) > 0 else None
             functions.append(Action(actions[token.type], 1, arg_1, None))
-
+            tokens_stack.append('RESULT')
+        elif token.type is TokenType.LOG or TokenType.ROOT:
+            arg_1 = tokens_stack.pop() if len(tokens_stack) > 0 else None
+            functions.append(Action(actions[token.type], 2, arg_1, token.data))
+            tokens_stack.append('RESULT')
 
     x_values = arange(min_x, max_x + precision, precision)
     data_stack = deque()
@@ -136,19 +115,13 @@ def calculate_2(tokens, min_x, max_x, precision=1.0) -> list:
     for x in x_values:
         for func in functions:
 
-            arg_1 = func.arg_1 if func.arg_1 is not None else data_stack.pop()
-            if arg_1 == 'x':
-                arg_1 = x
-
+            arg_1 = check_function_argument(func.arg_1, data_stack, x)
             if func.num_of_args == 1:
                 result = func.function(arg_1)
                 data_stack.append(result)
                 continue
 
-            arg_2 = func.arg_2 if func.arg_2 is not None else data_stack.pop()
-            if arg_2 == 'x':
-                arg_2 = x
-
+            arg_2 = check_function_argument(func.arg_2, data_stack, x)
             result = func.function(arg_1, arg_2)
             data_stack.append(result)
 
