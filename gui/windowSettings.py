@@ -78,13 +78,13 @@ class WindowSettings(QDialog):
     @Slot()
     def accept(self, settings):
 
-        settings.apply_settings(self.check_x_grid.isChecked(),
-                                self.check_y_grid.isChecked(),
-                                float(self.combo_precision.currentText()),
-                                self.check_coordinates.isChecked(),
-                                self.combo_background.currentText(),
-                                self.check_label.isChecked())
-        self.parent.apply_settings()
+        grid, background, coordinates = settings.set_settings(self.check_x_grid.isChecked(),
+                                                              self.check_y_grid.isChecked(),
+                                                              float(self.combo_precision.currentText()),
+                                                              self.check_coordinates.isChecked(),
+                                                              self.combo_background.currentText(),
+                                                              self.check_label.isChecked())
+        self.parent.apply_settings(grid, background, coordinates)
         self.close()
 
 

@@ -196,14 +196,14 @@ class MathExpression(QMainWindow):
         main_widget.setContentsMargins(20, 0, 20, 0)
 
 
-    def apply_settings(self):
-        if self.settings.grid_changed is True:
+    def apply_settings(self, grid_changed, background_changed, coordinates_changed):
+        if grid_changed is True:
             self.plot_widget.showGrid(x=self.settings.x_grid, y=self.settings.y_grid)
-        if self.settings.background_changed is True:
+        if background_changed is True:
             self.plot_widget.setBackground(Colors[self.settings.background].text)
-        if self.settings.coordinates_changed is True and self.settings.coordinates is True:
+        if coordinates_changed is True and self.settings.coordinates is True:
             self.plot_widget.scene().sigMouseMoved.connect(self.mouse_moved)
-        elif self.settings.coordinates_changed is True and self.settings.coordinates is False:
+        elif coordinates_changed is True and self.settings.coordinates is False:
             self.plot_widget.scene().sigMouseMoved.disconnect(self.mouse_moved)
             self.panel.coordinates.clear()
 
