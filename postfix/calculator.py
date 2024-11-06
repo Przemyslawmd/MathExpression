@@ -97,7 +97,7 @@ def build_functions_stack(tokens) -> list:
     return functions
 
 
-def check_function_argument(arg, data_stack, x):
+def check_argument(arg, data_stack, x):
     if arg == 'X':
         return x
     if arg == 'X_NEGATIVE':
@@ -114,14 +114,14 @@ def calculate(tokens, min_x, max_x, precision=1.0) -> list:
     results = deque()
     for x in x_values:
         for func in functions:
-            arg_1 = check_function_argument(func.arg_1, data_stack, x)
+            arg_1 = check_argument(func.arg_1, data_stack, x)
             if func.num_of_args == 1:
                 arg_1 = radians(arg_1)
                 result = func.function(arg_1)
                 data_stack.append(result)
                 continue
 
-            arg_2 = check_function_argument(func.arg_2, data_stack, x)
+            arg_2 = check_argument(func.arg_2, data_stack, x)
             result = func.function(arg_1, arg_2)
             data_stack.append(result)
 
@@ -130,7 +130,8 @@ def calculate(tokens, min_x, max_x, precision=1.0) -> list:
 
     results = [round(x, 4) for x in results]
 
-    if [token for token in tokens if token.type in (TokenType.DIVISION, TokenType.TANGENT)]:
+    division_or_tangent = filter(lambda t: t.type is TokenType.DIVISION or t.type is TokenType.TANGENT, tokens)
+    if any(division_or_tangent):
         discontinuity_points = check_continuity(results)
         for index in discontinuity_points:
             results[index] = nan
