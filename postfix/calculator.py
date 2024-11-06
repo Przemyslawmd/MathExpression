@@ -31,10 +31,10 @@ actions = {
     TokenType.POWER: lambda a, b: nan if (float(a).is_integer() is False and b < 0) else power(b, a),
     TokenType.ROOT: lambda a, b: nan if a < 0 else (sqrt(a) if b == 2 else power(a, 1 / b)),
 
-    TokenType.COSINE: lambda a: cos(radians(a)),
-    TokenType.COTANGENT: lambda a: nan if round(sin(radians(a)), 4) == 0.00 else cos(radians(a)) / sin(radians(a)),
-    TokenType.SINE: lambda a: sin(radians(a)),
-    TokenType.TANGENT: lambda a: tan(radians(a)),
+    TokenType.COSINE: lambda a: cos(a),
+    TokenType.COTANGENT: lambda a: nan if round(sin(a), 4) == 0.00 else cos(a) / sin(a),
+    TokenType.SINE: lambda a: sin(a),
+    TokenType.TANGENT: lambda a: tan(a),
 }
 
 
@@ -70,19 +70,8 @@ def check_continuity(numbers) -> list:
     return discontinuity_points
 
 
-def check_function_argument(arg, data_stack, x):
-    if arg == 'X':
-        return x
-    if arg == 'X_NEGATIVE':
-        return x * -1
-    if arg == 'RESULT':
-        return data_stack.pop()
-    return arg
-
-
-def calculate(tokens, min_x, max_x, precision=1.0) -> list:
-
-    functions = deque()
+def build_functions_stack(tokens) -> list:
+    functions = []
     tokens_stack = deque()
 
     for token in tokens:
@@ -105,15 +94,29 @@ def calculate(tokens, min_x, max_x, precision=1.0) -> list:
             arg_1 = tokens_stack.pop()
             functions.append(Action(actions[token.type], 2, arg_1, token.data))
             tokens_stack.append('RESULT')
+    return functions
 
+
+def check_function_argument(arg, data_stack, x):
+    if arg == 'X':
+        return x
+    if arg == 'X_NEGATIVE':
+        return x * -1
+    if arg == 'RESULT':
+        return data_stack.pop()
+    return arg
+
+
+def calculate(tokens, min_x, max_x, precision=1.0) -> list:
+    functions = build_functions_stack(tokens)
     x_values = arange(min_x, max_x + precision, precision)
     data_stack = deque()
     results = deque()
     for x in x_values:
         for func in functions:
-
             arg_1 = check_function_argument(func.arg_1, data_stack, x)
             if func.num_of_args == 1:
+                arg_1 = radians(arg_1)
                 result = func.function(arg_1)
                 data_stack.append(result)
                 continue
