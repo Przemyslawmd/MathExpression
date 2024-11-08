@@ -26,7 +26,7 @@ class Parser:
 
     def __init__(self, expression):
         self.char_stack = deque(char for char in reversed(expression))
-        self.tokens_stack = deque()
+        self.tokens = deque()
 
 
     def pop_elements(self, number):
@@ -45,49 +45,49 @@ class Parser:
 
     def add_number(self, char):
         number = int(char, 16)
-        while bool(self.char_stack) and self.char_stack[-1].isdigit():
+        while self.char_stack and self.char_stack[-1].isdigit():
             number = number * 10 + int(self.char_stack.pop(), 16)
-        self.tokens_stack.append(Token(TokenType.NUMBER, number))
+        self.tokens.append(Token(TokenType.NUMBER, number))
 
 
     def check_multi_char_token(self, current_char):
         if len(self.char_stack) >= 1 and current_char == 't' and self.check_stack('g'):
-            self.tokens_stack.append(Token(TokenType.TANGENT))
+            self.tokens.append(Token(TokenType.TANGENT))
             self.char_stack.pop()
             return True
         if len(self.char_stack) >= 2:
             if current_char == 'c' and self.check_stack('o', 's'):
-                self.tokens_stack.append(Token(TokenType.COSINE))
+                self.tokens.append(Token(TokenType.COSINE))
                 self.pop_elements(2)
                 return True
             if current_char == 'c' and self.check_stack('t', 'g'):
-                self.tokens_stack.append(Token(TokenType.COTANGENT))
+                self.tokens.append(Token(TokenType.COTANGENT))
                 self.pop_elements(2)
                 return True
             if current_char == 's' and self.check_stack('i', 'n'):
-                self.tokens_stack.append(Token(TokenType.SINE))
+                self.tokens.append(Token(TokenType.SINE))
                 self.pop_elements(2)
                 return True
             if current_char == 'l' and self.check_stack('o', 'g'):
-                self.tokens_stack.append(Token(TokenType.LOG, 10))
+                self.tokens.append(Token(TokenType.LOG, 10))
                 self.pop_elements(2)
                 return True
         if len(self.char_stack) >= 3 and current_char == 's' and self.check_stack('q', 'r', 't'):
-            self.tokens_stack.append(Token(TokenType.ROOT, 2))
+            self.tokens.append(Token(TokenType.ROOT, 2))
             self.pop_elements(3)
             return True
         return False
 
 
     def check_minus(self):
-        if len(self.tokens_stack) == 0 or self.tokens_stack[-1].type in [TokenType.BRACKET_LEFT,
-                                                                         TokenType.MULTIPLICATION,
-                                                                         TokenType.DIVISION,
-                                                                         TokenType.PLUS]:
-            self.tokens_stack.append(Token(TokenType.NEGATIVE))
+        if len(self.tokens) == 0 or self.tokens[-1].type in [TokenType.BRACKET_LEFT,
+                                                             TokenType.MULTIPLICATION,
+                                                             TokenType.DIVISION,
+                                                             TokenType.PLUS]:
+            self.tokens.append(Token(TokenType.NEGATIVE))
             return True
-        if bool(self.char_stack) and self.char_stack[-1] not in [')', '*', '/']:
-            self.tokens_stack.append(Token(TokenType.MINUS))
+        if self.char_stack and self.char_stack[-1] not in [')', '*', '/']:
+            self.tokens.append(Token(TokenType.MINUS))
             return True
         return False
 
@@ -111,9 +111,9 @@ class Parser:
                         ErrorStorage.put_error(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
                         return None
                 else:
-                    self.tokens_stack.append(Token(token_symbol))
+                    self.tokens.append(Token(token_symbol))
 
-        tokens_list = list(self.tokens_stack)
+        tokens_list = list(self.tokens)
         error = validate_brackets(tokens_list)
         if error != Error.NO_ERROR:
             ErrorStorage.put_error(ErrorMessage[error])
