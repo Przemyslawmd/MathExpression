@@ -47,7 +47,7 @@ class MathExpression(QMainWindow):
     @Slot()
     def append(self):
         if len(self.plot_lines) == 10:
-            self.set_message("Only ten graphs allowed")
+            self.print_message("Only ten graphs allowed")
             return
         self.create_graph()
 
@@ -106,7 +106,8 @@ class MathExpression(QMainWindow):
             return
         self.legend.clear()
         self.legend.setParentItem(self.plot_widget.plotItem)
-        [self.legend.addItem(plot.data, plot.expression) for plot in self.plot_lines]
+        for plot in self.plot_lines:
+            self.legend.addItem(plot.data, plot.expression)
 
 
     def create_graph(self):
