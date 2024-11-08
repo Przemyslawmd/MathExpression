@@ -4,7 +4,7 @@ from postfix.postfix import Postfix
 from tokens.parser import Parser
 
 
-def calculate_values(expression, x_min, x_max, x_precision) -> list:
+def calculate_values(expression, x_min, x_max, x_precision) -> list or None:
     tokens = Parser(expression).parse()
     if tokens is None:
         return None

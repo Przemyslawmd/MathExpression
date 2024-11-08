@@ -91,7 +91,7 @@ class MathExpression(QMainWindow):
 
     def print_message_from_storage(self):
         self.area_messages.clear()
-        for error in ErrorStorage.getErrors():
+        for error in ErrorStorage.get_errors():
             self.area_messages.setText(error)
 
 

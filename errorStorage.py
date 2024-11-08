@@ -4,12 +4,12 @@ class ErrorStorage:
     errors = []
 
     @staticmethod
-    def putError(error):
+    def put_error(error):
         ErrorStorage.errors.append(error)
 
 
     @staticmethod
-    def getErrors():
+    def get_errors():
         return ErrorStorage.errors
 
 

@@ -92,7 +92,7 @@ class Parser:
         return False
 
 
-    def parse(self) -> list:
+    def parse(self) -> list or None:
         while bool(self.char_stack):
             current_char = self.char_stack.pop()
             if current_char == ' ':
@@ -104,11 +104,11 @@ class Parser:
             else:
                 token_symbol = one_char_tokens.get(current_char)
                 if token_symbol is None:
-                    ErrorStorage.putError(ErrorMessage[Error.PARSER_SYMBOL] + f": {current_char}")
+                    ErrorStorage.put_error(ErrorMessage[Error.PARSER_SYMBOL] + f": {current_char}")
                     return None
                 if token_symbol is TokenType.MINUS:
                     if not self.check_minus():
-                        ErrorStorage.putError(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
+                        ErrorStorage.put_error(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
                         return None
                 else:
                     self.tokens_stack.append(Token(token_symbol))
@@ -116,18 +116,18 @@ class Parser:
         tokens_list = list(self.tokens_stack)
         error = validate_brackets(tokens_list)
         if error != Error.NO_ERROR:
-            ErrorStorage.putError(ErrorMessage[error])
+            ErrorStorage.put_error(ErrorMessage[error])
             return None
         if not remove_angle_brackets(tokens_list):
-            ErrorStorage.putError(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
+            ErrorStorage.put_error(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
             return None
         add_multiplication_tokens(tokens_list)
         if not remove_negative_tokens(tokens_list):
-            ErrorStorage.putError(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
+            ErrorStorage.put_error(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
             return None
         error = validate_final(tokens_list)
         if error != Error.NO_ERROR:
-            ErrorStorage.putError(ErrorMessage[error])
+            ErrorStorage.put_error(ErrorMessage[error])
             return None
         return tokens_list
 
