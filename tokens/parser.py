@@ -80,13 +80,13 @@ class Parser:
 
 
     def check_minus(self):
-        if len(self.tokens) == 0 or self.tokens[-1].type in [TokenType.BRACKET_LEFT,
+        if len(self.tokens) == 0 or self.tokens[-1].type in (TokenType.BRACKET_LEFT,
                                                              TokenType.MULTIPLICATION,
                                                              TokenType.DIVISION,
-                                                             TokenType.PLUS]:
+                                                             TokenType.PLUS):
             self.tokens.append(Token(TokenType.NEGATIVE))
             return True
-        if self.char_stack and self.char_stack[-1] not in [')', '*', '/']:
+        if self.char_stack and self.char_stack[-1] not in (')', '*', '/'):
             self.tokens.append(Token(TokenType.MINUS))
             return True
         return False
