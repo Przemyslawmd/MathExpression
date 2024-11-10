@@ -35,7 +35,7 @@ class Postfix:
         if token.type in (TokenType.PLUS, TokenType.MINUS):
             self.process_stack_operator(token, TokenGroup.operators)
         elif token.type in (TokenType.MULTIPLICATION, TokenType.DIVISION):
-            tokens_to_move = [token for token in TokenGroup.operators if (token not in [TokenType.PLUS, TokenType.MINUS])]
+            tokens_to_move = [token for token in TokenGroup.operators if (token not in (TokenType.PLUS, TokenType.MINUS))]
             self.process_stack_operator(token, tokens_to_move)
         elif token.type in TokenGroup.trigonometry or token.type is TokenType.LOG or token.type is TokenType.ROOT:
             tokens_to_move = [token for token in TokenGroup.operators if (token not in TokenGroup.arithmetic)]

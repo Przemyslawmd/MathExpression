@@ -1,5 +1,5 @@
 
-from collections import deque
+from collections import deque, namedtuple
 from enum import Enum
 
 from math import cos, log, nan, radians, sin, sqrt, tan
@@ -7,8 +7,6 @@ from numpy import power, arange
 
 from tokens.token import TokenType
 from tokens.tokenGroup import TokenGroup
-
-from collections import namedtuple
 
 
 class Direction(Enum):
