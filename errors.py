@@ -30,6 +30,10 @@ ErrorMessage = {
                                 "and root.",
     Error.PARSER_NEGATIVE_SYMBOL: "Improper usage of negative symbol.",
     Error.PARSER_SYMBOL: "Improper symbol.",
+
+    Error.VALIDATOR_BRACKET_LEFT:
+        "Invalid symbol after left bracket, symbols: plus, multiplication, division and right bracket are prohibited.",
+    Error.VALIDATOR_BRACKET_RIGHT: "Improper symbol after right bracket",
     Error.VALIDATOR_NUMBER: "Empty space between numbers.",
     Error.VALIDATOR_BASIC_ARITHMETIC: "Addition, subtraction, multiplication, and division can not be followed"
                                       " by the same symbol and right bracket.",
