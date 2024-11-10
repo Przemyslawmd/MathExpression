@@ -11,13 +11,19 @@ allowed = {
     TokenType.LOG: (TokenType.NUMBER, TokenType.X, TokenType.BRACKET_LEFT),
     TokenType.POWER: (TokenType.NUMBER, TokenType.X, TokenType.BRACKET_LEFT),
     TokenType.ROOT: (TokenType.NUMBER, TokenType.X, TokenType.BRACKET_LEFT),
-    TokenGroup.trigonometry: (TokenType.NUMBER, TokenType.X, TokenType.BRACKET_LEFT)
+    TokenType.SINE: (TokenType.NUMBER, TokenType.X, TokenType.BRACKET_LEFT),
+    TokenType.COSINE: (TokenType.NUMBER, TokenType.X, TokenType.BRACKET_LEFT),
+    TokenType.TANGENT: (TokenType.NUMBER, TokenType.X, TokenType.BRACKET_LEFT),
+    TokenType.COTANGENT: (TokenType.NUMBER, TokenType.X, TokenType.BRACKET_LEFT),
 }
 
 
 forbidden = {
     TokenType.BRACKET_LEFT: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic),
-    TokenGroup.arithmetic: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic)
+    TokenType.PLUS: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic),
+    TokenType.MINUS: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic),
+    TokenType.MULTIPLICATION: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic),
+    TokenType.DIVISION: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic)
 }
 
 
@@ -83,12 +89,12 @@ def validate_final(tokens) -> Error:
             case TokenType.ROOT:
                 if next_type not in allowed[TokenType.ROOT]:
                     return Error.VALIDATOR_ROOT
-            case TokenGroup.trigonometry:
-                if next_type not in allowed[TokenGroup.trigonometry]:
+            case TokenType.SINE | TokenType.COSINE | TokenType.TANGENT | TokenType.COTANGENT:
+                if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_TRIGONOMETRY
-            case TokenGroup.arithmetic:
-                if next_type in forbidden[TokenGroup.arithmetic]:
-                    return Error.VALIDATOR_BASIC_ARITHMETIC
+            case TokenType.PLUS | TokenType.MINUS | TokenType.MULTIPLICATION | TokenType.DIVISION:
+                if next_type in forbidden[token.type]:
+                    return Error.VALIDATOR_ARITHMETIC
             case TokenType.NUMBER:
                 if next_type not in allowed[TokenType.NUMBER]:
                     return Error.VALIDATOR_NUMBER
