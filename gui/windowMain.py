@@ -187,7 +187,7 @@ class MathExpression(QMainWindow):
         lay_main.addSpacing(20)
 
         lay_main.addWidget(self.area_messages)
-        self.area_messages.setMaximumHeight(100)
+        self.area_messages.setMaximumHeight(50)
         lay_main.addSpacing(20)
 
         main_widget = QWidget()
