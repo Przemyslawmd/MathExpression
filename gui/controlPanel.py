@@ -13,11 +13,13 @@ def create_button(label, width, func=None):
     return button
 
 
-def create_widget_layout(widget, width, text, text_width, default_value=None):
+def create_widget_layout(widget, width, text, text_width, alignment=None, default_value=None):
     widget.setMinimumWidth(width)
     widget.setMaximumWidth(width)
     if isinstance(widget, QLineEdit):
         widget.setText(default_value)
+    if alignment is not None:
+        widget.setAlignment(alignment)
     label = QLabel(text)
     label.setFixedSize(text_width, 10)
     label.setMargin(0)
@@ -52,10 +54,10 @@ class ControlPanel:
         layout.addWidget(create_button("Append Graph", 140, func_append), 0, 1)
         layout.setSpacing(15)
 
-        widget_x_min = create_widget_layout(self.x_min, 40, "X Min", 40, str(x_min))
+        widget_x_min = create_widget_layout(self.x_min, 40, "X Min", 40, Qt.AlignmentFlag.AlignCenter, str(x_min))
         layout.addLayout(widget_x_min, 0, 3)
 
-        widget_x_max = create_widget_layout(self.x_max, 40, "X Max", 40, str(x_max))
+        widget_x_max = create_widget_layout(self.x_max, 40, "X Max", 40, Qt.AlignmentFlag.AlignCenter, str(x_max))
         layout.addLayout(widget_x_max, 0, 4)
 
         for x in (0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10):
@@ -72,7 +74,7 @@ class ControlPanel:
         self.ratio_slider.setMinimum(0)
         self.ratio_slider.setMaximum(22)
         self.ratio_slider.setSingleStep(1)
-        self.ratio_slider.setOrientation(Qt.Horizontal)
+        self.ratio_slider.setOrientation(Qt.Orientation.Horizontal)
         self.ratio_slider.setValue(11)
         ratio = self.ratio_values[self.ratio_slider.value()]
         self.ratio_label.setText(str(ratio))
@@ -91,10 +93,10 @@ class ControlPanel:
         layout.addWidget(create_button("Clear Insert Area", 140, func_clear_insert), 1, 0)
         layout.addWidget(create_button("Clear Plot Area", 140, func_clear_plot), 1, 1)
 
-        widget_y_min = create_widget_layout(self.y_min, 40, "Y Min", 40)
+        widget_y_min = create_widget_layout(self.y_min, 40, "Y Min", 40, Qt.AlignmentFlag.AlignCenter)
         layout.addLayout(widget_y_min, 1, 3)
 
-        widget_y_max = create_widget_layout(self.y_max, 40, "Y Max", 40)
+        widget_y_max = create_widget_layout(self.y_max, 40, "Y Max", 40, Qt.AlignmentFlag.AlignCenter)
         layout.addLayout(widget_y_max, 1, 4)
 
         for color in Colors.values():
