@@ -204,7 +204,9 @@ class TestParser(TestCase):
     def test_negative_1(self):
         tokens = Parser("(-x - 3)4").parse()
         tokens_test = [TokenTest(TokenType.BRACKET_LEFT),
-                       TokenTest(TokenType.X_NEGATIVE),
+                       TokenTest(TokenType.NUMBER, -1),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.X),
                        TokenTest(TokenType.MINUS),
                        TokenTest(TokenType.NUMBER, 3),
                        TokenTest(TokenType.BRACKET_RIGHT),
@@ -229,7 +231,9 @@ class TestParser(TestCase):
 
     def test_negative_3(self):
         tokens = Parser("-x -2(  -7)").parse()
-        tokens_test = [TokenTest(TokenType.X_NEGATIVE),
+        tokens_test = [TokenTest(TokenType.NUMBER, -1),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.X),
                        TokenTest(TokenType.MINUS),
                        TokenTest(TokenType.NUMBER, 2),
                        TokenTest(TokenType.MULTIPLICATION),

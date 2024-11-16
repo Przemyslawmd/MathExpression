@@ -21,12 +21,11 @@ class TokenType(Enum):
     POWER = 11
     ROOT = 12
     X = 13
-    X_NEGATIVE = 14
 
-    BRACKET_LEFT = 15
-    BRACKET_RIGHT = 16
-    BRACKET_ANGLE_LEFT = 17
-    BRACKET_ANGLE_RIGHT = 18
+    BRACKET_LEFT = 14
+    BRACKET_RIGHT = 15
+    BRACKET_ANGLE_LEFT = 16
+    BRACKET_ANGLE_RIGHT = 17
 
 
 class Token:

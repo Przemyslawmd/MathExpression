@@ -77,8 +77,6 @@ def build_functions_stack(tokens) -> list:
             tokens_stack.append(token.data)
         elif token.type is TokenType.X:
             tokens_stack.append('X')
-        elif token.type is TokenType.X_NEGATIVE:
-            tokens_stack.append('X_NEGATIVE')
         elif token.type in TokenGroup.arithmetic or token.type is TokenType.POWER:
             arg_1 = tokens_stack.pop()
             arg_2 = tokens_stack.pop()
@@ -98,8 +96,6 @@ def build_functions_stack(tokens) -> list:
 def check_argument(arg, data_stack, x):
     if arg == 'X':
         return x
-    if arg == 'X_NEGATIVE':
-        return x * -1
     if arg == 'RESULT':
         return data_stack.pop()
     return arg

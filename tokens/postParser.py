@@ -64,9 +64,7 @@ def remove_negative_tokens(tokens) -> bool:
         if is_negative:
             if token.type is TokenType.NUMBER:
                 tokens[index].data *= -1
-            elif token.type is TokenType.X:
-                tokens[index] = Token(TokenType.X_NEGATIVE)
-            elif token.type in (TokenType.BRACKET_LEFT, TokenType.ROOT, TokenType.LOG, TokenGroup.trigonometry):
+            elif token.type in (TokenType.BRACKET_LEFT, TokenType.ROOT, TokenType.LOG, TokenType.X, TokenGroup.trigonometry):
                 indices.append(index)
             else:
                 return False

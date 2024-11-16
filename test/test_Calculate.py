@@ -9,7 +9,7 @@ from tokens.parser import Parser
 
 class TestCalculate(TestCase):
 
-    def test_fill_only_x(self):
+    def test_fill_x(self):
         step = 0.5
         result = calculate_values("x", 20, 30, step)
         assert len(result) == 21
@@ -19,7 +19,17 @@ class TestCalculate(TestCase):
             shift += step
 
 
-    def test_fill_only_number(self):
+    def test_fill_negative_x(self):
+        step = 0.5
+        result = calculate_values("-x", 20, 30, step)
+        assert len(result) == 21
+        shift = 0
+        for value in result:
+            assert value == 20 * -1 - shift
+            shift += step
+
+
+    def test_fill_number(self):
         result = calculate_values("10", -5, 5, 1)
         assert len(result) == 11
         for value in result:
