@@ -25,7 +25,7 @@ class Error(Enum):
 
 ErrorMessage = {
     Error.MAX_POINTS: "Number of maximum points (100000) to calculate is exceeded, change x range or precision.",
-    Error.PARSER_BRACKET: "Improper bracket.",
+    Error.PARSER_BRACKET: "Parsing brackets error.",
     Error.PARSER_BRACKET_ANGLE: "Improper angle bracket. Angle brackets are allowed only as a base for logarithm "
                                 "and root.",
     Error.PARSER_NEGATIVE_SYMBOL: "Improper usage of negative symbol.",

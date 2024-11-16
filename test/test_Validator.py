@@ -11,7 +11,14 @@ class TestParserError(TestCase):
     def tearDown(self):
         ErrorStorage.clear()
 
-    def test_validator_bracket_left(self):
+
+    def test_validator_bracket_empty_beginning(self):
+        Parser("()").parse()
+        errors = ErrorStorage.get_errors()
+        self.assertEqual(errors[0], ErrorMessage[Error.VALIDATOR_BRACKET_LEFT])
+
+
+    def test_validator_bracket_empty(self):
         Parser("5x + tg() + 34").parse()
         errors = ErrorStorage.get_errors()
         self.assertEqual(errors[0], ErrorMessage[Error.VALIDATOR_BRACKET_LEFT])

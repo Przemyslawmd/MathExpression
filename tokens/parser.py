@@ -5,7 +5,7 @@ from errors import Error, ErrorMessage
 from errorStorage import ErrorStorage
 from tokens.postParser import add_multiplication_tokens, remove_angle_brackets, remove_negative_tokens
 from tokens.token import Token, TokenType
-from tokens.validator import validate_final, validate_brackets
+from tokens.validator import validate_tokens, validate_brackets
 
 
 one_char_tokens = {
@@ -125,7 +125,7 @@ class Parser:
         if not remove_negative_tokens(tokens_list):
             ErrorStorage.put_error(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
             return None
-        error = validate_final(tokens_list)
+        error = validate_tokens(tokens_list)
         if error != Error.NO_ERROR:
             ErrorStorage.put_error(ErrorMessage[error])
             return None

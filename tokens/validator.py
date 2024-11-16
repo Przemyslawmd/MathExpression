@@ -51,7 +51,7 @@ def validate_brackets(tokens) -> Error:
     return Error.NO_ERROR
 
 
-def validate_final(tokens) -> Error:
+def validate_tokens(tokens) -> Error:
 
     if tokens[0].type in (TokenType.BRACKET_RIGHT,
                           TokenType.PLUS,
@@ -66,12 +66,7 @@ def validate_final(tokens) -> Error:
                                        TokenType.BRACKET_RIGHT):
         return Error.VALIDATOR_LAST_TOKEN
 
-    for index, token in enumerate(tokens):
-        if index == 0:
-            continue
-        if index == last_index:
-            break
-
+    for index, token in enumerate(tokens[:-1]):
         next_type = tokens[index + 1].type
         match token.type:
             case TokenType.BRACKET_LEFT:
