@@ -26,8 +26,9 @@ class Error(Enum):
 ErrorMessage = {
     Error.MAX_POINTS: "Number of maximum points (100000) to calculate is exceeded, change x range or precision.",
     Error.PARSER_BRACKET: "Parsing brackets error.",
-    Error.PARSER_BRACKET_ANGLE: "Improper angle bracket. Angle brackets are allowed only as a base for logarithm "
-                                "and root.",
+    Error.PARSER_BRACKET_ANGLE: "Invalid angle bracket\nAngle brackets are allowed only as a base for logarithm "
+                                "and root, pattern is sqrt<NUMBER> or log<NUMBER>\n"
+                                "For example: sqrt<4>16, log<2>x",
     Error.PARSER_NEGATIVE_SYMBOL: "Improper usage of negative symbol.",
     Error.PARSER_SYMBOL: "Improper symbol.",
 
