@@ -93,14 +93,6 @@ def build_functions_stack(tokens) -> list:
     return functions
 
 
-def check_argument(arg, data_stack, x):
-    if arg == 'X':
-        return x
-    if arg == 'RESULT':
-        return data_stack.pop()
-    return arg
-
-
 def calculate(tokens, min_x, max_x, precision=1.0) -> list:
     functions = build_functions_stack(tokens)
     x_values = arange(min_x, max_x + precision, precision)
@@ -108,14 +100,14 @@ def calculate(tokens, min_x, max_x, precision=1.0) -> list:
     results = deque()
     for x in x_values:
         for func in functions:
-            arg_1 = check_argument(func.arg_1, data_stack, x)
+            arg_1 = data_stack.pop() if func.arg_1 == 'RESULT' else x if func.arg_1 == 'X' else func.arg_1
             if func.num_of_args == 1:
                 arg_1 = radians(arg_1)
                 result = func.function(arg_1)
                 data_stack.append(result)
                 continue
 
-            arg_2 = check_argument(func.arg_2, data_stack, x)
+            arg_2 = data_stack.pop() if func.arg_2 == 'RESULT' else x if func.arg_2 == 'X' else func.arg_2
             result = func.function(arg_1, arg_2)
             data_stack.append(result)
 
