@@ -35,9 +35,13 @@ ErrorMessage = {
     Error.VALIDATOR_BRACKET_LEFT:
         "Invalid symbol after left bracket, symbols: plus, multiplication, division and right bracket are prohibited.",
     Error.VALIDATOR_BRACKET_RIGHT: "Improper symbol after right bracket",
+
+    Error.VALIDATOR_FIRST_TOKEN: "Invalid the first symbol in the expression",
+    Error.VALIDATOR_LAST_TOKEN: "Invalid the last symbol in the expression",
+
     Error.VALIDATOR_NUMBER: "Empty space between numbers.",
     Error.VALIDATOR_ARITHMETIC:
-        "Invalid symbol after arithmetic, symbols: plus, multiplication, division and right bracket are prohibited.",
+        "Invalid symbol after arithmetic symbol: plus, multiplication, division and right bracket are prohibited.",
     Error.VALIDATOR_LOGARITHM: "Logarithm can be followed only by : x, number, opening bracket.",
     Error.VALIDATOR_POWER: "Power can be followed only by : x, number, opening bracket.",
     Error.VALIDATOR_ROOT: "Root can be followed only by : x, number, opening bracket.",

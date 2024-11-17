@@ -56,6 +56,7 @@ def validate_tokens(tokens) -> Error:
     if tokens[0].type in (TokenType.BRACKET_RIGHT,
                           TokenType.PLUS,
                           TokenType.MINUS,
+                          TokenType.MULTIPLICATION,
                           TokenType.DIVISION,
                           TokenType.POWER):
         return Error.VALIDATOR_FIRST_TOKEN
