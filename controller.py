@@ -13,10 +13,11 @@ def calculate_values(expression, x_min, x_max, precision) -> list or None:
     tokens = Parser(expression).parse()
     if tokens is None:
         return None
-    if len(tokens) == 1:
-        return fill_values(x_min, x_max, precision, tokens[0])
 
     postfix = Postfix().create_postfix(tokens)
+    if len(postfix) == 1:
+        return fill_values(x_min, x_max, precision, postfix[0])
+
     result = calculate(postfix, x_min, x_max, precision)
     return result
 

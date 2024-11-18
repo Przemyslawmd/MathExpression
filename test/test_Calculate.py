@@ -1,4 +1,5 @@
 
+from math import isclose
 from unittest import TestCase
 
 from controller import calculate_values
@@ -19,6 +20,26 @@ class TestCalculate(TestCase):
             shift += step
 
 
+    def test_fill_x_brackets_1(self):
+        step = 0.5
+        result = calculate_values("(x)",-30, 20, step)
+        assert len(result) == 101
+        shift = 0
+        for value in result:
+            assert value == -30 + shift
+            shift += step
+
+
+    def test_fill_x_brackets_2(self):
+        step = 0.1
+        result = calculate_values("(((x)))", 2, 5, step)
+        assert len(result) == 31
+        shift = 0
+        for value in result:
+            assert isclose(value,2 + shift)
+            shift += step
+
+
     def test_fill_negative_x(self):
         step = 0.5
         result = calculate_values("-x", 20, 30, step)
@@ -34,6 +55,13 @@ class TestCalculate(TestCase):
         assert len(result) == 11
         for value in result:
             assert value == 10
+
+
+    def test_fill_number_brackets(self):
+        result = calculate_values("(100)", -5, 5, 1)
+        assert len(result) == 11
+        for value in result:
+            assert value == 100
 
 
     def test_calculate_1(self):
