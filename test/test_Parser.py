@@ -262,3 +262,12 @@ class TestParser(TestCase):
         check_tokens(tokens, tokens_test)
 
 
+    def test_float_number(self):
+        tokens = Parser("0.12x + 0.01").parse()
+        tokens_test = [TokenTest(TokenType.NUMBER, 0.12),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.PLUS),
+                       TokenTest(TokenType.NUMBER, 0.01)]
+        check_tokens(tokens, tokens_test)
+

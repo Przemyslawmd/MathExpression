@@ -25,19 +25,19 @@ one_char_tokens = {
 class Parser:
 
     def __init__(self, expression):
-        self.char_stack = deque(char for char in reversed(expression))
+        self.chars = deque(char for char in reversed(expression))
         self.tokens = deque()
 
 
     def pop_elements(self, number):
         for _ in range(number):
-            self.char_stack.pop()
+            self.chars.pop()
 
 
     def check_stack(self, *chars_to_check):
         shift = -1
         for char in chars_to_check:
-            if self.char_stack[shift] != char:
+            if self.chars[shift] != char:
                 return False
             shift -= 1
         return True
@@ -45,17 +45,26 @@ class Parser:
 
     def add_number(self, char):
         number = int(char, 16)
-        while self.char_stack and self.char_stack[-1].isdigit():
-            number = number * 10 + int(self.char_stack.pop(), 16)
+        while self.chars and self.chars[-1].isdigit():
+            number = number * 10 + int(self.chars.pop(), 16)
+        if not self.chars or self.chars[-1] != '.':
+            self.tokens.append(Token(TokenType.NUMBER, number))
+            return
+
+        self.chars.pop()
+        divider = 10
+        while self.chars and self.chars[-1].isdigit():
+            number = number + int(self.chars.pop(), 16) / divider
+            divider = divider * 10
         self.tokens.append(Token(TokenType.NUMBER, number))
 
 
     def check_multi_char_token(self, current_char):
-        if len(self.char_stack) >= 1 and current_char == 't' and self.check_stack('g'):
+        if len(self.chars) >= 1 and current_char == 't' and self.check_stack('g'):
             self.tokens.append(Token(TokenType.TANGENT))
-            self.char_stack.pop()
+            self.chars.pop()
             return True
-        if len(self.char_stack) >= 2:
+        if len(self.chars) >= 2:
             if current_char == 'c' and self.check_stack('o', 's'):
                 self.tokens.append(Token(TokenType.COSINE))
                 self.pop_elements(2)
@@ -72,7 +81,7 @@ class Parser:
                 self.tokens.append(Token(TokenType.LOG, 10))
                 self.pop_elements(2)
                 return True
-        if len(self.char_stack) >= 3 and current_char == 's' and self.check_stack('q', 'r', 't'):
+        if len(self.chars) >= 3 and current_char == 's' and self.check_stack('q', 'r', 't'):
             self.tokens.append(Token(TokenType.ROOT, 2))
             self.pop_elements(3)
             return True
@@ -86,15 +95,15 @@ class Parser:
                                                              TokenType.PLUS):
             self.tokens.append(Token(TokenType.NEGATIVE))
             return True
-        if self.char_stack and self.char_stack[-1] not in (')', '*', '/'):
+        if self.chars and self.chars[-1] not in (')', '*', '/'):
             self.tokens.append(Token(TokenType.MINUS))
             return True
         return False
 
 
     def parse(self) -> list or None:
-        while bool(self.char_stack):
-            current_char = self.char_stack.pop()
+        while bool(self.chars):
+            current_char = self.chars.pop()
             if current_char == ' ':
                 continue
             elif current_char.isdigit():
