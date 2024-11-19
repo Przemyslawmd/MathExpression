@@ -37,7 +37,6 @@ class ControlPanel:
         self.x_max = QLineEdit()
         self.y_min = QLineEdit()
         self.y_max = QLineEdit()
-        self.coordinates = QLineEdit()
         self.pen_width = QComboBox()
         self.pen_colors = QComboBox()
         self.current_pen_color = (0, 255, 128)
@@ -76,6 +75,7 @@ class ControlPanel:
         self.ratio_slider.setSingleStep(1)
         self.ratio_slider.setOrientation(Qt.Orientation.Horizontal)
         self.ratio_slider.setValue(11)
+        self.ratio_slider.setFixedWidth(300)
         ratio = self.ratio_values[self.ratio_slider.value()]
         self.ratio_label.setText(str(ratio))
 
@@ -105,9 +105,6 @@ class ControlPanel:
         self.pen_colors.currentTextChanged.connect(self.on_pen_colors_changed)
         widget_pen_color = create_widget_layout(self.pen_colors, 100, "Line Color", 65)
         layout.addLayout(widget_pen_color, 1, 6)
-
-        widget_coordinates = create_widget_layout(self.coordinates, 420, "Coordinate", 70)
-        layout.addLayout(widget_coordinates, 1, 8)
 
 
     def connect_slider(self, func):

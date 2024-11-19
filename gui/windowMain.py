@@ -95,12 +95,6 @@ class MathExpression(QMainWindow):
             self.area_messages.setText(error)
 
 
-    def mouse_moved(self, evt):
-        x = round(self.plot_widget.plotItem.vb.mapSceneToView(evt).x(), 3)
-        y = round(self.plot_widget.plotItem.vb.mapSceneToView(evt).y(), 3)
-        self.panel.coordinates.setText(f"  X: {str(x)}  ;  Y: {str(y)} ")
-
-
     def add_graph_label(self):
         if self.settings.graph_label is False:
             return
@@ -197,15 +191,9 @@ class MathExpression(QMainWindow):
         main_widget.setContentsMargins(20, 0, 20, 0)
 
 
-    def apply_settings(self, grid_changed, background_changed, coordinates_changed):
+    def apply_settings(self, grid_changed, background_changed):
         if grid_changed is True:
             self.plot_widget.showGrid(x=self.settings.x_grid, y=self.settings.y_grid)
         if background_changed is True:
             self.plot_widget.setBackground(Colors[self.settings.background].text)
-        if coordinates_changed is True and self.settings.coordinates is True:
-            self.plot_widget.scene().sigMouseMoved.connect(self.mouse_moved)
-        elif coordinates_changed is True and self.settings.coordinates is False:
-            self.plot_widget.scene().sigMouseMoved.disconnect(self.mouse_moved)
-            self.panel.coordinates.clear()
-
 

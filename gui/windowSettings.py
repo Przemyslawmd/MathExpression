@@ -27,34 +27,29 @@ class WindowSettings(QDialog):
         self.check_y_grid.setChecked(settings.y_grid)
         layout_grid.addWidget(self.check_y_grid, 2, 2, alignment=QtCore.Qt.AlignRight)
 
-        layout_grid.addWidget(QLabel("Display Coordinates"), 3, 1)
-        self.check_coordinates = QCheckBox()
-        self.check_coordinates.setChecked(settings.coordinates)
-        layout_grid.addWidget(self.check_coordinates, 3, 2, alignment=QtCore.Qt.AlignRight)
-
-        layout_grid.addWidget(QLabel("Graph Label"), 4, 1)
+        layout_grid.addWidget(QLabel("Graph Label"), 3, 1)
         self.check_label = QCheckBox()
         self.check_label.setChecked(settings.graph_label)
-        layout_grid.addWidget(self.check_label, 4, 2, alignment=QtCore.Qt.AlignRight)
+        layout_grid.addWidget(self.check_label, 3, 2, alignment=QtCore.Qt.AlignRight)
 
-        layout_grid.addWidget(QLabel("Precision"), 5, 1)
+        layout_grid.addWidget(QLabel("Precision"), 4, 1)
         self.combo_precision = QComboBox()
         self.combo_precision.setMaximumWidth(100)
         for i, precision in enumerate((0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0)):
             self.combo_precision.addItem(str(precision))
             if precision == settings.precision:
                 self.combo_precision.setCurrentIndex(i)
-        layout_grid.addWidget(self.combo_precision, 5, 2, alignment=QtCore.Qt.AlignRight)
+        layout_grid.addWidget(self.combo_precision, 4, 2, alignment=QtCore.Qt.AlignRight)
 
-        layout_grid.addWidget(QLabel("Background Color"), 6, 1)
+        layout_grid.addWidget(QLabel("Background Color"), 5, 1)
         self.combo_background = QComboBox()
         self.combo_background.setMaximumWidth(120)
         [self.combo_background.addItem(value.text) for value in Colors.values()]
         self.combo_background.setCurrentText(Colors[settings.background].text)
-        layout_grid.addWidget(self.combo_background, 6, 2, alignment=QtCore.Qt.AlignRight)
+        layout_grid.addWidget(self.combo_background, 5, 2, alignment=QtCore.Qt.AlignRight)
 
         for row in range(1, layout_grid.rowCount()):
-            layout_grid.setRowMinimumHeight(row, 30)
+            layout_grid.setRowMinimumHeight(row, 35)
 
         layout.addLayout(layout_grid)
 
@@ -78,13 +73,12 @@ class WindowSettings(QDialog):
     @Slot()
     def accept(self, settings):
 
-        grid, background, coordinates = settings.set_settings(self.check_x_grid.isChecked(),
-                                                              self.check_y_grid.isChecked(),
-                                                              float(self.combo_precision.currentText()),
-                                                              self.check_coordinates.isChecked(),
-                                                              self.combo_background.currentText(),
-                                                              self.check_label.isChecked())
-        self.parent.apply_settings(grid, background, coordinates)
+        grid, background = settings.set_settings(self.check_x_grid.isChecked(),
+                                                 self.check_y_grid.isChecked(),
+                                                 float(self.combo_precision.currentText()),
+                                                 self.combo_background.currentText(),
+                                                 self.check_label.isChecked())
+        self.parent.apply_settings(grid, background)
         self.close()
 
 
