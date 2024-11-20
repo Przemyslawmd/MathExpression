@@ -78,10 +78,9 @@ class MathExpression(QMainWindow):
 
     @Slot()
     def change_ratio(self):
-        slider_index = self.panel.ratio_slider.value()
-        ratio = self.panel.ratio_values[slider_index]
-        self.plot_widget.setXRange(self.x_min * ratio, self.x_max * ratio)
-        self.panel.ratio_label.setText(str(ratio))
+        slider_index = self.panel.x_axis.value()
+        axis = self.panel.x_axis_values[slider_index]
+        self.plot_widget.setXRange(self.x_min * axis, self.x_max * axis)
 
 
     def print_message(self, message: str):

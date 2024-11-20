@@ -38,9 +38,8 @@ class ControlPanel:
         self.pen_width = QComboBox()
         self.pen_colors = QComboBox()
         self.current_pen_color = (0, 255, 128)
-        self.ratio_slider = QSlider()
-        self.ratio_label = QLabel()
-        self.ratio_values = (
+        self.x_axis = QSlider()
+        self.x_axis_values = (
             0.1, 0.11, 0.125, 0.15, 0.2, 0.25, 0.33, 0.5, 0.65, 0.75, 0.85, 1, 1.15, 1.33, 1.5, 2, 3, 4, 5, 7, 8, 9, 10
         )
 
@@ -68,22 +67,18 @@ class ControlPanel:
         label = QLabel("X Axis Range")
         label.setFixedSize(80, 17)
 
-        self.ratio_slider.setMinimum(0)
-        self.ratio_slider.setMaximum(22)
-        self.ratio_slider.setSingleStep(1)
-        self.ratio_slider.setOrientation(Qt.Orientation.Horizontal)
-        self.ratio_slider.setValue(11)
-        self.ratio_slider.setFixedWidth(300)
-        ratio = self.ratio_values[self.ratio_slider.value()]
-        self.ratio_label.setText(str(ratio))
+        self.x_axis.setMinimum(0)
+        self.x_axis.setMaximum(22)
+        self.x_axis.setSingleStep(1)
+        self.x_axis.setOrientation(Qt.Orientation.Horizontal)
+        self.x_axis.setValue(11)
+        self.x_axis.setFixedWidth(300)
 
-        button_ratio = create_button("Default", 80, lambda: self.ratio_slider.setValue(11))
+        button_x_axis = create_button("Default", 80, lambda: self.x_axis.setValue(11))
 
         layout_ratio.addWidget(label)
-        layout_ratio.addWidget(self.ratio_slider)
-        layout_ratio.addWidget(self.ratio_label)
-        layout_ratio.addWidget(button_ratio)
-
+        layout_ratio.addWidget(self.x_axis)
+        layout_ratio.addWidget(button_x_axis)
         layout.addLayout(layout_ratio, 0, 8)
 
 
@@ -100,7 +95,7 @@ class ControlPanel:
 
 
     def connect_slider(self, func):
-        self.ratio_slider.valueChanged.connect(func)
+        self.x_axis.valueChanged.connect(func)
 
     # ------------------------------- INTERNAL ----------------------------------- #
 
