@@ -35,8 +35,6 @@ class ControlPanel:
     def __init__(self):
         self.x_min = QLineEdit()
         self.x_max = QLineEdit()
-        self.y_min = QLineEdit()
-        self.y_max = QLineEdit()
         self.pen_width = QComboBox()
         self.pen_colors = QComboBox()
         self.current_pen_color = (0, 255, 128)
@@ -67,8 +65,8 @@ class ControlPanel:
 
         layout_ratio = QHBoxLayout()
         layout_ratio.setSpacing(8)
-        label = QLabel("Y : X Ratio")
-        label.setFixedSize(60, 10)
+        label = QLabel("X Axis Range")
+        label.setFixedSize(80, 17)
 
         self.ratio_slider.setMinimum(0)
         self.ratio_slider.setMaximum(22)
@@ -92,12 +90,6 @@ class ControlPanel:
     def create_second_row(self, layout, func_clear_insert, func_clear_plot):
         layout.addWidget(create_button("Clear Insert Area", 140, func_clear_insert), 1, 0)
         layout.addWidget(create_button("Clear Plot Area", 140, func_clear_plot), 1, 1)
-
-        widget_y_min = create_widget_layout(self.y_min, 40, "Y Min", 40, Qt.AlignmentFlag.AlignCenter)
-        layout.addLayout(widget_y_min, 1, 3)
-
-        widget_y_max = create_widget_layout(self.y_max, 40, "Y Max", 40, Qt.AlignmentFlag.AlignCenter)
-        layout.addLayout(widget_y_max, 1, 4)
 
         for color in Colors.values():
             self.pen_colors.addItem(color.text)

@@ -13,7 +13,7 @@ from errors import Error, ErrorMessage
 from errorStorage import ErrorStorage
 from settings import Settings
 from gui.controlPanel import ControlPanel
-from gui.utils import is_max_points_exceeded, range_x, range_y
+from gui.utils import is_max_points_exceeded, range_x
 from gui.windowAbout import WindowAbout
 from gui.windowSettings import WindowSettings
 
@@ -117,14 +117,6 @@ class MathExpression(QMainWindow):
         if is_max_points_exceeded(precision, x_min, x_max):
             self.print_message(ErrorMessage[Error.MAX_POINTS])
             return
-        min_str = self.panel.y_min.text().lstrip()
-        max_str = self.panel.y_max.text().lstrip()
-        y_min, y_max = range_y(min_str, max_str)
-        if y_min is None:
-            self.print_message_from_storage()
-            return
-        if y_min != 0 and y_max != 0:
-            self.plot_widget.setYRange(y_min, y_max, padding=0)
 
         y_values = calculate_values(self.insert_expression.text(), x_min, x_max, precision)
         if y_values is None:

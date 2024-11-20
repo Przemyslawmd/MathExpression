@@ -18,15 +18,6 @@ def range_x(min_str, max_str):
     return calculate_range(min_str, max_str)
 
 
-def range_y(min_str, max_str):
-    if not min_str and not max_str:
-        return 0, 0
-    if not min_str or not max_str:
-        ErrorStorage.put_error("Range error: only one value for Y range provided")
-        return None, None
-    return calculate_range(min_str, max_str)
-
-
 def calculate_range(min_str, max_str):
     try:
         min_value = float(min_str)
@@ -38,5 +29,4 @@ def calculate_range(min_str, max_str):
         ErrorStorage.put_error("Range error: minimum higher than maximum")
         return None, None
     return min_value, max_value
-
 
