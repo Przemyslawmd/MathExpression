@@ -64,6 +64,7 @@ class MathExpression(QMainWindow):
         self.plot_lines.clear()
         if self.settings.graph_label:
             self.legend.clear()
+        self.panel.x_axis.setEnabled(False)
 
 
     @Slot()
@@ -137,7 +138,8 @@ class MathExpression(QMainWindow):
         self.add_graph_label()
         self.area_messages.clear()
         self.plot_widget.setXRange(x_min, x_max)
-        self.axis_x = self.plot_widget.getViewBox().viewRange()[0]
+        self.axis_x = [x_min, x_max]
+        self.panel.x_axis.setEnabled(True)
 
 
     def create_gui(self):

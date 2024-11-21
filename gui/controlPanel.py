@@ -73,6 +73,7 @@ class ControlPanel:
         self.x_axis.setOrientation(Qt.Orientation.Horizontal)
         self.x_axis.setValue(11)
         self.x_axis.setFixedWidth(300)
+        self.x_axis.setEnabled(False)
 
         button_x_axis = create_button("Default", 80, lambda: self.x_axis.setValue(11))
 
