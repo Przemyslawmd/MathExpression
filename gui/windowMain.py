@@ -3,6 +3,7 @@ from collections import namedtuple
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QGridLayout, QMainWindow, QLineEdit, QTextEdit, QToolBar, QVBoxLayout, QWidget
+from math import fabs
 from numpy import arange
 from pyqtgraph import PlotWidget, mkPen
 import pyqtgraph as pg
@@ -34,8 +35,7 @@ class MathExpression(QMainWindow):
         self.plot_lines = []
         self.setWindowTitle(' ')
         self.legend = pg.LegendItem((50, 100), offset=(50, 20))
-        self.x_min = -360
-        self.x_max = 360
+        self.axis_x = None
 
 
     @Slot()
@@ -77,10 +77,15 @@ class MathExpression(QMainWindow):
 
 
     @Slot()
-    def change_ratio(self):
-        slider_index = self.panel.x_axis.value()
-        axis = self.panel.x_axis_values[slider_index]
-        self.plot_widget.setXRange(self.x_min * axis, self.x_max * axis)
+    def change_axis_x(self):
+        index = self.panel.x_axis.value()
+        ratio = self.panel.x_axis_values[index]
+        x_min = self.axis_x[0]
+        x_max = self.axis_x[1]
+        axis_range = fabs(x_min) - fabs(x_max) if x_max <= 0 and x_min < 0 else x_max - x_min
+        new_axis_range = axis_range * ratio
+        change_x = (new_axis_range - axis_range) / 2
+        self.plot_widget.setXRange(x_min - change_x, x_max + change_x)
 
 
     def print_message(self, message: str):
@@ -131,6 +136,8 @@ class MathExpression(QMainWindow):
         self.plot_lines.append(line)
         self.add_graph_label()
         self.area_messages.clear()
+        self.plot_widget.setXRange(x_min, x_max)
+        self.axis_x = self.plot_widget.getViewBox().viewRange()[0]
 
 
     def create_gui(self):
@@ -149,10 +156,10 @@ class MathExpression(QMainWindow):
         lay_main.addSpacing(10)
 
         lay_grid = QGridLayout()
-        self.panel.create_first_row(lay_grid, lambda: self.draw(), lambda: self.append(), self.x_min, self.x_max)
+        self.panel.create_first_row(lay_grid, lambda: self.draw(), lambda: self.append(), "-360", "360")
         self.panel.create_second_row(lay_grid, lambda: self.clear_insert_area(), lambda: self.clear_plot_area())
 
-        self.panel.connect_slider(self.change_ratio)
+        self.panel.connect_slider(self.change_axis_x)
 
         lay_grid.setRowMinimumHeight(0, 40)
         lay_grid.setRowMinimumHeight(1, 40)
