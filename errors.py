@@ -22,28 +22,33 @@ class Error(Enum):
     VALIDATOR_ROOT = 14
     VALIDATOR_TRIGONOMETRY = 15
 
+    INTERNAL_EXCEPTION_SINGLE_TOKEN = 16
+
 
 ErrorMessage = {
-    Error.MAX_POINTS: "Number of maximum points (100000) to calculate is exceeded, change x range or precision.",
+    Error.MAX_POINTS: "Number of maximum points (100000) is exceeded, change x range or precision.",
     Error.PARSER_BRACKET: "Parsing brackets error.",
     Error.PARSER_BRACKET_ANGLE: "Invalid angle bracket\nAngle brackets are allowed only as a base for logarithm "
                                 "and root, pattern is sqrt<NUMBER> or log<NUMBER>\n"
                                 "For example: sqrt<4>16, log<2>x",
-    Error.PARSER_NEGATIVE_SYMBOL: "Improper usage of negative symbol.",
-    Error.PARSER_SYMBOL: "Improper symbol.",
+    Error.PARSER_NEGATIVE_SYMBOL: "Improper usage of negative symbol",
+    Error.PARSER_SYMBOL: "Invalid symbol",
 
     Error.VALIDATOR_BRACKET_LEFT:
-        "Invalid symbol after left bracket, symbols: plus, multiplication, division and right bracket are prohibited.",
+        "Invalid symbol after left bracket, symbols: plus, multiplication, division and right bracket are prohibited",
     Error.VALIDATOR_BRACKET_RIGHT: "Improper symbol after right bracket",
 
     Error.VALIDATOR_FIRST_TOKEN: "Invalid the first symbol in the expression",
     Error.VALIDATOR_LAST_TOKEN: "Invalid the last symbol in the expression",
 
-    Error.VALIDATOR_NUMBER: "Empty space between numbers.",
+    Error.VALIDATOR_NUMBER: "Empty space between numbers",
     Error.VALIDATOR_ARITHMETIC:
-        "Invalid symbol after arithmetic symbol: plus, multiplication, division and right bracket are prohibited.",
-    Error.VALIDATOR_LOGARITHM: "Logarithm can be followed only by : x, number, opening bracket.",
-    Error.VALIDATOR_POWER: "Power can be followed only by : x, number, opening bracket.",
-    Error.VALIDATOR_ROOT: "Root can be followed only by : x, number, opening bracket.",
-    Error.VALIDATOR_TRIGONOMETRY: "Trigonometry function can be be followed only by : x, number, opening bracket.",
+        "Invalid symbol after arithmetic symbol: plus, multiplication, division and right bracket are prohibited",
+    Error.VALIDATOR_LOGARITHM: "Logarithm can be followed only by : x, number, opening bracket",
+    Error.VALIDATOR_POWER: "Power can be followed only by : x, number, opening bracket",
+    Error.VALIDATOR_ROOT: "Root can be followed only by : x, number, opening bracket",
+    Error.VALIDATOR_TRIGONOMETRY: "Trigonometry function can be be followed only by : x, number, opening bracket",
+
+    Error.INTERNAL_EXCEPTION_SINGLE_TOKEN: "Exception: Single token is not X and not number",
 }
+

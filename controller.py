@@ -1,6 +1,8 @@
 
 from numpy import arange
 
+from errors import Error
+from errorStorage import ErrorStorage
 from postfix.calculator import calculate
 from postfix.postfix import Postfix
 from tokens.parser import Parser
@@ -24,11 +26,12 @@ def calculate_values(expression, x_min, x_max, precision) -> list or None:
 # ------------------------------- INTERNAL ----------------------------------- #
 
 def fill_values(x_min, x_max, precision, token) -> list or None:
+    data = arange(x_min, x_max + precision, precision)
     if token.type is TokenType.X:
-        return arange(x_min, x_max + precision, precision)
+        return data
     if token.type is TokenType.NUMBER:
-        data = arange(x_min, x_max + precision, precision)
         data.fill(token.data)
         return data
+    ErrorStorage.put_error(Error.INTERNAL_EXCEPTION_SINGLE_TOKEN)
     return None
 
