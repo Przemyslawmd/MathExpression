@@ -68,33 +68,33 @@ def check_continuity(numbers) -> list:
     return discontinuity_points
 
 
-def build_functions_stack(tokens) -> list:
+def build_functions(tokens) -> list:
     functions = []
-    tokens_stack = deque()
+    args = deque()
 
     for token in tokens:
         if token.type is TokenType.NUMBER:
-            tokens_stack.append(token.data)
+            args.append(token.data)
         elif token.type is TokenType.X:
-            tokens_stack.append('X')
+            args.append('X')
         elif token.type in TokenGroup.arithmetic or token.type is TokenType.POWER:
-            arg_1 = tokens_stack.pop()
-            arg_2 = tokens_stack.pop()
+            arg_1 = args.pop()
+            arg_2 = args.pop()
             functions.append(Action(actions[token.type], arg_1, arg_2))
-            tokens_stack.append('RESULT')
+            args.append('RESULT')
         elif token.type in TokenGroup.trigonometry:
-            arg_1 = tokens_stack.pop()
+            arg_1 = args.pop()
             functions.append(Action(actions[token.type], arg_1, None))
-            tokens_stack.append('RESULT')
+            args.append('RESULT')
         elif token.type is TokenType.LOG or TokenType.ROOT:
-            arg_1 = tokens_stack.pop()
+            arg_1 = args.pop()
             functions.append(Action(actions[token.type], arg_1, token.data))
-            tokens_stack.append('RESULT')
+            args.append('RESULT')
     return functions
 
 
 def calculate(tokens, min_x, max_x, precision=1.0) -> list:
-    functions = build_functions_stack(tokens)
+    functions = build_functions(tokens)
     x_values = arange(min_x, max_x + precision, precision)
     data_stack = deque()
     results = deque()
