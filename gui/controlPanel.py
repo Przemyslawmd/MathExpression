@@ -44,16 +44,16 @@ class ControlPanel:
         )
 
 
-    def create_first_row(self, layout, func_draw, func_append, x_min, x_max):
+    def create_first_row(self, layout, func_draw, func_append):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(create_button("Draw Graph", 140, func_draw), 0, 0)
         layout.addWidget(create_button("Append Graph", 140, func_append), 0, 1)
         layout.setSpacing(15)
 
-        widget_x_min = create_widget_layout(self.x_min, 40, "X Min", 40, Qt.AlignmentFlag.AlignCenter, str(x_min))
+        widget_x_min = create_widget_layout(self.x_min, 40, "X Min", 40, Qt.AlignmentFlag.AlignCenter, "-360")
         layout.addLayout(widget_x_min, 0, 3)
 
-        widget_x_max = create_widget_layout(self.x_max, 40, "X Max", 40, Qt.AlignmentFlag.AlignCenter, str(x_max))
+        widget_x_max = create_widget_layout(self.x_max, 40, "X Max", 40, Qt.AlignmentFlag.AlignCenter, "360")
         layout.addLayout(widget_x_max, 0, 4)
 
         for x in (0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10):
