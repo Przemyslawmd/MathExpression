@@ -139,7 +139,7 @@ class MathExpression(QMainWindow):
         self.area_messages.clear()
         self.plot_widget.setXRange(x_min, x_max)
         self.axis_x = [x_min, x_max]
-        self.panel.x_axis.setEnabled(True)
+        self.panel.reset_slider()
 
 
     def create_gui(self):

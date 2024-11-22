@@ -98,6 +98,11 @@ class ControlPanel:
     def connect_slider(self, func):
         self.x_axis.valueChanged.connect(func)
 
+
+    def reset_slider(self):
+        self.x_axis.setEnabled(True)
+        self.x_axis.setValue(11)
+
     # ------------------------------- INTERNAL ----------------------------------- #
 
     def on_pen_colors_changed(self, color_text):
