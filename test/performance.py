@@ -1,3 +1,4 @@
+
 from timeit import default_timer
 from collections import namedtuple
 from datetime import datetime
@@ -25,19 +26,11 @@ class TestPerformance(TestCase):
 
         file = open("performanceResults.txt", "a")
         file.write(f"{datetime.now()}\n\n")
-        [file.write(f"{r.expression:<64} "
-                    f"action: {r.action:<14} "
-                    f"range: {r.min}:{r.max:<5} "
-                    f"precision: {r.precision:<7} "
-                    f"time: {r.time}\n") for r in self.results]
+        for r in self.results:
+            file.write(f"{r.expression:<64} {r.action:<14} : {r.min}:{r.max:<5} : {r.precision:<7} : {r.time}\n")
+            print(f"{r.expression:<64} {r.action:<14} : {r.min}:{r.max:<5} : {r.precision:<7} : {r.time}")
         file.write("\n\n")
         file.close()
-
-        [print(f"{r.expression:<64} "
-               f"action: {r.action:<14} "
-               f"range: {r.min}:{r.max:<5} "
-               f"precision: {r.precision:<7} "
-               f"time: {r.time}") for r in self.results]
 
 
     def calculation_1(self, count):
@@ -118,3 +111,4 @@ class TestPerformance(TestCase):
             Parser(expression).parse()
             end = default_timer()
             self.results.append(Result(expression, "parser", 0, 0, 0, end - start))
+
