@@ -30,6 +30,16 @@ def create_widget_layout(widget, width, text, text_width, alignment=None, defaul
     return layout
 
 
+def prepare_axis_slider(slider):
+    slider.setMinimum(0)
+    slider.setMaximum(22)
+    slider.setSingleStep(1)
+    slider.setOrientation(Qt.Orientation.Horizontal)
+    slider.setValue(11)
+    slider.setFixedWidth(300)
+    slider.setEnabled(False)
+
+
 class ControlPanel:
 
     def __init__(self):
@@ -64,15 +74,7 @@ class ControlPanel:
         layout_ratio.setSpacing(8)
         label = QLabel("X Axis Range")
         label.setFixedSize(80, 17)
-
-        self.x_axis.setMinimum(0)
-        self.x_axis.setMaximum(22)
-        self.x_axis.setSingleStep(1)
-        self.x_axis.setOrientation(Qt.Orientation.Horizontal)
-        self.x_axis.setValue(11)
-        self.x_axis.setFixedWidth(300)
-        self.x_axis.setEnabled(False)
-
+        prepare_axis_slider(self.x_axis)
         button_x_axis = create_button("Default", 80, lambda: self.x_axis.setValue(11))
 
         layout_ratio.addWidget(label)
@@ -96,15 +98,7 @@ class ControlPanel:
         layout_ratio.setSpacing(8)
         label = QLabel("Y Axis Range")
         label.setFixedSize(80, 17)
-
-        self.y_axis.setMinimum(0)
-        self.y_axis.setMaximum(22)
-        self.y_axis.setSingleStep(1)
-        self.y_axis.setOrientation(Qt.Orientation.Horizontal)
-        self.y_axis.setValue(11)
-        self.y_axis.setFixedWidth(300)
-        self.y_axis.setEnabled(False)
-
+        prepare_axis_slider(self.y_axis)
         button_y_axis = create_button("Default", 80, lambda: self.y_axis.setValue(11))
 
         layout_ratio.addWidget(label)
