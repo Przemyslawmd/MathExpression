@@ -160,6 +160,7 @@ class MathExpression(QMainWindow):
 
         lay_main = QVBoxLayout()
         lay_main.addSpacing(20)
+        self.insert_expression.setTextMargins(5, 0, 0, 0)
         lay_main.addWidget(self.insert_expression)
         lay_main.addSpacing(10)
 
