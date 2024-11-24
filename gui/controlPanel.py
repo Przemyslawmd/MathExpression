@@ -112,7 +112,7 @@ class ControlPanel:
         self.y_axis.valueChanged.connect(func_y)
 
 
-    def reset_slider(self):
+    def reset_sliders(self):
         self.x_axis.setEnabled(True)
         self.y_axis.setEnabled(True)
         self.x_axis.setValue(11)

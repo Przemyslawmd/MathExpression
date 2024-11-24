@@ -13,7 +13,7 @@ from errors import Error, ErrorMessage
 from errorStorage import ErrorStorage
 from settings import Settings
 from gui.controlPanel import ControlPanel
-from gui.utils import is_max_points_exceeded, range_x, calculate_range_change
+from gui.utils import max_points_exceeded, calculate_range_x, calculate_axis_change
 from gui.windowAbout import WindowAbout
 from gui.windowSettings import WindowSettings
 
@@ -42,7 +42,6 @@ class MathExpression(QMainWindow):
     def draw(self):
         self.clear_plot_area()
         self.create_graph()
-        self.axis_y = self.plot_widget.getViewBox().viewRange()[1]
 
 
     @Slot()
@@ -81,17 +80,15 @@ class MathExpression(QMainWindow):
 
     @Slot()
     def change_axis_x(self):
-        x_min = self.axis_x[0]
-        x_max = self.axis_x[1]
-        change = calculate_range_change(self.panel.x_axis, x_min, x_max)
+        x_min, x_max = self.axis_x
+        change = calculate_axis_change(self.panel.x_axis, x_min, x_max)
         self.plot_widget.setXRange(x_min - change, x_max + change)
 
 
     @Slot()
     def change_axis_y(self):
-        y_min = self.axis_y[0]
-        y_max = self.axis_y[1]
-        change = calculate_range_change(self.panel.y_axis, y_min, y_max)
+        y_min, y_max = self.axis_y
+        change = calculate_axis_change(self.panel.y_axis, y_min, y_max)
         self.plot_widget.setYRange(y_min - change, y_max + change)
 
 
@@ -120,12 +117,12 @@ class MathExpression(QMainWindow):
         min_str = self.panel.x_min.text().lstrip()
         max_str = self.panel.x_max.text().lstrip()
 
-        x_min, x_max = range_x(min_str, max_str)
+        x_min, x_max = calculate_range_x(min_str, max_str)
         if x_min is None:
             self.print_message_from_storage()
             return
         precision = self.settings.precision
-        if is_max_points_exceeded(precision, x_min, x_max):
+        if max_points_exceeded(precision, x_min, x_max):
             self.print_message(ErrorMessage[Error.MAX_POINTS])
             return
 
@@ -143,11 +140,12 @@ class MathExpression(QMainWindow):
         self.plot_lines.append(line)
         self.add_graph_label()
         self.area_messages.clear()
-        self.plot_widget.setXRange(x_min, x_max)
 
         self.axis_x = [x_min, x_max]
         self.axis_y = [min(y_values), max(y_values)]
-        self.panel.reset_slider()
+        self.plot_widget.setXRange(x_min, x_max)
+        self.plot_widget.setYRange(self.axis_y[0], self.axis_y[1])
+        self.panel.reset_sliders()
 
 
     def create_gui(self):
