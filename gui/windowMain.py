@@ -3,7 +3,6 @@ from collections import namedtuple
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QGridLayout, QMainWindow, QLineEdit, QTextEdit, QToolBar, QVBoxLayout, QWidget
-from math import fabs
 from numpy import arange
 from pyqtgraph import PlotWidget, mkPen
 import pyqtgraph as pg
@@ -14,7 +13,7 @@ from errors import Error, ErrorMessage
 from errorStorage import ErrorStorage
 from settings import Settings
 from gui.controlPanel import ControlPanel
-from gui.utils import is_max_points_exceeded, range_x
+from gui.utils import is_max_points_exceeded, range_x, calculate_range_change
 from gui.windowAbout import WindowAbout
 from gui.windowSettings import WindowSettings
 
@@ -36,12 +35,14 @@ class MathExpression(QMainWindow):
         self.setWindowTitle(' ')
         self.legend = pg.LegendItem((50, 100), offset=(50, 20))
         self.axis_x = None
+        self.axis_y = None
 
 
     @Slot()
     def draw(self):
         self.clear_plot_area()
         self.create_graph()
+        self.axis_y = self.plot_widget.getViewBox().viewRange()[1]
 
 
     @Slot()
@@ -65,6 +66,7 @@ class MathExpression(QMainWindow):
         if self.settings.graph_label:
             self.legend.clear()
         self.panel.x_axis.setEnabled(False)
+        self.panel.y_axis.setEnabled(False)
 
 
     @Slot()
@@ -79,14 +81,18 @@ class MathExpression(QMainWindow):
 
     @Slot()
     def change_axis_x(self):
-        index = self.panel.x_axis.value()
-        ratio = self.panel.x_axis_values[index]
         x_min = self.axis_x[0]
         x_max = self.axis_x[1]
-        axis_range = fabs(x_min) - fabs(x_max) if x_max <= 0 and x_min < 0 else x_max - x_min
-        new_axis_range = axis_range * ratio
-        change_x = (new_axis_range - axis_range) / 2
-        self.plot_widget.setXRange(x_min - change_x, x_max + change_x)
+        change = calculate_range_change(self.panel.x_axis, x_min, x_max)
+        self.plot_widget.setXRange(x_min - change, x_max + change)
+
+
+    @Slot()
+    def change_axis_y(self):
+        y_min = self.axis_y[0]
+        y_max = self.axis_y[1]
+        change = calculate_range_change(self.panel.y_axis, y_min, y_max)
+        self.plot_widget.setYRange(y_min - change, y_max + change)
 
 
     def print_message(self, message: str):
@@ -138,7 +144,9 @@ class MathExpression(QMainWindow):
         self.add_graph_label()
         self.area_messages.clear()
         self.plot_widget.setXRange(x_min, x_max)
+
         self.axis_x = [x_min, x_max]
+        self.axis_y = [min(y_values), max(y_values)]
         self.panel.reset_slider()
 
 
@@ -161,7 +169,7 @@ class MathExpression(QMainWindow):
         self.panel.create_first_row(lay_panel, lambda: self.draw(), lambda: self.append())
         self.panel.create_second_row(lay_panel, lambda: self.clear_insert_area(), lambda: self.clear_plot_area())
 
-        self.panel.connect_slider(self.change_axis_x)
+        self.panel.connect_sliders(self.change_axis_x, self.change_axis_y)
 
         lay_panel.setRowMinimumHeight(0, 40)
         lay_panel.setRowMinimumHeight(1, 40)

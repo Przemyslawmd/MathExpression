@@ -1,5 +1,12 @@
 
+from math import fabs
+
 from errorStorage import ErrorStorage
+
+
+axis_changes = (
+    0.1, 0.11, 0.125, 0.15, 0.2, 0.25, 0.33, 0.5, 0.65, 0.75, 0.85, 1, 1.15, 1.33, 1.5, 2, 3, 4, 5, 7, 8, 9, 10
+)
 
 
 def is_max_points_exceeded(precision, x_min, x_max):
@@ -29,4 +36,12 @@ def calculate_range(min_str, max_str):
         ErrorStorage.put_error("Range error: minimum higher than maximum")
         return None, None
     return min_value, max_value
+
+
+def calculate_range_change(slider, min_axis, max_axis):
+    index = slider.value()
+    ratio = axis_changes[index]
+    axis_range = fabs(min_axis) - fabs(max_axis) if max_axis <= 0 and min_axis < 0 else max_axis - min_axis
+    new_axis_range = axis_range * ratio
+    return (new_axis_range - axis_range) / 2
 

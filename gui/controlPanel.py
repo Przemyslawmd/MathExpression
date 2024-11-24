@@ -39,9 +39,7 @@ class ControlPanel:
         self.pen_colors = QComboBox()
         self.current_pen_color = (0, 255, 128)
         self.x_axis = QSlider()
-        self.x_axis_values = (
-            0.1, 0.11, 0.125, 0.15, 0.2, 0.25, 0.33, 0.5, 0.65, 0.75, 0.85, 1, 1.15, 1.33, 1.5, 2, 3, 4, 5, 7, 8, 9, 10
-        )
+        self.y_axis = QSlider()
 
 
     def create_first_row(self, layout, func_draw, func_append):
@@ -94,14 +92,37 @@ class ControlPanel:
         widget_pen_color = create_widget_layout(self.pen_colors, 100, "Line Color", 65)
         layout.addLayout(widget_pen_color, 1, 6)
 
+        layout_ratio = QHBoxLayout()
+        layout_ratio.setSpacing(8)
+        label = QLabel("Y Axis Range")
+        label.setFixedSize(80, 17)
 
-    def connect_slider(self, func):
-        self.x_axis.valueChanged.connect(func)
+        self.y_axis.setMinimum(0)
+        self.y_axis.setMaximum(22)
+        self.y_axis.setSingleStep(1)
+        self.y_axis.setOrientation(Qt.Orientation.Horizontal)
+        self.y_axis.setValue(11)
+        self.y_axis.setFixedWidth(300)
+        self.y_axis.setEnabled(False)
+
+        button_y_axis = create_button("Default", 80, lambda: self.y_axis.setValue(11))
+
+        layout_ratio.addWidget(label)
+        layout_ratio.addWidget(self.y_axis)
+        layout_ratio.addWidget(button_y_axis)
+        layout.addLayout(layout_ratio, 1, 8)
+
+
+    def connect_sliders(self, func_x, func_y):
+        self.x_axis.valueChanged.connect(func_x)
+        self.y_axis.valueChanged.connect(func_y)
 
 
     def reset_slider(self):
         self.x_axis.setEnabled(True)
+        self.y_axis.setEnabled(True)
         self.x_axis.setValue(11)
+        self.y_axis.setValue(11)
 
     # ------------------------------- INTERNAL ----------------------------------- #
 
