@@ -27,7 +27,9 @@ right_multiplication = (
 def add_multiplication_tokens(tokens):
     indices = []
     for index, token in enumerate(tokens[:-1]):
-        if token.type in left_multiplication and tokens[index + 1].type in right_multiplication:
+        if (token.type in left_multiplication
+                and tokens[index + 1].type in right_multiplication
+                and token.type is not tokens[index + 1].type):
             indices.append(index + 1)
     for index in reversed(indices):
         tokens.insert(index, Token(TokenType.MULTIPLICATION))

@@ -21,8 +21,9 @@ class Error(Enum):
     VALIDATOR_POWER = 13
     VALIDATOR_ROOT = 14
     VALIDATOR_TRIGONOMETRY = 15
+    VALIDATOR_X = 16
 
-    INTERNAL_EXCEPTION_SINGLE_TOKEN = 16
+    INTERNAL_EXCEPTION_SINGLE_TOKEN = 17
 
 
 ErrorMessage = {
@@ -48,6 +49,7 @@ ErrorMessage = {
     Error.VALIDATOR_POWER: "Power can be followed only by : x, number, opening bracket",
     Error.VALIDATOR_ROOT: "Root can be followed only by : x, number, opening bracket",
     Error.VALIDATOR_TRIGONOMETRY: "Trigonometry function can be be followed only by : x, number, opening bracket",
+    Error.VALIDATOR_X: "Invalid symbol after X, symbols allowed: right bracket, plus, minus, division and multiplication",
 
     Error.INTERNAL_EXCEPTION_SINGLE_TOKEN: "Exception: Single token is not X and not number",
 }

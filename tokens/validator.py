@@ -94,5 +94,8 @@ def validate_tokens(tokens) -> Error:
             case TokenType.NUMBER:
                 if next_type not in allowed[TokenType.NUMBER]:
                     return Error.VALIDATOR_NUMBER
+            case TokenType.X:
+                if next_type not in allowed[TokenType.X]:
+                    return Error.VALIDATOR_X
     return Error.NO_ERROR
 
