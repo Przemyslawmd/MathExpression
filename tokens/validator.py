@@ -6,8 +6,8 @@ from tokens.tokenGroup import TokenGroup
 
 allowed = {
     TokenType.BRACKET_RIGHT: (TokenType.BRACKET_RIGHT, TokenType.POWER) + TokenGroup.arithmetic,
-    TokenType.NUMBER: (TokenType.X, TokenType.BRACKET_RIGHT, TokenType.POWER) + TokenGroup.arithmetic,
-    TokenType.X: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic),
+    TokenType.NUMBER: (TokenType.BRACKET_RIGHT, TokenType.POWER) + TokenGroup.arithmetic,
+    TokenType.X: (TokenType.BRACKET_RIGHT, TokenType.POWER) + TokenGroup.arithmetic,
     TokenType.LOG: (TokenType.NUMBER, TokenType.X, TokenType.BRACKET_LEFT),
     TokenType.POWER: (TokenType.NUMBER, TokenType.X, TokenType.BRACKET_LEFT),
     TokenType.ROOT: (TokenType.NUMBER, TokenType.X, TokenType.BRACKET_LEFT),
@@ -70,6 +70,12 @@ def validate_tokens(tokens) -> Error:
     for index, token in enumerate(tokens[:-1]):
         next_type = tokens[index + 1].type
         match token.type:
+            case TokenType.NUMBER:
+                if next_type not in allowed[TokenType.NUMBER]:
+                    return Error.VALIDATOR_NUMBER
+            case TokenType.X:
+                if next_type not in allowed[TokenType.X]:
+                    return Error.VALIDATOR_X
             case TokenType.BRACKET_LEFT:
                 if next_type in forbidden[TokenType.BRACKET_LEFT]:
                     return Error.VALIDATOR_BRACKET_LEFT
