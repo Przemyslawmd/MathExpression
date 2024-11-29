@@ -4,8 +4,6 @@ from tokens.token import TokenType
 
 class TokenGroup:
 
-    bracket = (TokenType.BRACKET_LEFT, TokenType.BRACKET_RIGHT)
-
     arithmetic = (TokenType.DIVISION, TokenType.MINUS, TokenType.MULTIPLICATION, TokenType.PLUS)
 
     trigonometry = (TokenType.COSINE, TokenType.COTANGENT, TokenType.SINE, TokenType.TANGENT)
@@ -21,5 +19,4 @@ class TokenGroup:
                  TokenType.LOG,
                  TokenType.POWER,
                  TokenType.ROOT)
-
 

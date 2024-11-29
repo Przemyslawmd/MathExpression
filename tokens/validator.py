@@ -61,10 +61,9 @@ def validate_tokens(tokens) -> Error:
                           TokenType.POWER):
         return Error.VALIDATOR_FIRST_TOKEN
 
-    last_index = len(tokens) - 1
-    if tokens[last_index].type not in (TokenType.X,
-                                       TokenType.NUMBER,
-                                       TokenType.BRACKET_RIGHT):
+    if tokens[-1].type not in (TokenType.X,
+                               TokenType.NUMBER,
+                               TokenType.BRACKET_RIGHT):
         return Error.VALIDATOR_LAST_TOKEN
 
     for index, token in enumerate(tokens[:-1]):
