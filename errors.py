@@ -26,7 +26,7 @@ class Error(Enum):
     INTERNAL_EXCEPTION_SINGLE_TOKEN = 17
 
 
-ErrorMessage = {
+Message = {
     Error.MAX_POINTS: "Number of maximum points (100000) is exceeded, change x range or precision.",
     Error.PARSER_BRACKET: "Parsing brackets error.",
     Error.PARSER_BRACKET_ANGLE: "Invalid angle bracket\nAngle brackets are allowed only as a base for logarithm "

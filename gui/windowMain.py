@@ -9,7 +9,7 @@ import pyqtgraph as pg
 
 from color import Colors
 from controller import calculate_values
-from errors import Error, ErrorMessage
+from errors import Error, Message
 from errorStorage import ErrorStorage
 from settings import Settings
 from gui.controlPanel import ControlPanel
@@ -123,7 +123,7 @@ class MathExpression(QMainWindow):
             return
         precision = self.settings.precision
         if max_points_exceeded(precision, x_min, x_max):
-            self.print_message(ErrorMessage[Error.MAX_POINTS])
+            self.print_message(Message[Error.MAX_POINTS])
             return
 
         y_values = calculate_values(self.insert_expression.text(), x_min, x_max, precision)

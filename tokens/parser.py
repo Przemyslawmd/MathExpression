@@ -1,7 +1,7 @@
 
 from collections import deque
 
-from errors import Error, ErrorMessage
+from errors import Error, Message
 from errorStorage import ErrorStorage
 from tokens.postParser import add_multiplication_tokens, remove_angle_brackets, remove_negative_tokens
 from tokens.token import Token, TokenType
@@ -113,11 +113,11 @@ class Parser:
             else:
                 token_symbol = one_char_tokens.get(current_char)
                 if token_symbol is None:
-                    ErrorStorage.put_error(ErrorMessage[Error.PARSER_SYMBOL] + f": {current_char}")
+                    ErrorStorage.put_error(Message[Error.PARSER_SYMBOL] + f": {current_char}")
                     return None
                 if token_symbol is TokenType.MINUS:
                     if not self.check_minus():
-                        ErrorStorage.put_error(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
+                        ErrorStorage.put_error(Message[Error.PARSER_NEGATIVE_SYMBOL])
                         return None
                 else:
                     self.tokens.append(Token(token_symbol))
@@ -125,18 +125,18 @@ class Parser:
         tokens_list = list(self.tokens)
         error = validate_brackets(tokens_list)
         if error != Error.NO_ERROR:
-            ErrorStorage.put_error(ErrorMessage[error])
+            ErrorStorage.put_error(Message[error])
             return None
         if not remove_angle_brackets(tokens_list):
-            ErrorStorage.put_error(ErrorMessage[Error.PARSER_BRACKET_ANGLE])
+            ErrorStorage.put_error(Message[Error.PARSER_BRACKET_ANGLE])
             return None
         add_multiplication_tokens(tokens_list)
         if not remove_negative_tokens(tokens_list):
-            ErrorStorage.put_error(ErrorMessage[Error.PARSER_NEGATIVE_SYMBOL])
+            ErrorStorage.put_error(Message[Error.PARSER_NEGATIVE_SYMBOL])
             return None
         error = validate_tokens(tokens_list)
         if error != Error.NO_ERROR:
-            ErrorStorage.put_error(ErrorMessage[error])
+            ErrorStorage.put_error(Message[error])
             return None
         return tokens_list
 
