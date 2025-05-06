@@ -22,7 +22,7 @@ class TestCalculate(TestCase):
 
     def test_fill_x_brackets_1(self):
         step = 0.5
-        result = calculate_values("(x)",-30, 20, step)
+        result = calculate_values("(x)", -30, 20, step)
         assert len(result) == 101
         shift = 0
         for value in result:
@@ -36,7 +36,7 @@ class TestCalculate(TestCase):
         assert len(result) == 31
         shift = 0
         for value in result:
-            assert isclose(value,2 + shift)
+            assert isclose(value, 2 + shift)
             shift += step
 
 

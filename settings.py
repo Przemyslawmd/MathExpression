@@ -12,7 +12,7 @@ class Settings:
         self.graph_label = False
 
 
-    def set_settings(self, x_grid, y_grid, precision, background, graph_label):
+    def apply(self, x_grid, y_grid, precision, background, graph_label):
         grid_changed = self.x_grid != x_grid or self.y_grid != y_grid
         self.x_grid = x_grid
         self.y_grid = y_grid

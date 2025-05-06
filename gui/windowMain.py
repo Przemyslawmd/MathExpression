@@ -198,7 +198,13 @@ class MathExpression(QMainWindow):
         main_widget.setContentsMargins(20, 0, 20, 0)
 
 
-    def apply_settings(self, grid_changed, background_changed):
+    def apply_settings(self, x_grid, y_grid, precision, background, label):
+
+        grid_changed, background_changed = self.settings.apply(x_grid,
+                                                               y_grid,
+                                                               precision,
+                                                               background,
+                                                               label)
         if grid_changed is True:
             self.plot_widget.showGrid(x=self.settings.x_grid, y=self.settings.y_grid)
         if background_changed is True:
