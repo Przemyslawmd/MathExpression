@@ -3,9 +3,10 @@ from math import isclose
 from unittest import TestCase
 
 from controller import calculate_values
-from postfix.calculator import calculate
+from postfix.calculator import calculate, calculate_tree
 from postfix.postfix import Postfix
 from tokens.parser import Parser
+from postfix.tree import create_tree
 
 
 class TestCalculate(TestCase):
@@ -200,3 +201,9 @@ class TestCalculate(TestCase):
         assert result[4] == 18
 
 
+    def test_calculate_tree_1(self):
+        tokens = Parser("(2 + x)(x - 4)").parse()
+        postfix = Postfix().create_postfix(tokens)
+        root = create_tree(postfix)
+        result = calculate_tree(root, 6, 0, 1)
+        assert result == 16

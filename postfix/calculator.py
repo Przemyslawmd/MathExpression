@@ -125,3 +125,28 @@ def calculate(tokens, min_x, max_x, precision=1.0) -> list:
     return results
 
 
+def calculate_tree(root, min_x, max_x, precision=1.0):
+    add_leaves_data(root)
+    traverse(root, min_x)
+    return root.data
+
+
+def add_leaves_data(node):
+    if node.left is not None:
+        add_leaves_data(node.left)
+    if node.right is not None:
+        add_leaves_data(node.right)
+    if node.token.type is TokenType.NUMBER:
+        node.data = node.token.data
+
+
+def traverse(node, x):
+    if node.left is not None and node.left.token.type != TokenType.X and node.left.token.type != TokenType.NUMBER:
+        traverse(node.left, x)
+    if node.right is not None and node.right.token.type != TokenType.X and node.right.token.type != TokenType.NUMBER:
+        traverse(node.right, x)
+    operand_1 = x if node.left.token.type is TokenType.X else node.left.data
+    operand_2 = x if node.right.token.type is TokenType.X else node.right.data
+    func = actions[node.token.type]
+    node.data = func(operand_2, operand_1)
+

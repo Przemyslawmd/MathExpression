@@ -5,4 +5,5 @@ class Node:
         self.token = token
         self.left = left
         self.right = right
+        self.data = None
 
