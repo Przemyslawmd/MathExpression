@@ -241,3 +241,27 @@ class TestCalculate(TestCase):
         assert result[2] == 14
         assert result[3] == 21
         assert result[4] == 28
+
+
+    def test_calculate_tree_5(self):
+        tokens = Parser("10tgx - xctgx").parse()
+        postfix = Postfix().create_postfix(tokens)
+        root = create_tree(postfix)
+        result = calculate_tree(root, 100, 104)
+        assert result[0] == -39.0801
+        assert result[1] == -31.8131
+        assert result[2] == -25.3655
+        assert result[3] == -19.5353
+        assert result[4] == -14.1777
+
+
+    def test_calculate_tree_6(self):
+        tokens = Parser("xcos10").parse()
+        postfix = Postfix().create_postfix(tokens)
+        root = create_tree(postfix)
+        result = calculate_tree(root, 10, 14)
+        assert result[0] == 9.8481
+        assert result[1] == 10.8329
+        assert result[2] == 11.8177
+        assert result[3] == 12.8025
+        assert result[4] == 13.7873

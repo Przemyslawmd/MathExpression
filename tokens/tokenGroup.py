@@ -8,6 +8,8 @@ class TokenGroup:
 
     trigonometry = (TokenType.COSINE, TokenType.COTANGENT, TokenType.SINE, TokenType.TANGENT)
 
+    operand = (TokenType.NUMBER, TokenType.X)
+
     operators = (TokenType.DIVISION,
                  TokenType.MINUS,
                  TokenType.MULTIPLICATION,

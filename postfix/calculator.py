@@ -132,6 +132,7 @@ def calculate_tree(root, min_x, max_x, precision = 1.0):
     for x in x_values:
         traverse(root, x)
         results.append(root.data)
+    results = [round(x, 4) for x in results]
     return results
 
 
@@ -145,12 +146,19 @@ def add_leaves_data(node):
 
 
 def traverse(node, x):
-    if node.left is not None and node.left.token.type != TokenType.X and node.left.token.type != TokenType.NUMBER:
-        traverse(node.left, x)
-    if node.right is not None and node.right.token.type != TokenType.X and node.right.token.type != TokenType.NUMBER:
-        traverse(node.right, x)
-    operand_1 = x if node.left.token.type is TokenType.X else node.left.data
-    operand_2 = x if node.right.token.type is TokenType.X else node.right.data
-    func = actions[node.token.type]
-    node.data = func(operand_2, operand_1)
+    left = node.left
+    right = node.right
+    if left is not None and left.token.type not in TokenGroup.operand:
+        traverse(left, x)
+    if right is not None and right.token.type not in TokenGroup.operand:
+        traverse(right, x)
+    if node.token.type in TokenGroup.trigonometry:
+        operand = radians(x) if left.token.type is TokenType.X else radians(left.data)
+        func = actions[node.token.type]
+        node.data = func(operand)
+    else:
+        operand_1 = x if left.token.type is TokenType.X else left.data
+        operand_2 = x if right.token.type is TokenType.X else right.data
+        func = actions[node.token.type]
+        node.data = func(operand_2, operand_1)
 

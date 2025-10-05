@@ -2,21 +2,15 @@
 from collections import deque
 
 from postfix.node import Node
-from tokens.token import TokenType
+from tokens.tokenGroup import TokenGroup
 
-
-one_operand = (TokenType.COSINE,
-               TokenType.COTANGENT,
-               TokenType.SINE,
-               TokenType.TANGENT,
-               TokenType.LOG)
 
 def create_tree(tokens):
     stack = deque()
     for token in tokens:
-        if token.type is TokenType.NUMBER or token.type is TokenType.X:
+        if token.type in TokenGroup.operand:
             stack.append(token)
-        elif token.type in one_operand:
+        elif token.type in TokenGroup.trigonometry:
             operand = stack.pop()
             left = operand if isinstance(operand, Node) else Node(operand)
             node = Node(token, left)
