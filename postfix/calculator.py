@@ -125,10 +125,14 @@ def calculate(tokens, min_x, max_x, precision=1.0) -> list:
     return results
 
 
-def calculate_tree(root, min_x, max_x, precision=1.0):
+def calculate_tree(root, min_x, max_x, precision = 1.0):
     add_leaves_data(root)
-    traverse(root, min_x)
-    return root.data
+    x_values = arange(min_x, max_x + precision, precision)
+    results = deque()
+    for x in x_values:
+        traverse(root, x)
+        results.append(root.data)
+    return results
 
 
 def add_leaves_data(node):
