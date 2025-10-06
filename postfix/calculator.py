@@ -1,5 +1,5 @@
 
-from collections import deque, namedtuple
+from collections import deque
 from enum import Enum
 
 from math import cos, log, nan, radians, sin, sqrt, tan
@@ -14,9 +14,6 @@ class Direction(Enum):
     DOWN = 1
     UP = 2
     NONE = 3
-
-
-Action = namedtuple('Action', ('function', 'arg_1', 'arg_2'))
 
 
 actions = {
@@ -68,64 +65,7 @@ def check_continuity(numbers) -> list:
     return discontinuity_points
 
 
-def build_functions(tokens) -> list:
-    functions = []
-    args = deque()
-
-    for token in tokens:
-        if token.type is TokenType.NUMBER:
-            args.append(token.data)
-        elif token.type is TokenType.X:
-            args.append('X')
-        elif token.type in TokenGroup.arithmetic or token.type is TokenType.POWER:
-            arg_1 = args.pop()
-            arg_2 = args.pop()
-            functions.append(Action(actions[token.type], arg_1, arg_2))
-            args.append('RESULT')
-        elif token.type in TokenGroup.trigonometry:
-            arg_1 = args.pop()
-            functions.append(Action(actions[token.type], arg_1, None))
-            args.append('RESULT')
-        elif token.type is TokenType.LOG or TokenType.ROOT:
-            arg_1 = args.pop()
-            functions.append(Action(actions[token.type], arg_1, token.data))
-            args.append('RESULT')
-    return functions
-
-
-def calculate(tokens, min_x, max_x, precision=1.0) -> list:
-    functions = build_functions(tokens)
-    x_values = arange(min_x, max_x + precision, precision)
-    data_stack = deque()
-    results = deque()
-    for x in x_values:
-        for func in functions:
-            arg_1 = data_stack.pop() if func.arg_1 == 'RESULT' else x if func.arg_1 == 'X' else func.arg_1
-            if func.arg_2 is None:
-                arg_1 = radians(arg_1)
-                result = func.function(arg_1)
-                data_stack.append(result)
-                continue
-
-            arg_2 = data_stack.pop() if func.arg_2 == 'RESULT' else x if func.arg_2 == 'X' else func.arg_2
-            result = func.function(arg_1, arg_2)
-            data_stack.append(result)
-
-        results.append(data_stack[0])
-        data_stack.clear()
-
-    results = [round(x, 4) for x in results]
-
-    division_or_tangent = filter(lambda t: t.type is TokenType.DIVISION or t.type is TokenType.TANGENT, tokens)
-    if any(division_or_tangent):
-        discontinuity_points = check_continuity(results)
-        for index in discontinuity_points:
-            results[index] = nan
-
-    return results
-
-
-def calculate_tree(root, min_x, max_x, precision = 1.0):
+def calculate(root, min_x, max_x, precision = 1.0, continuity = False):
     add_leaves_data(root)
     x_values = arange(min_x, max_x + precision, precision)
     results = deque()
@@ -133,13 +73,18 @@ def calculate_tree(root, min_x, max_x, precision = 1.0):
         traverse(root, x)
         results.append(root.data)
     results = [round(x, 4) for x in results]
+
+    if continuity:
+        discontinuity_points = check_continuity(results)
+        for index in discontinuity_points:
+            results[index] = nan
     return results
 
 
 def add_leaves_data(node):
     if node.left is not None:
         add_leaves_data(node.left)
-    if node.right is not None:
+    if node.right:
         add_leaves_data(node.right)
     if node.token.type is TokenType.NUMBER:
         node.data = node.token.data
@@ -148,9 +93,9 @@ def add_leaves_data(node):
 def traverse(node, x):
     left = node.left
     right = node.right
-    if left is not None and left.token.type not in TokenGroup.operand:
+    if left and left.token.type not in TokenGroup.operand:
         traverse(left, x)
-    if right is not None and right.token.type not in TokenGroup.operand:
+    if right and right.token.type not in TokenGroup.operand:
         traverse(right, x)
     if node.token.type in TokenGroup.trigonometry:
         operand = radians(x) if left.token.type is TokenType.X else radians(left.data)

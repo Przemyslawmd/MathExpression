@@ -3,7 +3,7 @@ from math import isclose
 from unittest import TestCase
 
 from controller import calculate_values
-from postfix.calculator import calculate, calculate_tree
+from postfix.calculator import calculate
 from postfix.postfix import Postfix
 from tokens.parser import Parser
 from postfix.tree import create_tree
@@ -69,7 +69,7 @@ class TestCalculate(TestCase):
         tokens = Parser("3 + x * 10 + x").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 2, 3)
+        result = calculate(root, 2, 3)
         assert result[0] == 25
         assert result[1] == 36
 
@@ -78,7 +78,7 @@ class TestCalculate(TestCase):
         tokens = Parser("2(x + 5)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 2, 3)
+        result = calculate(root, 2, 3)
         assert result[0] == 14
         assert result[1] == 16
 
@@ -87,7 +87,7 @@ class TestCalculate(TestCase):
         tokens = Parser("(3 + x) * (10 + x)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 5, 6)
+        result = calculate(root, 5, 6)
         assert result[0] == 120
         assert result[1] == 144
 
@@ -96,7 +96,7 @@ class TestCalculate(TestCase):
         tokens = Parser("2 * (3 + x) * 4").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 2, 5)
+        result = calculate(root, 2, 5)
         assert result[0] == 40
         assert result[1] == 48
         assert result[2] == 56
@@ -107,7 +107,7 @@ class TestCalculate(TestCase):
         tokens = Parser("(4x + x3)2x").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 0, 5)
+        result = calculate(root, 0, 5)
         assert result[0] == 0
         assert result[1] == 14
         assert result[2] == 56
@@ -120,7 +120,7 @@ class TestCalculate(TestCase):
         tokens = Parser("(2 - x3)4").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 10, 12)
+        result = calculate(root, 10, 12)
         assert result[0] == -112
         assert result[1] == -124
         assert result[2] == -136
@@ -130,7 +130,7 @@ class TestCalculate(TestCase):
         tokens = Parser("(-x - 3)4").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 5, 7)
+        result = calculate(root, 5, 7)
         assert result[0] == -32
         assert result[1] == -36
         assert result[2] == -40
@@ -140,7 +140,7 @@ class TestCalculate(TestCase):
         tokens = Parser("(x +3)(-5)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 100, 103)
+        result = calculate(root, 100, 103)
         assert result[0] == -515
         assert result[1] == -520
         assert result[2] == -525
@@ -151,7 +151,7 @@ class TestCalculate(TestCase):
         tokens = Parser("(-x -2)(-7)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, -2, 2)
+        result = calculate(root, -2, 2)
         assert result[0] == 0
         assert result[1] == 7
         assert result[2] == 14
@@ -163,7 +163,7 @@ class TestCalculate(TestCase):
         tokens = Parser("sinx + x").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 30, 30)
+        result = calculate(root, 30, 30)
         assert result[0] == 30.5
 
 
@@ -171,7 +171,7 @@ class TestCalculate(TestCase):
         tokens = Parser("xcos10").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 10, 14)
+        result = calculate(root, 10, 14)
         assert result[0] == 9.8481
         assert result[1] == 10.8329
         assert result[2] == 11.8177
@@ -183,7 +183,7 @@ class TestCalculate(TestCase):
         tokens = Parser("10tgx - xctgx").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 100, 104)
+        result = calculate(root, 100, 104)
         assert result[0] == -39.0801
         assert result[1] == -31.8131
         assert result[2] == -25.3655
@@ -195,7 +195,7 @@ class TestCalculate(TestCase):
         tokens = Parser("sqrtx + 10").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 16, 20)
+        result = calculate(root, 16, 20)
         assert result[0] == 14.0
         assert result[1] == 14.1231
         assert result[2] == 14.2426
@@ -207,7 +207,7 @@ class TestCalculate(TestCase):
         tokens = Parser("x + 2sqrt4").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate_tree(root, 10, 15)
+        result = calculate(root, 10, 15)
         assert result[0] == 14
         assert result[1] == 15
         assert result[2] == 16

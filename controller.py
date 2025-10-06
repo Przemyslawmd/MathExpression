@@ -5,6 +5,7 @@ from errors import Error
 from errorStorage import ErrorStorage
 from postfix.calculator import calculate
 from postfix.postfix import Postfix
+from postfix.tree import create_tree
 from tokens.parser import Parser
 from tokens.token import TokenType
 
@@ -20,7 +21,10 @@ def calculate_values(expression, x_min, x_max, precision) -> list or None:
     if len(postfix) == 1:
         return fill_values(x_min, x_max, precision, postfix[0])
 
-    result = calculate(postfix, x_min, x_max, precision)
+    root = create_tree(postfix)
+    division_or_tangent = filter(lambda t: t.type is TokenType.DIVISION or t.type is TokenType.TANGENT, tokens)
+    continuity = any(division_or_tangent)
+    result = calculate(root, x_min, x_max, precision, continuity)
     return result
 
 # ------------------------------- INTERNAL ----------------------------------- #
