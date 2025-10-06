@@ -1,7 +1,7 @@
 
 from unittest import TestCase
 
-from testUtils import check_tree
+from utils import check_tree
 from tokens.parser import Parser
 
 from postfix.tree import create_tree

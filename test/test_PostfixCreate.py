@@ -4,7 +4,7 @@ from unittest import TestCase
 from postfix.postfix import Postfix
 from tokens.parser import Parser
 from tokens.token import TokenType
-from testUtils import TokenTest, check_tokens
+from utils import TokenTest, check_tokens
 
 
 class TestPostfixCreate(TestCase):

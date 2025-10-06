@@ -2,8 +2,9 @@
 import math
 from unittest import TestCase
 
-from postfix.calculator import calculate
+from postfix.calculator import calculate, calculate_tree
 from postfix.postfix import Postfix
+from postfix.tree import create_tree
 from tokens.parser import Parser
 
 
@@ -20,7 +21,8 @@ class TestPostfixCalculateFullData(TestCase):
     def test_postfix_calculate_full_data_1(self):
         tokens = Parser("x^3 (x - 1)(x - 2)^2").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = calculate(postfix, -3, 3, 0.1)
+        root = create_tree(postfix)
+        result = calculate_tree(root, -3, 3, 0.1)
         file_result = self.read_data_from_file("data/resultsA")
         self.assertListEqual(file_result, result)
 
@@ -28,7 +30,8 @@ class TestPostfixCalculateFullData(TestCase):
     def test_postfix_calculate_full_data_2(self):
         tokens = Parser("(x^2 -3)/(x - 2)").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = calculate(postfix, -20, 20, 0.05)
+        root = create_tree(postfix)
+        result = calculate_tree(root, -20, 20, 0.05)
         file_result = self.read_data_from_file("data/resultsB")
         for x, y in zip(result, file_result):
             if math.isnan(x):
@@ -40,7 +43,8 @@ class TestPostfixCalculateFullData(TestCase):
     def test_postfix_calculate_full_data_3(self):
         tokens = Parser("sqrt((1-x)/(1+x))").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = calculate(postfix, -6, 5, 0.02)
+        root = create_tree(postfix)
+        result = calculate_tree(root, -6, 5, 0.02)
         file_result = self.read_data_from_file("data/resultsC")
         for x, y in zip(result, file_result):
             if math.isnan(x):
@@ -52,7 +56,8 @@ class TestPostfixCalculateFullData(TestCase):
     def test_postfix_calculate_full_data_4(self):
         tokens = Parser("(sinx)^2 + cosx").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = calculate(postfix, -360, 360, 0.2)
+        root = create_tree(postfix)
+        result = calculate_tree(root, -360, 360, 0.2)
         file_result = self.read_data_from_file("data/resultsD")
         self.assertListEqual(file_result, result)
 
@@ -60,7 +65,8 @@ class TestPostfixCalculateFullData(TestCase):
     def test_postfix_calculate_full_data_5(self):
         tokens = Parser("x^2 (x^2 -4)^3").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = calculate(postfix, -3, 3, 0.01)
+        root = create_tree(postfix)
+        result = calculate_tree(root, -3, 3, 0.01)
         file_result = self.read_data_from_file("data/resultsE")
         self.assertListEqual(file_result, result)
 
@@ -68,7 +74,8 @@ class TestPostfixCalculateFullData(TestCase):
     def test_postfix_calculate_full_data_6(self):
         tokens = Parser("(15x^2 - 13x -20)/(8x^2 + 10x -7)").parse()
         postfix = Postfix().create_postfix(tokens)
-        result = calculate(postfix, -10, 10, 0.01)
+        root = create_tree(postfix)
+        result = calculate_tree(root, -10, 10, 0.01)
         file_result = self.read_data_from_file("data/resultsF")
         for x, y in zip(result, file_result):
             if math.isnan(x):

@@ -10,6 +10,13 @@ class TokenGroup:
 
     operand = (TokenType.NUMBER, TokenType.X)
 
+    one_operand_action = (TokenType.COSINE,
+                          TokenType.COTANGENT,
+                          TokenType.SINE,
+                          TokenType.TANGENT,
+                          TokenType.ROOT,
+                          TokenType.LOG)
+
     operators = (TokenType.DIVISION,
                  TokenType.MINUS,
                  TokenType.MULTIPLICATION,

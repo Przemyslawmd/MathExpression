@@ -154,11 +154,13 @@ def traverse(node, x):
         traverse(right, x)
     if node.token.type in TokenGroup.trigonometry:
         operand = radians(x) if left.token.type is TokenType.X else radians(left.data)
-        func = actions[node.token.type]
-        node.data = func(operand)
+        node.data = actions[node.token.type](operand)
+    elif node.token.type is TokenType.ROOT or node.token.type is TokenType.LOG:
+        operand_1 = x if left.token.type is TokenType.X else left.data
+        operand_2 = node.token.data
+        node.data = actions[node.token.type](operand_1, operand_2)
     else:
         operand_1 = x if left.token.type is TokenType.X else left.data
         operand_2 = x if right.token.type is TokenType.X else right.data
-        func = actions[node.token.type]
-        node.data = func(operand_2, operand_1)
+        node.data = actions[node.token.type](operand_2, operand_1)
 

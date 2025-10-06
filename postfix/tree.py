@@ -10,7 +10,7 @@ def create_tree(tokens):
     for token in tokens:
         if token.type in TokenGroup.operand:
             stack.append(token)
-        elif token.type in TokenGroup.trigonometry:
+        elif token.type in TokenGroup.one_operand_action:
             operand = stack.pop()
             left = operand if isinstance(operand, Node) else Node(operand)
             node = Node(token, left)
