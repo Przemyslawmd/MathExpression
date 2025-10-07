@@ -29,7 +29,7 @@ class TokenType(Enum):
 
 
 class Token:
-    def __init__(self, _type, data=0):
+    def __init__(self, _type, data = 0):
         self.type = _type
         self.data = data
 

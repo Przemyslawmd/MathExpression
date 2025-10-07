@@ -215,4 +215,24 @@ class TestCalculate(TestCase):
         assert result[4] == 18
 
 
+    def test_calculate_15(self):
+        tokens = Parser("xsqrt<3>8").parse()
+        postfix = Postfix().create_postfix(tokens)
+        root = create_tree(postfix)
+        result = calculate(root, -10, -8)
+        assert result[0] == -20
+        assert result[1] == -18
+        assert result[2] == -16
 
+
+    def test_calculate_16(self):
+        tokens = Parser("xsqrt(sinx)").parse()
+        postfix = Postfix().create_postfix(tokens)
+        root = create_tree(postfix)
+        result = calculate(root, 30, 35)
+        assert result[0] == 21.2132
+        assert result[1] == 22.2475
+        assert result[2] == 23.2946
+        assert result[3] == 24.3539
+        assert result[4] == 25.4249
+        assert result[5] == 26.5072

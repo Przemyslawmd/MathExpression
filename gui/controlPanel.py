@@ -13,7 +13,7 @@ def create_button(label, width, func=None):
     return button
 
 
-def create_widget_layout(widget, width, text, text_width, alignment=None, default_value=None):
+def create_widget_layout(widget, width, text, text_width, alignment = None, default_value = None):
     widget.setMinimumWidth(width)
     widget.setMaximumWidth(width)
     if isinstance(widget, QLineEdit):
