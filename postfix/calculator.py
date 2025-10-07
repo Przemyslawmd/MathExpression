@@ -32,6 +32,22 @@ actions = {
     TokenType.TANGENT: lambda a: tan(a),
 }
 
+def calculate(root, min_x, max_x, precision = 1.0, continuity = False) -> list:
+    add_leaves_data(root)
+    x_values = arange(min_x, max_x + precision, precision)
+    results = deque()
+    for x in x_values:
+        traverse(root, x)
+        results.append(root.data)
+    results = [round(x, 4) for x in results]
+
+    if continuity:
+        discontinuity_points = check_continuity(results)
+        for index in discontinuity_points:
+            results[index] = nan
+    return results
+
+# ------------------------------- INTERNAL ----------------------------------- #
 
 def check_directions(numbers) -> list:
     directions = [Direction.NONE] * len(numbers)
@@ -65,23 +81,7 @@ def check_continuity(numbers) -> list:
     return discontinuity_points
 
 
-def calculate(root, min_x, max_x, precision = 1.0, continuity = False):
-    add_leaves_data(root)
-    x_values = arange(min_x, max_x + precision, precision)
-    results = deque()
-    for x in x_values:
-        traverse(root, x)
-        results.append(root.data)
-    results = [round(x, 4) for x in results]
-
-    if continuity:
-        discontinuity_points = check_continuity(results)
-        for index in discontinuity_points:
-            results[index] = nan
-    return results
-
-
-def add_leaves_data(node):
+def add_leaves_data(node) -> None:
     if node.left is not None:
         add_leaves_data(node.left)
     if node.right:
@@ -90,7 +90,7 @@ def add_leaves_data(node):
         node.data = node.token.data
 
 
-def traverse(node, x):
+def traverse(node, x) -> None:
     left = node.left
     right = node.right
     if left and left.token.type not in TokenGroup.operand:
