@@ -6,7 +6,7 @@ from controller import calculate_values
 from postfix.calculator import calculate
 from postfix.postfix import Postfix
 from tokens.parser import Parser
-from postfix.tree import create_tree
+from tree.tree import create_tree
 
 
 class TestCalculate(TestCase):

@@ -6,7 +6,7 @@ from unittest import TestCase
 
 from postfix.calculator import calculate
 from postfix.postfix import Postfix
-from postfix.tree import create_tree
+from tree.tree import create_tree
 from tokens.parser import Parser
 
 Result = namedtuple('Result', ('expression', 'action', 'min', 'max', 'precision', 'time'))

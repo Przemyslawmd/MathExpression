@@ -1,7 +1,7 @@
 
 from collections import deque
 
-from postfix.node import Node
+from tree.node import Node
 from tokens.tokenGroup import TokenGroup
 
 

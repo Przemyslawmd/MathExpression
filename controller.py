@@ -5,7 +5,7 @@ from errors import Error
 from errorStorage import ErrorStorage
 from postfix.calculator import calculate
 from postfix.postfix import Postfix
-from postfix.tree import create_tree
+from tree.tree import create_tree
 from tokens.parser import Parser
 from tokens.token import TokenType
 
