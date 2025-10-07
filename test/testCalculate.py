@@ -236,3 +236,23 @@ class TestCalculate(TestCase):
         assert result[3] == 24.3539
         assert result[4] == 25.4249
         assert result[5] == 26.5072
+
+
+    def test_calculate_17(self):
+        tokens = Parser("logx").parse()
+        postfix = Postfix().create_postfix(tokens)
+        root = create_tree(postfix)
+        result = calculate(root, 10, 12)
+        assert result[0] == 1
+        assert result[1] == 1.0414
+        assert result[2] == 1.0792
+
+
+    def test_calculate_18(self):
+        tokens = Parser("x^2 log<5>x").parse()
+        postfix = Postfix().create_postfix(tokens)
+        root = create_tree(postfix)
+        result = calculate(root, 3, 4)
+        assert result[0] == 6.1435
+        assert result[1] == 13.7816
+
