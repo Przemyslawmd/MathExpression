@@ -70,27 +70,27 @@ def validate_tokens(tokens) -> Error:
         next_type = tokens[index + 1].type
         match token.type:
             case TokenType.NUMBER:
-                if next_type not in allowed[TokenType.NUMBER]:
+                if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_NUMBER
             case TokenType.X:
-                if next_type not in allowed[TokenType.X]:
+                if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_X
             case TokenType.BRACKET_LEFT:
-                if next_type in forbidden[TokenType.BRACKET_LEFT]:
+                if next_type in forbidden[token.type]:
                     return Error.VALIDATOR_BRACKET_LEFT
             case TokenType.BRACKET_RIGHT:
-                if next_type not in allowed[TokenType.BRACKET_RIGHT]:
+                if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_BRACKET_RIGHT
             case TokenType.LOG:
-                if next_type not in allowed[TokenType.LOG]:
+                if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_LOGARITHM
                 if token.data == 1 or token.data == 0:
                     return Error.VALIDATOR_LOGARITHM_BASE
             case TokenType.POWER:
-                if next_type not in allowed[TokenType.POWER]:
+                if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_POWER
             case TokenType.ROOT:
-                if next_type not in allowed[TokenType.ROOT]:
+                if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_ROOT
             case TokenType.SINE | TokenType.COSINE | TokenType.TANGENT | TokenType.COTANGENT:
                 if next_type not in allowed[token.type]:
@@ -99,10 +99,10 @@ def validate_tokens(tokens) -> Error:
                 if next_type in forbidden[token.type]:
                     return Error.VALIDATOR_ARITHMETIC
             case TokenType.NUMBER:
-                if next_type not in allowed[TokenType.NUMBER]:
+                if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_NUMBER
             case TokenType.X:
-                if next_type not in allowed[TokenType.X]:
+                if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_X
     return Error.NO_ERROR
 
