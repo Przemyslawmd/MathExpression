@@ -17,13 +17,14 @@ class Error(Enum):
     VALIDATOR_FIRST_TOKEN = 9
     VALIDATOR_LAST_TOKEN = 10
     VALIDATOR_LOGARITHM = 11
-    VALIDATOR_NUMBER = 12
-    VALIDATOR_POWER = 13
-    VALIDATOR_ROOT = 14
-    VALIDATOR_TRIGONOMETRY = 15
-    VALIDATOR_X = 16
+    VALIDATOR_LOGARITHM_BASE = 12
+    VALIDATOR_NUMBER = 13
+    VALIDATOR_POWER = 14
+    VALIDATOR_ROOT = 15
+    VALIDATOR_TRIGONOMETRY = 16
+    VALIDATOR_X = 17
 
-    INTERNAL_EXCEPTION_SINGLE_TOKEN = 17
+    INTERNAL_EXCEPTION_SINGLE_TOKEN = 18
 
 
 Message = {
@@ -46,6 +47,7 @@ Message = {
     Error.VALIDATOR_ARITHMETIC:
         "Invalid symbol after arithmetic symbol: plus, multiplication, division and right bracket are prohibited",
     Error.VALIDATOR_LOGARITHM: "Logarithm can be followed only by : x, number, opening bracket",
+    Error.VALIDATOR_LOGARITHM_BASE: "The base of the logarithm must be a positive number and different from 1",
     Error.VALIDATOR_POWER: "Power can be followed only by : x, number, opening bracket",
     Error.VALIDATOR_ROOT: "Root can be followed only by : x, number, opening bracket",
     Error.VALIDATOR_TRIGONOMETRY: "Trigonometry function can be be followed only by : x, number, opening bracket",

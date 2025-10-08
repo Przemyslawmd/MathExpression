@@ -84,6 +84,8 @@ def validate_tokens(tokens) -> Error:
             case TokenType.LOG:
                 if next_type not in allowed[TokenType.LOG]:
                     return Error.VALIDATOR_LOGARITHM
+                if token.data == 1 or token.data == 0:
+                    return Error.VALIDATOR_LOGARITHM_BASE
             case TokenType.POWER:
                 if next_type not in allowed[TokenType.POWER]:
                     return Error.VALIDATOR_POWER
