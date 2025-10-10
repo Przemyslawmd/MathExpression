@@ -1,5 +1,5 @@
 
-from math import isclose
+from math import isclose, isnan
 from unittest import TestCase
 
 from controller import calculate_values
@@ -215,7 +215,7 @@ class TestCalculate(TestCase):
         assert result[4] == 18
 
 
-    def test_calculate_15(self):
+    def test_calculate_root_degree_3(self):
         tokens = Parser("xsqrt<3>8").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
@@ -225,7 +225,7 @@ class TestCalculate(TestCase):
         assert result[2] == -16
 
 
-    def test_calculate_16(self):
+    def test_calculate_root_sine(self):
         tokens = Parser("xsqrt(sinx)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
@@ -238,7 +238,7 @@ class TestCalculate(TestCase):
         assert result[5] == 26.5072
 
 
-    def test_calculate_17(self):
+    def test_calculate_log(self):
         tokens = Parser("logx").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
@@ -248,11 +248,23 @@ class TestCalculate(TestCase):
         assert result[2] == 1.0792
 
 
-    def test_calculate_18(self):
+    def test_calculate_log_base_5(self):
         tokens = Parser("x^2 log<5>x").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
         result = calculate(root, 3, 4)
         assert result[0] == 6.1435
         assert result[1] == 13.7816
+
+
+    def test_calculate_negative_exponent_nan(self):
+        tokens = Parser("x^(-2)").parse()
+        postfix = Postfix().create_postfix(tokens)
+        root = create_tree(postfix)
+        result = calculate(root, -2, 2)
+        assert result[0] == 0.25
+        assert result[1] == 1
+        assert isnan(result[2])
+        assert result[3] == 1
+        assert result[4] == 0.25
 
