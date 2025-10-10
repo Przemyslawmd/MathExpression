@@ -74,3 +74,10 @@ class TestParserError(TestCase):
         self.assertIsNone(tokens)
         self.assertEqual(errors[0], Message[Error.VALIDATOR_LOGARITHM_BASE])
 
+
+    def test_validator_root_degree(self):
+        tokens = Parser("12x^2 - sqrt<0>10").parse()
+        errors = ErrorStorage.get_errors()
+        self.assertIsNone(tokens)
+        self.assertEqual(errors[0], Message[Error.VALIDATOR_ROOT_DEGREE])
+
