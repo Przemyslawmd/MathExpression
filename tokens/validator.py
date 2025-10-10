@@ -92,6 +92,8 @@ def validate_tokens(tokens) -> Error:
             case TokenType.ROOT:
                 if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_ROOT
+                if token.data == 0:
+                    return Error.VALIDATOR_ROOT_DEGREE
             case TokenType.SINE | TokenType.COSINE | TokenType.TANGENT | TokenType.COTANGENT:
                 if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_TRIGONOMETRY
