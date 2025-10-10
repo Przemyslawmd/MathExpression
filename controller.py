@@ -22,9 +22,9 @@ def calculate_values(expression, x_min, x_max, precision) -> list or None:
         return fill_values(x_min, x_max, precision, postfix[0])
 
     root = create_tree(postfix)
-    division_or_tangent = filter(lambda t: t.type is TokenType.DIVISION or t.type is TokenType.TANGENT, tokens)
-    continuity = any(division_or_tangent)
-    result = calculate(root, x_min, x_max, precision, continuity)
+    division_or_tangent = filter(lambda t: t.type is TokenType.DIVISION or t.type is TokenType.TANGENT, postfix)
+    check_continuity = any(division_or_tangent)
+    result = calculate(root, x_min, x_max, precision, check_continuity)
     return result
 
 # ------------------------------- INTERNAL ----------------------------------- #

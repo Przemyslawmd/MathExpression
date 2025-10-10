@@ -34,7 +34,7 @@ actions = {
 
 def calculate(root, min_x, max_x, precision = 1.0, continuity = False) -> list:
     add_leaves_data(root)
-    x_values = arange(min_x, max_x + precision, precision)
+    x_values = [round(x, 2) for x in arange(min_x, max_x + precision, precision)]
     results = deque()
     for x in x_values:
         traverse(root, x)
@@ -54,7 +54,7 @@ def check_directions(numbers) -> list:
     for index, number in enumerate(numbers):
         if index == 0:
             continue
-        elif number > numbers[index - 1]:
+        if number > numbers[index - 1]:
             directions[index] = Direction.UP
         elif number < numbers[index - 1]:
             directions[index] = Direction.DOWN
