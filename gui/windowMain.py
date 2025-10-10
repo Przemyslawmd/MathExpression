@@ -1,5 +1,7 @@
 
 from collections import namedtuple
+from math import isnan
+
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QGridLayout, QMainWindow, QLineEdit, QTextEdit, QToolBar, QVBoxLayout, QWidget
@@ -134,15 +136,23 @@ class MathExpression(QMainWindow):
         x_values = arange(x_min, x_max + precision, precision)
         line_width = float(self.panel.pen_width.currentText())
         line_color = self.panel.current_pen_color
-        plot_pen = mkPen(line_color, width=line_width)
-        plot = self.plot_widget.plot(x_values, y_values, pen=plot_pen, symbol='x', symbolPen=None, symbolBrush=2.5, connect="finite")
+        plot_pen = mkPen(line_color, width = line_width)
+        plot = self.plot_widget.plot(x_values,
+                                     y_values,
+                                     pen = plot_pen,
+                                     symbol = 'x',
+                                     symbolPen = None,
+                                     symbolBrush = 2.5,
+                                     connect = "finite")
         line = Line(plot, self.insert_expression.text())
         self.plot_lines.append(line)
         self.add_graph_label()
         self.area_messages.clear()
 
         self.axis_x = [x_min, x_max]
-        self.axis_y = [min(y_values), max(y_values)]
+        y_min = min(y for y in y_values if not isnan(y))
+        y_max = max(y for y in y_values if not isnan(y))
+        self.axis_y = [y_min, y_max]
         self.plot_widget.setXRange(x_min, x_max)
         self.plot_widget.setYRange(self.axis_y[0], self.axis_y[1])
         self.panel.reset_sliders()
@@ -182,7 +192,7 @@ class MathExpression(QMainWindow):
         lay_main.addWidget(panel_widget)
         lay_main.addSpacing(15)
 
-        self.plot_widget.showGrid(x=self.settings.x_grid, y=self.settings.y_grid)
+        self.plot_widget.showGrid(x = self.settings.x_grid, y = self.settings.y_grid)
         self.plot_widget.setStyleSheet("border: 1px solid black")
         lay_main.addWidget(self.plot_widget)
         lay_main.addSpacing(20)
@@ -206,7 +216,7 @@ class MathExpression(QMainWindow):
                                                                background,
                                                                label)
         if grid_changed is True:
-            self.plot_widget.showGrid(x=self.settings.x_grid, y=self.settings.y_grid)
+            self.plot_widget.showGrid(x = self.settings.x_grid, y = self.settings.y_grid)
         if background_changed is True:
             self.plot_widget.setBackground(Colors[self.settings.background].text)
 
