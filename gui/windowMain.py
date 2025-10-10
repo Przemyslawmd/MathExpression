@@ -1,6 +1,6 @@
 
 from collections import namedtuple
-from math import isnan
+from math import isnan, isinf
 
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
@@ -150,8 +150,8 @@ class MathExpression(QMainWindow):
         self.area_messages.clear()
 
         self.axis_x = [x_min, x_max]
-        y_min = min(y for y in y_values if not isnan(y))
-        y_max = max(y for y in y_values if not isnan(y))
+        y_min = min(y for y in y_values if not isnan(y) and not isinf(y))
+        y_max = max(y for y in y_values if not isnan(y) and not isinf(y))
         self.axis_y = [y_min, y_max]
         self.plot_widget.setXRange(x_min, x_max)
         self.plot_widget.setYRange(self.axis_y[0], self.axis_y[1])

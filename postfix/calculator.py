@@ -23,7 +23,8 @@ actions = {
     TokenType.PLUS: lambda a, b: a + b,
 
     TokenType.LOG: lambda a, b: log(a, b) if a > 0 else nan,
-    TokenType.POWER: lambda a, b: nan if (float(a).is_integer() is False and b < 0) else power(b, a),
+    TokenType.POWER: lambda a, b: nan if ((float(a).is_integer() is False and b < 0) or (b == 0 and a < 0))
+                                      else power(b, a),
     TokenType.ROOT: lambda a, b: nan if a < 0 else (sqrt(a) if b == 2 else power(a, 1 / b)),
 
     TokenType.COSINE: lambda a: cos(a),
