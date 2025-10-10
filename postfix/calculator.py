@@ -52,15 +52,15 @@ def calculate(root, min_x, max_x, precision = 1.0, continuity = False) -> list:
 
 def check_directions(numbers) -> list:
     directions = [Direction.NONE] * len(numbers)
-    for index, number in enumerate(numbers):
-        if index == 0:
+    for i, number in enumerate(numbers):
+        if i == 0:
             continue
-        if number > numbers[index - 1]:
-            directions[index] = Direction.UP
-        elif number < numbers[index - 1]:
-            directions[index] = Direction.DOWN
+        if number > numbers[i - 1]:
+            directions[i] = Direction.UP
+        elif number < numbers[i - 1]:
+            directions[i] = Direction.DOWN
         else:
-            directions[index] = Direction.CONST
+            directions[i] = Direction.CONST
     return directions
 
 
@@ -75,10 +75,10 @@ def is_discontinuity(direction_prev, direction_curr, number_prev, number_curr) -
 def check_continuity(numbers) -> list:
     directions = check_directions(numbers)
     discontinuity_points = []
-    for index, direction in enumerate(directions):
-        if direction != directions[index - 1]:
-            if is_discontinuity(directions[index - 1], direction, numbers[index - 1], numbers[index]):
-                discontinuity_points.append(index)
+    for i, direction in enumerate(directions):
+        if direction != directions[i - 1]:
+            if is_discontinuity(directions[i - 1], direction, numbers[i - 1], numbers[i]):
+                discontinuity_points.append(i)
     return discontinuity_points
 
 

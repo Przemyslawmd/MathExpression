@@ -11,6 +11,7 @@ class Postfix:
         self.stack = deque()
         self.postfix = deque()
 
+
     def create_postfix(self, tokens) -> deque:
         for token in tokens:
             if token.type in TokenGroup.operators:
