@@ -67,13 +67,13 @@ class ControlPanel:
         for x in (0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10):
             self.pen_width.addItem(str(x))
         self.pen_width.setCurrentIndex(4)
-        widget_pen_width = create_widget_layout(self.pen_width, 100, "Line Width", 65)
+        widget_pen_width = create_widget_layout(self.pen_width, 100, "Line Width", 75)
         layout.addLayout(widget_pen_width, 0, 6)
 
         layout_ratio = QHBoxLayout()
         layout_ratio.setSpacing(8)
         label = QLabel("X Axis Range")
-        label.setFixedSize(80, 17)
+        label.setFixedSize(90, 17)
         prepare_axis_slider(self.x_axis)
         button_x_axis = create_button("Default", 80, lambda: self.x_axis.setValue(11))
 
@@ -91,13 +91,13 @@ class ControlPanel:
             self.pen_colors.addItem(color.text)
         self.pen_colors.setCurrentIndex(4)
         self.pen_colors.currentTextChanged.connect(self.on_pen_colors_changed)
-        widget_pen_color = create_widget_layout(self.pen_colors, 100, "Line Color", 65)
+        widget_pen_color = create_widget_layout(self.pen_colors, 100, "Line Color", 75)
         layout.addLayout(widget_pen_color, 1, 6)
 
         layout_ratio = QHBoxLayout()
         layout_ratio.setSpacing(8)
         label = QLabel("Y Axis Range")
-        label.setFixedSize(80, 17)
+        label.setFixedSize(90, 17)
         prepare_axis_slider(self.y_axis)
         button_y_axis = create_button("Default", 80, lambda: self.y_axis.setValue(11))
 
