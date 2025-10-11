@@ -209,14 +209,13 @@ class MathExpression(QMainWindow):
 
 
     def apply_settings(self, x_grid, y_grid, precision, background, label):
-
         grid_changed, background_changed = self.settings.apply(x_grid,
                                                                y_grid,
                                                                precision,
                                                                background,
                                                                label)
-        if grid_changed is True:
+        if grid_changed:
             self.plot_widget.showGrid(x = self.settings.x_grid, y = self.settings.y_grid)
-        if background_changed is True:
+        if background_changed:
             self.plot_widget.setBackground(Colors[self.settings.background].text)
 

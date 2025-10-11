@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QLineEdit, QPushBu
 from color import Colors
 
 
-def create_button(label, width, func=None):
+def create_button(label, width, func = None) -> QPushButton:
     button = QPushButton(label)
     button.setMaximumWidth(width)
     button.setMinimumWidth(width)
@@ -13,7 +13,7 @@ def create_button(label, width, func=None):
     return button
 
 
-def create_widget_layout(widget, width, text, text_width, alignment = None, default_value = None):
+def create_widget_layout(widget, width, text, text_width, alignment = None, default_value = None) -> QHBoxLayout:
     widget.setMinimumWidth(width)
     widget.setMaximumWidth(width)
     if isinstance(widget, QLineEdit):
@@ -30,7 +30,7 @@ def create_widget_layout(widget, width, text, text_width, alignment = None, defa
     return layout
 
 
-def prepare_axis_slider(slider):
+def prepare_axis_slider(slider) -> None:
     slider.setMinimum(0)
     slider.setMaximum(22)
     slider.setSingleStep(1)
@@ -52,7 +52,7 @@ class ControlPanel:
         self.y_axis = QSlider()
 
 
-    def create_first_row(self, layout, func_draw, func_append):
+    def create_first_row(self, layout, func_draw, func_append) -> None:
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(create_button("Draw Graph", 140, func_draw), 0, 0)
         layout.addWidget(create_button("Append Graph", 140, func_append), 0, 1)
@@ -83,7 +83,7 @@ class ControlPanel:
         layout.addLayout(layout_ratio, 0, 8)
 
 
-    def create_second_row(self, layout, func_clear_insert, func_clear_plot):
+    def create_second_row(self, layout, func_clear_insert, func_clear_plot) -> None:
         layout.addWidget(create_button("Clear Insert Area", 140, func_clear_insert), 1, 0)
         layout.addWidget(create_button("Clear Plot Area", 140, func_clear_plot), 1, 1)
 
@@ -107,12 +107,12 @@ class ControlPanel:
         layout.addLayout(layout_ratio, 1, 8)
 
 
-    def connect_sliders(self, func_x, func_y):
+    def connect_sliders(self, func_x, func_y) -> None:
         self.x_axis.valueChanged.connect(func_x)
         self.y_axis.valueChanged.connect(func_y)
 
 
-    def reset_sliders(self):
+    def reset_sliders(self) -> None:
         self.x_axis.setEnabled(True)
         self.y_axis.setEnabled(True)
         self.x_axis.setValue(11)
@@ -120,6 +120,6 @@ class ControlPanel:
 
     # ------------------------------- INTERNAL ----------------------------------- #
 
-    def on_pen_colors_changed(self, color_text):
+    def on_pen_colors_changed(self, color_text) -> None:
         self.current_pen_color = next((color.rgb for color in Colors.values() if color.text == color_text), None)
 
