@@ -6,7 +6,6 @@ from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QGridLayout, QMainWindow, QLineEdit, QTextEdit, QToolBar, QVBoxLayout, QWidget
 from numpy import arange
-from pyqtgraph import PlotWidget, mkPen
 import pyqtgraph as pg
 
 from color import Colors
@@ -30,7 +29,7 @@ class MathExpression(QMainWindow):
 
         self.panel = ControlPanel()
         self.settings = Settings()
-        self.plot_widget = PlotWidget()
+        self.plot_widget = pg.PlotWidget()
         self.insert_expression = QLineEdit()
         self.area_messages = QTextEdit()
         self.plot_lines = []
@@ -136,14 +135,8 @@ class MathExpression(QMainWindow):
         x_values = arange(x_min, x_max + precision, precision)
         line_width = float(self.panel.pen_width.currentText())
         line_color = self.panel.current_pen_color
-        plot_pen = mkPen(line_color, width = line_width)
-        plot = self.plot_widget.plot(x_values,
-                                     y_values,
-                                     pen = plot_pen,
-                                     symbol = 'x',
-                                     symbolPen = None,
-                                     symbolBrush = 2.5,
-                                     connect = "finite")
+        plot_pen = pg.mkPen(line_color, width = line_width)
+        plot = self.plot_widget.plot(x_values, y_values, pen = plot_pen)
         line = Line(plot, self.insert_expression.text())
         self.plot_lines.append(line)
         self.add_graph_label()
