@@ -30,7 +30,7 @@ actions = {
     TokenType.COSINE: lambda a: cos(a),
     TokenType.COTANGENT: lambda a: nan if round(sin(a), 4) == 0.00 else cos(a) / sin(a),
     TokenType.SINE: lambda a: sin(a),
-    TokenType.TANGENT: lambda a: nan if round(a, 4) == 0.00 else tan(a),
+    TokenType.TANGENT: lambda a: nan if round(cos(a), 4) == 0.00 else tan(a),
 }
 
 def calculate(root, min_x, max_x, precision = 1.0, continuity = False) -> list:
