@@ -13,7 +13,7 @@ def create_button(label, width, func = None) -> QPushButton:
     return button
 
 
-def create_widget_layout(widget, width, text, text_width, alignment = None, default_value = None) -> QHBoxLayout:
+def create_layout(widget, width, text, text_width, alignment = None, default_value = None) -> QHBoxLayout:
     widget.setMinimumWidth(width)
     widget.setMaximumWidth(width)
     if isinstance(widget, QLineEdit):
@@ -45,6 +45,7 @@ class ControlPanel:
     def __init__(self):
         self.x_min = QLineEdit()
         self.x_max = QLineEdit()
+        self.y_limit = QLineEdit()
         self.pen_width = QComboBox()
         self.pen_colors = QComboBox()
         self.current_pen_color = (0, 255, 128)
@@ -58,17 +59,17 @@ class ControlPanel:
         layout.addWidget(create_button("Append Graph", 140, func_append), 0, 1)
         layout.setSpacing(15)
 
-        widget_x_min = create_widget_layout(self.x_min, 40, "X Min", 40, Qt.AlignmentFlag.AlignCenter, "-360")
-        layout.addLayout(widget_x_min, 0, 3)
+        layout_x_min = create_layout(self.x_min, 40, "X Min", 40, Qt.AlignmentFlag.AlignCenter, "-360")
+        layout.addLayout(layout_x_min, 0, 3)
 
-        widget_x_max = create_widget_layout(self.x_max, 40, "X Max", 40, Qt.AlignmentFlag.AlignCenter, "360")
-        layout.addLayout(widget_x_max, 0, 4)
+        layout_x_max = create_layout(self.x_max, 40, "X Max", 40, Qt.AlignmentFlag.AlignCenter, "360")
+        layout.addLayout(layout_x_max, 0, 4)
 
         for x in (0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10):
             self.pen_width.addItem(str(x))
         self.pen_width.setCurrentIndex(4)
-        widget_pen_width = create_widget_layout(self.pen_width, 100, "Line Width", 75)
-        layout.addLayout(widget_pen_width, 0, 6)
+        layout_pen_width = create_layout(self.pen_width, 100, "Line Width", 75)
+        layout.addLayout(layout_pen_width, 0, 6)
 
         layout_ratio = QHBoxLayout()
         layout_ratio.setSpacing(8)
@@ -87,12 +88,15 @@ class ControlPanel:
         layout.addWidget(create_button("Clear Insert Area", 140, func_clear_insert), 1, 0)
         layout.addWidget(create_button("Clear Plot Area", 140, func_clear_plot), 1, 1)
 
+        layout_y_limit = create_layout(self.y_limit, 105, "Y View Limit", 85, Qt.AlignmentFlag.AlignCenter)
+        layout.addLayout(layout_y_limit, 1, 3, 1, 2)
+
         for color in Colors.values():
             self.pen_colors.addItem(color.text)
         self.pen_colors.setCurrentIndex(4)
         self.pen_colors.currentTextChanged.connect(self.on_pen_colors_changed)
-        widget_pen_color = create_widget_layout(self.pen_colors, 100, "Line Color", 75)
-        layout.addLayout(widget_pen_color, 1, 6)
+        layout_pen_color = create_layout(self.pen_colors, 100, "Line Color", 75)
+        layout.addLayout(layout_pen_color, 1, 6)
 
         layout_ratio = QHBoxLayout()
         layout_ratio.setSpacing(8)
