@@ -45,7 +45,7 @@ class ControlPanel:
     def __init__(self):
         self.x_min = QLineEdit()
         self.x_max = QLineEdit()
-        self.y_limit = QLineEdit()
+        self.y_view = QLineEdit()
         self.pen_width = QComboBox()
         self.pen_colors = QComboBox()
         self.current_pen_color = (0, 255, 128)
@@ -88,8 +88,8 @@ class ControlPanel:
         layout.addWidget(create_button("Clear Insert Area", 140, func_clear_insert), 1, 0)
         layout.addWidget(create_button("Clear Plot Area", 140, func_clear_plot), 1, 1)
 
-        layout_y_limit = create_layout(self.y_limit, 105, "Y View Limit", 85, Qt.AlignmentFlag.AlignCenter)
-        layout.addLayout(layout_y_limit, 1, 3, 1, 2)
+        layout_y_view = create_layout(self.y_view, 105, "Y View", 85, Qt.AlignmentFlag.AlignCenter)
+        layout.addLayout(layout_y_view, 1, 3, 1, 2)
 
         for color in Colors.values():
             self.pen_colors.addItem(color.text)

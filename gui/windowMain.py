@@ -14,7 +14,7 @@ from errors import Error, Message
 from errorStorage import ErrorStorage
 from settings import Settings
 from gui.controlPanel import ControlPanel
-from gui.utils import max_points_exceeded, calculate_range_x, calculate_axis_change
+from gui.utils import max_points_exceeded, calculate_range_x, calculate_axis_change, check_y_view
 from gui.windowAbout import WindowAbout
 from gui.windowSettings import WindowSettings
 
@@ -143,11 +143,16 @@ class MathExpression(QMainWindow):
         self.area_messages.clear()
 
         self.axis_x = [x_min, x_max]
-        y_min = min(y for y in y_values if not isnan(y) and not isinf(y))
-        y_max = max(y for y in y_values if not isnan(y) and not isinf(y))
-        self.axis_y = [y_min, y_max]
         self.plot_widget.setXRange(x_min, x_max)
+
+        y_view_str = self.panel.y_view.text().lstrip()
+        y_min, y_max = check_y_view(y_view_str)
+        if y_min is None:
+            y_min = min(y for y in y_values if not isnan(y) and not isinf(y))
+            y_max = max(y for y in y_values if not isnan(y) and not isinf(y))
+        self.axis_y = [y_min, y_max]
         self.plot_widget.setYRange(self.axis_y[0], self.axis_y[1])
+
         self.panel.reset_sliders()
 
 

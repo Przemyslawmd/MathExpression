@@ -41,3 +41,13 @@ def calculate_axis_change(slider, min_axis, max_axis):
     new_axis_range = axis_range * ratio
     return (new_axis_range - axis_range) / 2
 
+
+def check_y_view(y_view_str):
+    if not y_view_str:
+        return None, None
+    try:
+        y_view = float(y_view_str)
+        return [y_view * -1, y_view]
+    except (Exception,):
+        return None, None
+
