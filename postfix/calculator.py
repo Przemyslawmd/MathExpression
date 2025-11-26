@@ -33,9 +33,8 @@ actions = {
     TokenType.TANGENT: lambda a: nan if round(cos(a), 4) == 0.00 else tan(a),
 }
 
-def calculate(root, min_x, max_x, precision = 1.0, continuity = False) -> list:
+def calculate(root, x_values, continuity = False) -> list:
     add_leaves_data(root)
-    x_values = [round(x, 2) for x in arange(min_x, max_x + precision, precision)]
     results = deque()
     for x in x_values:
         traverse(root, x)

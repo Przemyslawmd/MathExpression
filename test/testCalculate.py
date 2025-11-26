@@ -1,5 +1,6 @@
 
 from math import isclose, isnan
+from numpy import arange
 from unittest import TestCase
 
 from controller import calculate_values
@@ -13,7 +14,8 @@ class TestCalculate(TestCase):
 
     def test_fill_x(self):
         step = 0.5
-        result = calculate_values("x", 20, 30, step)
+        x_values = arange(20, 30 + step, step)
+        result = calculate_values("x", x_values)
         assert len(result) == 21
         shift = 0
         for value in result:
@@ -23,7 +25,8 @@ class TestCalculate(TestCase):
 
     def test_fill_x_brackets_1(self):
         step = 0.5
-        result = calculate_values("(x)", -30, 20, step)
+        x_values = arange(-30, 20 + step, step)
+        result = calculate_values("(x)", x_values)
         assert len(result) == 101
         shift = 0
         for value in result:
@@ -33,7 +36,8 @@ class TestCalculate(TestCase):
 
     def test_fill_x_brackets_2(self):
         step = 0.1
-        result = calculate_values("(((x)))", 2, 5, step)
+        x_values = arange(2, 5 + step, step)
+        result = calculate_values("(((x)))", x_values)
         assert len(result) == 31
         shift = 0
         for value in result:
@@ -43,7 +47,8 @@ class TestCalculate(TestCase):
 
     def test_fill_negative_x(self):
         step = 0.5
-        result = calculate_values("-x", 20, 30, step)
+        x_values = arange(20, 30 + step, step)
+        result = calculate_values("-x", x_values)
         assert len(result) == 21
         shift = 0
         for value in result:
@@ -52,14 +57,16 @@ class TestCalculate(TestCase):
 
 
     def test_fill_number(self):
-        result = calculate_values("10", -5, 5, 1)
+        x_values = arange(-5, 5 + 1, 1)
+        result = calculate_values("10", x_values)
         assert len(result) == 11
         for value in result:
             assert value == 10
 
 
     def test_fill_number_brackets(self):
-        result = calculate_values("(100)", -5, 5, 1)
+        x_values = arange(-5, 5 + 1, 1)
+        result = calculate_values("(100)", x_values)
         assert len(result) == 11
         for value in result:
             assert value == 100
@@ -69,7 +76,8 @@ class TestCalculate(TestCase):
         tokens = Parser("3 + x * 10 + x").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 2, 3)
+        x_values = arange(2, 4)
+        result = calculate(root, x_values)
         assert result[0] == 25
         assert result[1] == 36
 
@@ -78,7 +86,8 @@ class TestCalculate(TestCase):
         tokens = Parser("2(x + 5)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 2, 3)
+        x_values = arange(2, 4)
+        result = calculate(root, x_values)
         assert result[0] == 14
         assert result[1] == 16
 
@@ -87,7 +96,8 @@ class TestCalculate(TestCase):
         tokens = Parser("(3 + x) * (10 + x)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 5, 6)
+        x_values = arange(5, 7)
+        result = calculate(root, x_values)
         assert result[0] == 120
         assert result[1] == 144
 
@@ -96,7 +106,8 @@ class TestCalculate(TestCase):
         tokens = Parser("2 * (3 + x) * 4").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 2, 5)
+        x_values = arange(2, 6)
+        result = calculate(root, x_values)
         assert result[0] == 40
         assert result[1] == 48
         assert result[2] == 56
@@ -107,7 +118,8 @@ class TestCalculate(TestCase):
         tokens = Parser("(4x + x3)2x").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 0, 5)
+        x_values = arange(0, 6)
+        result = calculate(root, x_values)
         assert result[0] == 0
         assert result[1] == 14
         assert result[2] == 56
@@ -120,7 +132,8 @@ class TestCalculate(TestCase):
         tokens = Parser("(2 - x3)4").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 10, 12)
+        x_values = arange(10, 13)
+        result = calculate(root, x_values)
         assert result[0] == -112
         assert result[1] == -124
         assert result[2] == -136
@@ -130,7 +143,8 @@ class TestCalculate(TestCase):
         tokens = Parser("(-x - 3)4").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 5, 7)
+        x_values = arange(5, 8)
+        result = calculate(root, x_values)
         assert result[0] == -32
         assert result[1] == -36
         assert result[2] == -40
@@ -140,7 +154,8 @@ class TestCalculate(TestCase):
         tokens = Parser("(x +3)(-5)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 100, 103)
+        x_values = arange(100, 104)
+        result = calculate(root, x_values)
         assert result[0] == -515
         assert result[1] == -520
         assert result[2] == -525
@@ -151,7 +166,8 @@ class TestCalculate(TestCase):
         tokens = Parser("(-x -2)(-7)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, -2, 2)
+        x_values = arange(-2, 3)
+        result = calculate(root, x_values)
         assert result[0] == 0
         assert result[1] == 7
         assert result[2] == 14
@@ -163,7 +179,8 @@ class TestCalculate(TestCase):
         tokens = Parser("sinx + x").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 30, 30)
+        x_values = arange(30, 31)
+        result = calculate(root, x_values)
         assert result[0] == 30.5
 
 
@@ -171,7 +188,8 @@ class TestCalculate(TestCase):
         tokens = Parser("xcos10").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 10, 14)
+        x_values = arange(10, 15)
+        result = calculate(root, x_values)
         assert result[0] == 9.8481
         assert result[1] == 10.8329
         assert result[2] == 11.8177
@@ -183,7 +201,8 @@ class TestCalculate(TestCase):
         tokens = Parser("10tgx - xctgx").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 100, 104)
+        x_values = arange(100, 105)
+        result = calculate(root, x_values)
         assert result[0] == -39.0801
         assert result[1] == -31.8131
         assert result[2] == -25.3655
@@ -195,7 +214,8 @@ class TestCalculate(TestCase):
         tokens = Parser("sqrtx + 10").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 16, 20)
+        x_values = arange(16, 21)
+        result = calculate(root, x_values)
         assert result[0] == 14.0
         assert result[1] == 14.1231
         assert result[2] == 14.2426
@@ -207,7 +227,8 @@ class TestCalculate(TestCase):
         tokens = Parser("x + 2sqrt4").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 10, 15)
+        x_values = arange(10, 16)
+        result = calculate(root, x_values)
         assert result[0] == 14
         assert result[1] == 15
         assert result[2] == 16
@@ -219,7 +240,8 @@ class TestCalculate(TestCase):
         tokens = Parser("xsqrt<3>8").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, -10, -8)
+        x_values = arange(-10, -7)
+        result = calculate(root, x_values)
         assert result[0] == -20
         assert result[1] == -18
         assert result[2] == -16
@@ -229,7 +251,8 @@ class TestCalculate(TestCase):
         tokens = Parser("xsqrt(sinx)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 30, 35)
+        x_values = arange(30, 36)
+        result = calculate(root, x_values)
         assert result[0] == 21.2132
         assert result[1] == 22.2475
         assert result[2] == 23.2946
@@ -242,7 +265,8 @@ class TestCalculate(TestCase):
         tokens = Parser("logx").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 10, 12)
+        x_values = arange(10, 13)
+        result = calculate(root, x_values)
         assert result[0] == 1
         assert result[1] == 1.0414
         assert result[2] == 1.0792
@@ -252,7 +276,8 @@ class TestCalculate(TestCase):
         tokens = Parser("x^2 log<5>x").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, 3, 4)
+        x_values = arange(3, 5)
+        result = calculate(root, x_values)
         assert result[0] == 6.1435
         assert result[1] == 13.7816
 
@@ -261,7 +286,8 @@ class TestCalculate(TestCase):
         tokens = Parser("x^(-2)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, -2, 2)
+        x_values = arange(-2, 3, dtype = float)
+        result = calculate(root, x_values)
         assert result[0] == 0.25
         assert result[1] == 1
         assert isnan(result[2])

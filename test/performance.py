@@ -2,6 +2,7 @@
 from timeit import default_timer
 from collections import namedtuple
 from datetime import datetime
+from numpy import arange
 from unittest import TestCase
 
 from postfix.calculator import calculate
@@ -39,9 +40,10 @@ class TestPerformance(TestCase):
         tokens = Parser(expression).parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
+        x_values = arange(-360, 361.01, 0.01)
         for _ in range(count):
             start = default_timer()
-            calculate(root, -360, 360, 0.01)
+            calculate(root, x_values)
             end = default_timer()
             self.results.append(Result(expression, "calculation", -360, 360, 0.01, end - start))
 
@@ -51,9 +53,10 @@ class TestPerformance(TestCase):
         tokens = Parser(expression).parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
+        x_values = arange(-500, 500.05, 0.05)
         for _ in range(count):
             start = default_timer()
-            calculate(root, -500, 500, 0.05)
+            calculate(root, x_values)
             end = default_timer()
             self.results.append(Result(expression, "calculation", -500, 500, 0.05, end - start))
 
@@ -63,9 +66,10 @@ class TestPerformance(TestCase):
         tokens = Parser(expression).parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
+        x_values = arange(-500, 500.01, 0.01)
         for _ in range(count):
             start = default_timer()
-            calculate(root, -500, 500, 0.01)
+            calculate(root, x_values)
             end = default_timer()
             self.results.append(Result(expression, "calculation", -500, 500, 0.01, end - start))
 
@@ -75,9 +79,10 @@ class TestPerformance(TestCase):
         tokens = Parser(expression).parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
+        x_values = arange(-500, 500.05, 0.01)
         for _ in range(count):
             start = default_timer()
-            calculate(root, -500, 500, 0.01)
+            calculate(root, x_values)
             end = default_timer()
             self.results.append(Result(expression, "calculation", -500, 500, 0.01, end - start))
 

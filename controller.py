@@ -1,6 +1,4 @@
 
-from numpy import arange
-
 from errors import Error
 from errorStorage import ErrorStorage
 from postfix.calculator import calculate
@@ -10,7 +8,7 @@ from tokens.parser import Parser
 from tokens.token import TokenType
 
 
-def calculate_values(expression, x_min, x_max, precision) -> list or None:
+def calculate_values(expression, x_values) -> list | None:
     if not expression:
         return None
     tokens = Parser(expression).parse()
@@ -19,23 +17,22 @@ def calculate_values(expression, x_min, x_max, precision) -> list or None:
 
     postfix = Postfix().create_postfix(tokens)
     if len(postfix) == 1:
-        return fill_values(x_min, x_max, precision, postfix[0])
+        return fill_values(x_values, postfix[0])
 
     root = create_tree(postfix)
     division_or_tangent = filter(lambda t: t.type is TokenType.DIVISION or t.type is TokenType.TANGENT, postfix)
     check_continuity = any(division_or_tangent)
-    result = calculate(root, x_min, x_max, precision, check_continuity)
+    result = calculate(root, x_values, check_continuity)
     return result
 
 # ------------------------------- INTERNAL ----------------------------------- #
 
-def fill_values(x_min, x_max, precision, token) -> list or None:
-    data = arange(x_min, x_max + precision, precision)
+def fill_values(x_values, token) -> list | None:
     if token.type is TokenType.X:
-        return data
+        return x_values
     if token.type is TokenType.NUMBER:
-        data.fill(token.data)
-        return data
+        x_values.fill(token.data)
+        return x_values
     ErrorStorage.put_error(Error.INTERNAL_EXCEPTION_SINGLE_TOKEN)
     return None
 

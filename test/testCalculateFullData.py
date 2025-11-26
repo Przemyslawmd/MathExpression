@@ -1,5 +1,6 @@
 
 import math
+from numpy import arange
 from unittest import TestCase
 
 from postfix.calculator import calculate
@@ -12,7 +13,7 @@ class TestPostfixCalculateFullData(TestCase):
 
     @staticmethod
     def read_data_from_file(file_with_data):
-        f = open(file_with_data, "r")
+        f = open("data/" + file_with_data, "r")
         data = f.read()
         f.close()
         return [float(x.strip()) for x in data.split(',')]
@@ -22,8 +23,9 @@ class TestPostfixCalculateFullData(TestCase):
         tokens = Parser("x^3 (x - 1)(x - 2)^2").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, -3, 3, 0.1)
-        file_result = self.read_data_from_file("data/resultsA")
+        x_values = arange(-3, 3.1, 0.1)
+        result = calculate(root, x_values)
+        file_result = self.read_data_from_file("resultsA")
         self.assertListEqual(file_result, result)
 
 
@@ -31,8 +33,9 @@ class TestPostfixCalculateFullData(TestCase):
         tokens = Parser("(x^2 -3)/(x - 2)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, -20, 20, 0.05)
-        file_result = self.read_data_from_file("data/resultsB")
+        x_values = arange(-20, 20.05, 0.05)
+        result = calculate(root, x_values)
+        file_result = self.read_data_from_file("resultsB")
         for x, y in zip(result, file_result):
             if math.isnan(x):
                 assert math.isnan(y)
@@ -44,8 +47,9 @@ class TestPostfixCalculateFullData(TestCase):
         tokens = Parser("sqrt((1-x)/(1+x))").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, -6, 5, 0.02)
-        file_result = self.read_data_from_file("data/resultsC")
+        x_values = arange(-6, 5.02, 0.02)
+        result = calculate(root, x_values)
+        file_result = self.read_data_from_file("resultsC")
         for x, y in zip(result, file_result):
             if math.isnan(x):
                 assert math.isnan(y)
@@ -57,8 +61,9 @@ class TestPostfixCalculateFullData(TestCase):
         tokens = Parser("(sinx)^2 + cosx").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, -360, 360, 0.2)
-        file_result = self.read_data_from_file("data/resultsD")
+        x_values = arange(-360, 360.2, 0.2)
+        result = calculate(root, x_values)
+        file_result = self.read_data_from_file("resultsD")
         self.assertListEqual(file_result, result)
 
 
@@ -66,8 +71,9 @@ class TestPostfixCalculateFullData(TestCase):
         tokens = Parser("x^2 (x^2 -4)^3").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, -3, 3, 0.01)
-        file_result = self.read_data_from_file("data/resultsE")
+        x_values = arange(-3, 3.01, 0.01)
+        result = calculate(root, x_values)
+        file_result = self.read_data_from_file("resultsE")
         self.assertListEqual(file_result, result)
 
 
@@ -75,8 +81,9 @@ class TestPostfixCalculateFullData(TestCase):
         tokens = Parser("(15x^2 - 13x -20)/(8x^2 + 10x -7)").parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
-        result = calculate(root, -10, 10, 0.01)
-        file_result = self.read_data_from_file("data/resultsF")
+        x_values = arange(-10, 10.01, 0.01)
+        result = calculate(root, x_values)
+        file_result = self.read_data_from_file("resultsF")
         for x, y in zip(result, file_result):
             if math.isnan(x):
                 assert math.isnan(y)

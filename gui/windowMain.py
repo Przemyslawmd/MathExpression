@@ -127,12 +127,12 @@ class MathExpression(QMainWindow):
             self.print_message(Message[Error.MAX_POINTS])
             return
 
-        y_values = calculate_values(self.insert_expression.text(), x_min, x_max, precision)
+        x_values = [round(x, 2) for x in arange(x_min, x_max + precision, precision)]
+        y_values = calculate_values(self.insert_expression.text(), x_values)
         if y_values is None:
             self.print_message_from_storage()
             return
 
-        x_values = arange(x_min, x_max + precision, precision)
         line_width = float(self.panel.pen_width.currentText())
         line_color = self.panel.current_pen_color
         plot_pen = pg.mkPen(line_color, width = line_width)
