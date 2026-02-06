@@ -10,12 +10,14 @@ class Postfix:
     def __init__(self):
         self.stack = deque()
         self.postfix = deque()
+        self.operator_not_plus_minus = [t for t in TokenGroup.operators if t not in (TokenType.PLUS, TokenType.MINUS)]
+        self.operator_not_arithmetic = [t for t in TokenGroup.operators if t not in TokenGroup.arithmetic]
 
 
     def create_postfix(self, tokens) -> deque:
         for token in tokens:
             if token.type in TokenGroup.operators:
-                self.process_operator(token)
+                self.check_operator(token)
             elif token.type is TokenType.BRACKET_LEFT:
                 self.stack.append(token)
             elif token.type is TokenType.BRACKET_RIGHT:
@@ -29,31 +31,29 @@ class Postfix:
 
     # ------------------------------- INTERNAL ----------------------------------- #
 
-    def process_operator(self, token) -> None:
+    def check_operator(self, token) -> None:
         if not self.stack:
             self.stack.append(token)
             return
 
         if token.type in (TokenType.PLUS, TokenType.MINUS):
-            self.process_stack_operator(token, TokenGroup.operators)
+            self.move_tokens(TokenGroup.operators)
         elif token.type in (TokenType.MULTIPLICATION, TokenType.DIVISION):
-            tokens_to_move = [token for token in TokenGroup.operators if (token not in (TokenType.PLUS, TokenType.MINUS))]
-            self.process_stack_operator(token, tokens_to_move)
+            self.move_tokens(self.operator_not_plus_minus)
         elif token.type in (TokenGroup.trigonometry, TokenType.LOG, TokenType.ROOT):
-            tokens_to_move = [token for token in TokenGroup.operators if (token not in TokenGroup.arithmetic)]
-            self.process_stack_operator(token, tokens_to_move)
+            self.move_tokens(self.operator_not_arithmetic)
         else:
-            self.process_stack_operator(token, [TokenType.POWER])
-
-
-    def process_stack_operator(self, token, token_values) -> None:
-        current_stack = None if not self.stack else self.stack.pop()
-        while current_stack and current_stack.type in token_values:
-            self.postfix.append(current_stack)
-            current_stack = None if not self.stack else self.stack.pop()
-        if current_stack:
-            self.stack.append(current_stack)
+            self.move_tokens([TokenType.POWER])
         self.stack.append(token)
+
+
+    def move_tokens(self, tokens_to_move) -> None:
+        stack_token = None if not self.stack else self.stack.pop()
+        while stack_token and stack_token.type in tokens_to_move:
+            self.postfix.append(stack_token)
+            stack_token = None if not self.stack else self.stack.pop()
+        if stack_token:
+            self.stack.append(stack_token)
 
 
     def process_bracket_right(self) -> None:
@@ -61,5 +61,4 @@ class Postfix:
         while current_stack.type is not TokenType.BRACKET_LEFT:
             self.postfix.append(current_stack)
             current_stack = self.stack.pop()
-
 

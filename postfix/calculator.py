@@ -3,7 +3,7 @@ from collections import deque
 from enum import Enum
 
 from math import cos, log, nan, radians, sin, sqrt, tan
-from numpy import power, arange
+from numpy import power
 
 from tokens.token import TokenType
 from tokens.tokenGroup import TokenGroup
