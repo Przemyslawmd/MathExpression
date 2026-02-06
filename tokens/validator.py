@@ -31,18 +31,19 @@ def validate_brackets(tokens) -> Error:
     round_counter = 0
     angle_counter = 0
     for token in tokens:
-        if token.type is TokenType.BRACKET_LEFT:
-            round_counter += 1
-        elif token.type is TokenType.BRACKET_ANGLE_LEFT:
-            angle_counter += 1
-        elif token.type is TokenType.BRACKET_RIGHT:
-            round_counter -= 1
-            if round_counter < 0:
-                return Error.PARSER_BRACKET
-        elif token.type is TokenType.BRACKET_ANGLE_RIGHT:
-            angle_counter -= 1
-            if angle_counter < 0:
-                return Error.PARSER_BRACKET_ANGLE
+        match token.type:
+            case TokenType.BRACKET_LEFT:
+                round_counter += 1
+            case TokenType.BRACKET_ANGLE_LEFT:
+                angle_counter += 1
+            case TokenType.BRACKET_RIGHT:
+                round_counter -= 1
+                if round_counter < 0:
+                    return Error.PARSER_BRACKET
+            case TokenType.BRACKET_ANGLE_RIGHT:
+                angle_counter -= 1
+                if angle_counter < 0:
+                    return Error.PARSER_BRACKET_ANGLE
 
     if round_counter != 0:
         return Error.PARSER_BRACKET
