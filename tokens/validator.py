@@ -19,11 +19,11 @@ allowed = {
 
 
 forbidden = {
-    TokenType.BRACKET_LEFT: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic),
-    TokenType.PLUS: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic),
-    TokenType.MINUS: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic),
-    TokenType.MULTIPLICATION: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic),
-    TokenType.DIVISION: (TokenType.BRACKET_RIGHT, TokenGroup.arithmetic)
+    TokenType.BRACKET_LEFT: (TokenType.BRACKET_RIGHT, *TokenGroup.arithmetic),
+    TokenType.PLUS: (TokenType.BRACKET_RIGHT, *TokenGroup.arithmetic),
+    TokenType.MINUS: (TokenType.BRACKET_RIGHT, *TokenGroup.arithmetic),
+    TokenType.MULTIPLICATION: (TokenType.BRACKET_RIGHT, *TokenGroup.arithmetic),
+    TokenType.DIVISION: (TokenType.BRACKET_RIGHT, *TokenGroup.arithmetic)
 }
 
 
@@ -77,6 +77,7 @@ def validate_tokens(tokens) -> Error:
                 if next_type not in allowed[token.type]:
                     return Error.VALIDATOR_X
             case TokenType.BRACKET_LEFT:
+                x = forbidden[token.type]
                 if next_type in forbidden[token.type]:
                     return Error.VALIDATOR_BRACKET_LEFT
             case TokenType.BRACKET_RIGHT:

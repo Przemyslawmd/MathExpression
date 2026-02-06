@@ -81,3 +81,17 @@ class TestParserError(TestCase):
         self.assertIsNone(tokens)
         self.assertEqual(errors[0], Message[Error.VALIDATOR_ROOT_DEGREE])
 
+
+    def test_validator_after_left_bracket(self):
+        tokens = Parser("2sin(*x)").parse()
+        errors = ErrorStorage.get_errors()
+        self.assertIsNone(tokens)
+        self.assertEqual(errors[0], Message[Error.VALIDATOR_BRACKET_LEFT])
+
+
+    def test_validator_after_arithmetic(self):
+        tokens = Parser("tgx + 2 + /x").parse()
+        errors = ErrorStorage.get_errors()
+        self.assertIsNone(tokens)
+        self.assertEqual(errors[0], Message[Error.VALIDATOR_ARITHMETIC])
+
