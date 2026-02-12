@@ -254,6 +254,20 @@ class TestParser(TestCase):
         check_tokens(tokens, tokens_test)
 
 
+    def test_negative_5(self):
+        tokens = Parser("-sinx + -cosx").parse()
+        tokens_test = (TokenTest(TokenType.NUMBER, -1),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.SINE),
+                       TokenTest(TokenType.X),
+                       TokenTest(TokenType.PLUS),
+                       TokenTest(TokenType.NUMBER, -1),
+                       TokenTest(TokenType.MULTIPLICATION),
+                       TokenTest(TokenType.COSINE),
+                       TokenTest(TokenType.X))
+        check_tokens(tokens, tokens_test)
+
+
     def test_angle_brackets_1(self):
         tokens = Parser("sqrt<2>16").parse()
         tokens_test = (TokenTest(TokenType.ROOT, 2),

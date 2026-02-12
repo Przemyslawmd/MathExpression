@@ -59,14 +59,15 @@ def remove_angle_brackets(tokens) -> bool:
 def remove_negative_tokens(tokens) -> bool:
     is_negative = False
     indices = deque()
+    tokens_to_mark = (TokenType.BRACKET_LEFT, TokenType.ROOT, TokenType.LOG, TokenType.X, *TokenGroup.trigonometry)
     for index, token in enumerate(tokens):
         if token.type is TokenType.NEGATIVE:
             is_negative = True
             continue
         if is_negative:
             if token.type is TokenType.NUMBER:
-                tokens[index].data *= -1
-            elif token.type in (TokenType.BRACKET_LEFT, TokenType.ROOT, TokenType.LOG, TokenType.X, TokenGroup.trigonometry):
+                token.data *= -1
+            elif token.type in tokens_to_mark:
                 indices.append(index)
             else:
                 return False
