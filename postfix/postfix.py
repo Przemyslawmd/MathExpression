@@ -40,7 +40,7 @@ class Postfix:
             self.move_tokens(TokenGroup.operators)
         elif token.type in (TokenType.MULTIPLICATION, TokenType.DIVISION):
             self.move_tokens(self.operator_not_plus_minus)
-        elif token.type in (TokenGroup.trigonometry, TokenType.LOG, TokenType.ROOT):
+        elif token.type in (TokenType.LOG, TokenType.ROOT):
             self.move_tokens(self.operator_not_arithmetic)
         else:
             self.move_tokens([TokenType.POWER])
