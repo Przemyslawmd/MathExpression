@@ -105,7 +105,7 @@ class MathExpression(QMainWindow):
 
 
     def add_graph_label(self):
-        if self.settings.graph_label is False:
+        if not self.settings.graph_label:
             return
         self.legend.clear()
         self.legend.setParentItem(self.plot_widget.plotItem)

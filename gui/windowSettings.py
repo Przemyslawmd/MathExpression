@@ -11,8 +11,8 @@ class WindowSettings(QDialog):
         super().__init__()
 
         self.parent = parent
-        layout = QVBoxLayout()
-        layout.setContentsMargins(30, 20, 30, 0)
+        layout_main = QVBoxLayout()
+        layout_main.setContentsMargins(30, 20, 30, 0)
 
         layout_grid = QGridLayout()
 
@@ -43,14 +43,13 @@ class WindowSettings(QDialog):
         layout_grid.addWidget(QLabel("Background Color"), 5, 1)
         self.combo_background = QComboBox()
         self.combo_background.setMaximumWidth(120)
-        [self.combo_background.addItem(value.text) for value in Colors.values()]
+        for value in Colors.values():
+            self.combo_background.addItem(value.text)
         self.combo_background.setCurrentText(Colors[settings.background].text)
         layout_grid.addWidget(self.combo_background, 5, 2, Qt.AlignmentFlag.AlignRight)
 
         for row in range(1, layout_grid.rowCount()):
             layout_grid.setRowMinimumHeight(row, 35)
-
-        layout.addLayout(layout_grid)
 
         layout_button = QHBoxLayout()
         layout_button.addStretch()
@@ -59,12 +58,13 @@ class WindowSettings(QDialog):
         layout_button.addWidget(button)
         layout_button.addStretch()
 
-        layout.addLayout(layout_button)
+        layout_main.addLayout(layout_grid)
+        layout_main.addLayout(layout_button)
+        self.setLayout(layout_main)
+
         self.setMinimumWidth(320)
         self.setMinimumHeight(320)
         self.setWindowModality(Qt.WindowModality.ApplicationModal)
-        self.setLayout(layout)
-        self.setGeometry(550, 500, 0, 0)
         self.show()
         self.exec()
 
