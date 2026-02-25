@@ -1,4 +1,4 @@
-
+import math
 from collections import deque
 from enum import Enum
 
@@ -17,7 +17,7 @@ class Direction(Enum):
 
 
 actions = {
-    TokenType.DIVISION: lambda a, b: nan if round(a, 4) == 0.00 else b / a,
+    TokenType.DIVISION: lambda a, b: nan if math.isclose(a, 0) else b / a,
     TokenType.MINUS: lambda a, b: b - a,
     TokenType.MULTIPLICATION: lambda a, b: a * b,
     TokenType.PLUS: lambda a, b: a + b,
@@ -32,6 +32,7 @@ actions = {
     TokenType.SINE: lambda a: sin(a),
     TokenType.TANGENT: lambda a: nan if round(cos(a), 4) == 0.00 else tan(a),
 }
+
 
 def calculate(root, x_values, continuity = False) -> list:
     add_leaves_data(root)
