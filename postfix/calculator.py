@@ -39,7 +39,7 @@ def calculate(root, x_values, continuity = False) -> list:
     for x in x_values:
         traverse(root, x)
         results.append(root.data)
-    results = [round(x, 4) for x in results]
+    results = [x for x in results]
 
     if continuity:
         discontinuity_points = check_continuity(results)

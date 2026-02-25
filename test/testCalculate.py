@@ -15,7 +15,7 @@ class TestCalculate(TestCase):
     def test_fill_x(self):
         step = 0.5
         x_values = arange(20, 30 + step, step)
-        result = calculate_values("x", x_values)
+        result = [round(x, 4) for x in calculate_values("x", x_values)]
         assert len(result) == 21
         shift = 0
         for value in result:
@@ -181,7 +181,7 @@ class TestCalculate(TestCase):
         root = create_tree(postfix)
         x_values = arange(30, 31)
         result = calculate(root, x_values)
-        assert result[0] == 30.5
+        assert round(result[0], 4) == 30.5
 
 
     def test_calculate_11(self):
@@ -189,7 +189,7 @@ class TestCalculate(TestCase):
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
         x_values = arange(10, 15)
-        result = calculate(root, x_values)
+        result = [round(x, 4) for x in calculate(root, x_values)]
         assert result[0] == 9.8481
         assert result[1] == 10.8329
         assert result[2] == 11.8177
@@ -202,7 +202,7 @@ class TestCalculate(TestCase):
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
         x_values = arange(100, 105)
-        result = calculate(root, x_values)
+        result = [round(x, 4) for x in calculate(root, x_values)]
         assert result[0] == -39.0801
         assert result[1] == -31.8131
         assert result[2] == -25.3655
@@ -215,7 +215,7 @@ class TestCalculate(TestCase):
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
         x_values = arange(16, 21)
-        result = calculate(root, x_values)
+        result = [round(x, 4) for x in calculate(root, x_values)]
         assert result[0] == 14.0
         assert result[1] == 14.1231
         assert result[2] == 14.2426
@@ -252,7 +252,7 @@ class TestCalculate(TestCase):
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
         x_values = arange(30, 36)
-        result = calculate(root, x_values)
+        result = [round(x, 4) for x in calculate(root, x_values)]
         assert result[0] == 21.2132
         assert result[1] == 22.2475
         assert result[2] == 23.2946
@@ -266,7 +266,7 @@ class TestCalculate(TestCase):
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
         x_values = arange(10, 13)
-        result = calculate(root, x_values)
+        result = [round(x, 4) for x in calculate(root, x_values)]
         assert result[0] == 1
         assert result[1] == 1.0414
         assert result[2] == 1.0792
@@ -277,7 +277,7 @@ class TestCalculate(TestCase):
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
         x_values = arange(3, 5)
-        result = calculate(root, x_values)
+        result = [round(x, 4) for x in calculate(root, x_values)]
         assert result[0] == 6.1435
         assert result[1] == 13.7816
 
@@ -287,7 +287,7 @@ class TestCalculate(TestCase):
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
         x_values = arange(-2, 3, dtype = float)
-        result = calculate(root, x_values)
+        result = [round(x, 4) for x in calculate(root, x_values)]
         assert result[0] == 0.25
         assert result[1] == 1
         assert isnan(result[2])
