@@ -19,18 +19,18 @@ class TestPostfixCalculateFullData(TestCase):
         return [float(x.strip()) for x in data.split(',')]
 
 
-    def run_test(self, expression, x_min, x_max, precision, file_result):
+    def run_test(self, expression, x_min, x_max, precision, file_expected):
         tokens = Parser(expression).parse()
         postfix = Postfix().create_postfix(tokens)
         root = create_tree(postfix)
         x_values = arange(x_min, x_max, precision)
         y_calculated = [round(x, 4) for x in calculate(root, x_values)]
-        y_expected = self.read_data_from_file(file_result)
+        y_expected = self.read_data_from_file(file_expected)
         for y_cal, y_exp in zip(y_calculated, y_expected):
             if math.isnan(y_cal):
                 assert math.isnan(y_exp)
                 continue
-            assert y_cal == y_exp
+            assert y_cal == y_exp, f"calculated: {y_cal} != expected : {y_exp}"
 
 
     def test_postfix_calculate_full_data_1(self):
