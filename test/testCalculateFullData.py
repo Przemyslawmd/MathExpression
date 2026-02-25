@@ -28,7 +28,7 @@ class TestPostfixCalculateFullData(TestCase):
         y_expected = self.read_data_from_file(file_expected)
         for y_cal, y_exp in zip(y_calculated, y_expected):
             if math.isnan(y_cal):
-                assert math.isnan(y_exp)
+                assert math.isnan(y_exp), f"expected: {y_exp} is NaN"
                 continue
             assert y_cal == y_exp, f"calculated: {y_cal} != expected : {y_exp}"
 

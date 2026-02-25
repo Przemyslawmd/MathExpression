@@ -17,7 +17,7 @@ class Direction(Enum):
 
 
 actions = {
-    TokenType.DIVISION: lambda a, b: nan if math.isclose(a, 0) else b / a,
+    TokenType.DIVISION: lambda a, b: nan if math.isclose(a, 0, abs_tol = 0.00001) else b / a,
     TokenType.MINUS: lambda a, b: b - a,
     TokenType.MULTIPLICATION: lambda a, b: a * b,
     TokenType.PLUS: lambda a, b: a + b,
