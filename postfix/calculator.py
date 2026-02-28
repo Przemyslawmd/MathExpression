@@ -1,6 +1,6 @@
-import math
+
+from math import isclose
 from collections import deque
-from enum import Enum
 
 from math import cos, log, nan, radians, sin, sqrt, tan
 from numpy import power
@@ -9,17 +9,10 @@ from tokens.token import TokenType
 from tokens.tokenGroup import TokenGroup
 
 
-class Direction(Enum):
-    CONST = 0
-    DOWN = 1
-    UP = 2
-    NONE = 3
-
-
 ABS_TOL_VAL = 0.00001
 
 actions = {
-    TokenType.DIVISION: lambda a, b: nan if math.isclose(a, 0, abs_tol = ABS_TOL_VAL) else b / a,
+    TokenType.DIVISION: lambda a, b: nan if isclose(a, 0, abs_tol = ABS_TOL_VAL) else b / a,
     TokenType.MINUS: lambda a, b: b - a,
     TokenType.MULTIPLICATION: lambda a, b: a * b,
     TokenType.PLUS: lambda a, b: a + b,
@@ -30,9 +23,9 @@ actions = {
     TokenType.ROOT: lambda a, b: nan if a < 0 else (sqrt(a) if b == 2 else power(a, 1 / b)),
 
     TokenType.COSINE: lambda a: cos(a),
-    TokenType.COTANGENT: lambda a: nan if math.isclose(sin(a), 0, abs_tol = ABS_TOL_VAL) else cos(a) / sin(a),
+    TokenType.COTANGENT: lambda a: nan if isclose(sin(a), 0, abs_tol = ABS_TOL_VAL) else cos(a) / sin(a),
     TokenType.SINE: lambda a: sin(a),
-    TokenType.TANGENT: lambda a: nan if math.isclose(cos(a), 0, abs_tol = ABS_TOL_VAL) else tan(a),
+    TokenType.TANGENT: lambda a: nan if isclose(cos(a), 0, abs_tol = ABS_TOL_VAL) else tan(a),
 }
 
 
