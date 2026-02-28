@@ -36,53 +36,15 @@ actions = {
 }
 
 
-def calculate(root, x_values, continuity = False) -> list:
+def calculate(root, x_values) -> list:
     add_leaves_data(root)
     results = deque()
     for x in x_values:
         traverse(root, x)
         results.append(root.data)
-    results = [x for x in results]
-
-    if continuity:
-        discontinuity_points = check_continuity(results)
-        for index in discontinuity_points:
-            results[index] = nan
-    return results
+    return [x for x in results]
 
 # ------------------------------- INTERNAL ----------------------------------- #
-
-def check_directions(numbers) -> list:
-    directions = [Direction.NONE] * len(numbers)
-    for i, number in enumerate(numbers):
-        if i == 0:
-            continue
-        if number > numbers[i - 1]:
-            directions[i] = Direction.UP
-        elif number < numbers[i - 1]:
-            directions[i] = Direction.DOWN
-        else:
-            directions[i] = Direction.CONST
-    return directions
-
-
-def is_discontinuity(direction_prev, direction_curr, number_prev, number_curr) -> bool:
-    if all((direction_prev is Direction.UP, direction_curr is Direction.DOWN, number_prev > 0, number_curr < 0)):
-        return True
-    if all((direction_prev is Direction.DOWN, direction_curr is Direction.UP, number_prev < 0, number_curr > 0)):
-        return True
-    return False
-
-
-def check_continuity(numbers) -> list:
-    directions = check_directions(numbers)
-    discontinuity_points = []
-    for i, direction in enumerate(directions):
-        if direction != directions[i - 1]:
-            if is_discontinuity(directions[i - 1], direction, numbers[i - 1], numbers[i]):
-                discontinuity_points.append(i)
-    return discontinuity_points
-
 
 def add_leaves_data(node) -> None:
     if node.left is not None:

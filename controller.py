@@ -20,9 +20,7 @@ def calculate_values(expression, x_values) -> list | None:
         return fill_values(x_values, postfix[0])
 
     root = create_tree(postfix)
-    division_or_tangent = filter(lambda t: t.type is TokenType.DIVISION or t.type is TokenType.TANGENT, postfix)
-    check_continuity = any(division_or_tangent)
-    result = calculate(root, x_values, check_continuity)
+    result = calculate(root, x_values)
     return result
 
 # ------------------------------- INTERNAL ----------------------------------- #
