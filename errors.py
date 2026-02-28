@@ -31,7 +31,7 @@ class Error(Enum):
 
 Message = {
     Error.MAX_POINTS:
-        "Number of maximum points (100000) is exceeded, change x range or precision.",
+        "Number of maximum points (1 000 000) is exceeded, change x range or precision.",
     Error.PARSER_BRACKET:
         "Parsing brackets error.",
     Error.PARSER_BRACKET_ANGLE:

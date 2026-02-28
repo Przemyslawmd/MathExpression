@@ -34,7 +34,7 @@ class WindowSettings(QDialog):
         layout_grid.addWidget(QLabel("Precision"), 4, 1)
         self.combo_precision = QComboBox()
         self.combo_precision.setMaximumWidth(100)
-        for i, precision in enumerate((0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0)):
+        for i, precision in enumerate((0.001, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0)):
             self.combo_precision.addItem(str(precision))
             if precision == settings.precision:
                 self.combo_precision.setCurrentIndex(i)

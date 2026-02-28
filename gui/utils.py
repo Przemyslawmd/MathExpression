@@ -10,7 +10,7 @@ axis_changes = (
 
 
 def max_points_exceeded(precision, x_min, x_max):
-    max_points = 100000
+    max_points = 1000000
     if x_min >= 0 and x_max >= 0:
         return (x_max - x_min) / precision > max_points
     if x_min < 0 and x_max < 0:
