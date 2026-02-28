@@ -29,8 +29,7 @@ def fill_values(x_values, token) -> list | None:
     if token.type is TokenType.X:
         return x_values
     if token.type is TokenType.NUMBER:
-        x_values.fill(token.data)
-        return x_values
+        return [token.data] * len(x_values)
     ErrorStorage.put_error(Error.INTERNAL_EXCEPTION_SINGLE_TOKEN)
     return None
 
