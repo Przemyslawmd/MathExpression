@@ -42,7 +42,7 @@ def calculate(root, x_values) -> list:
     for x in x_values:
         traverse(root, x)
         results.append(root.data)
-    return [x for x in results]
+    return [round(x, 6) for x in results]
 
 # ------------------------------- INTERNAL ----------------------------------- #
 
