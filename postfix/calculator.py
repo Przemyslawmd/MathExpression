@@ -16,8 +16,10 @@ class Direction(Enum):
     NONE = 3
 
 
+ABS_TOL_VAL = 0.00001
+
 actions = {
-    TokenType.DIVISION: lambda a, b: nan if math.isclose(a, 0, abs_tol = 0.00001) else b / a,
+    TokenType.DIVISION: lambda a, b: nan if math.isclose(a, 0, abs_tol = ABS_TOL_VAL) else b / a,
     TokenType.MINUS: lambda a, b: b - a,
     TokenType.MULTIPLICATION: lambda a, b: a * b,
     TokenType.PLUS: lambda a, b: a + b,
@@ -28,9 +30,9 @@ actions = {
     TokenType.ROOT: lambda a, b: nan if a < 0 else (sqrt(a) if b == 2 else power(a, 1 / b)),
 
     TokenType.COSINE: lambda a: cos(a),
-    TokenType.COTANGENT: lambda a: nan if round(sin(a), 4) == 0.00 else cos(a) / sin(a),
+    TokenType.COTANGENT: lambda a: nan if math.isclose(sin(a), 0, abs_tol = ABS_TOL_VAL) else cos(a) / sin(a),
     TokenType.SINE: lambda a: sin(a),
-    TokenType.TANGENT: lambda a: nan if round(cos(a), 4) == 0.00 else tan(a),
+    TokenType.TANGENT: lambda a: nan if math.isclose(cos(a), 0, abs_tol = ABS_TOL_VAL) else tan(a),
 }
 
 
