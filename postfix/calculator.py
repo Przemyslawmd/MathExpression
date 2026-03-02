@@ -1,8 +1,7 @@
 
-from math import isclose
 from collections import deque
 
-from math import cos, log, nan, radians, sin, sqrt, tan
+from math import cos, isclose, log, nan, radians, sin, sqrt, tan
 from numpy import power
 
 from tokens.token import TokenType
